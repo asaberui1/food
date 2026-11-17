@@ -45,9 +45,10 @@ const seen = new Set<string>();
             </div>
           ) : (
             <>
-              <nav class="cuisine-nav cuisine-nav--page" aria-label="按品类跳转">
+              <nav class="cuisine-nav cuisine-nav--page" aria-label="按品类筛选" data-filter>
+                <a class="chip is-active" href="#all" data-filter-value="">全部</a>
                 {cuisines.map((cuisine) => (
-                  <a class="chip" href={`#${cuisine}`}>
+                  <a class="chip" href={`#${cuisine}`} data-filter-value={cuisine}>
                     {cuisine}
                   </a>
                 ))}
@@ -57,7 +58,11 @@ const seen = new Set<string>();
                   const isFirst = !seen.has(shop.data.cuisine);
                   seen.add(shop.data.cuisine);
                   return (
-                    <div id={isFirst ? shop.data.cuisine : undefined} class="anchor-target">
+                    <div
+                      id={isFirst ? shop.data.cuisine : undefined}
+                      class="anchor-target"
+                      data-cuisine={shop.data.cuisine}
+                    >
                       <ShopCard shop={shop} />
                     </div>
                   );
@@ -71,4 +76,26 @@ const seen = new Set<string>();
   </main>
 
   <Footer />
+
+  <script is:inline>
+    (() => {
+      const nav = document.querySelector("[data-filter]");
+      if (!nav) return;
+
+      const cards = Array.from(document.querySelectorAll("[data-cuisine]"));
+      const links = Array.from(nav.querySelectorAll("a[data-filter-value]"));
+
+      nav.addEventListener("click", (event) => {
+        const link = event.target.closest("a[data-filter-value]");
+        if (!link) return;
+
+        const value = link.dataset.filterValue;
+        links.forEach((item) => item.classList.toggle("is-active", item === link));
+
+        cards.forEach((card) => {
+          card.hidden = Boolean(value) && card.dataset.cuisine !== value;
+        });
+      });
+    })();
+  </script>
 </BaseLayout>

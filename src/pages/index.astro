@@ -25,6 +25,15 @@ const marqueeItems =
     ? cuisines
     : ["早市", "午市", "下午茶", "晚饭", "夜宵", "一人食", "朋友聚餐", "打包带走"];
 
+// 区块编号按实际渲染的区块算，跳过哪个都不会跳号
+const steps = [
+  showFeatured && "recent",
+  shops.length > 0 && "all",
+  "method",
+  "submit",
+].filter(Boolean) as string[];
+const no = (key: string) => String(steps.indexOf(key) + 1).padStart(2, "0");
+
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -100,34 +109,35 @@ const structuredData = {
         </section>
       ) : (
         <>
-          {showFeatured && <section class="section" aria-labelledby="featured-title">
-            <div class="container section-grid">
-              <div class="section-kicker">
-                <p class="label-eyebrow reveal">01 — 最近吃过</p>
+          {showFeatured && (
+            <section class="section" aria-labelledby="featured-title">
+              <div class="container">
+                <header class="section-head">
+                  <p class="label-eyebrow reveal">{no("recent")} — 最近吃过</p>
+                  <h2 id="featured-title" class="section-title display reveal">
+                    这个月，
+                    <span style="color: var(--ember);">值得再去</span>的几家
+                  </h2>
+                </header>
+                <div class="shop-grid shop-grid--featured">
+                  {featured.map((shop, index) => (
+                    <div class:list={["reveal", index === 0 && "shop-grid__lead"]}>
+                      <ShopCard shop={shop} large={index === 0} />
+                    </div>
+                  ))}
+                </div>
               </div>
-              <h2 id="featured-title" class="section-heading display reveal">
-                这个月，<br />
-                <span style="color: var(--ember);">值得再去</span>的几家
-              </h2>
-              <div class="shop-grid shop-grid--featured">
-                {featured.map((shop, index) => (
-                  <div class:list={["reveal", index === 0 && "shop-grid__lead"]}>
-                    <ShopCard shop={shop} large={index === 0} />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>}
+            </section>
+          )}
 
           <section class="section surface-section" aria-labelledby="all-title">
-            <div class="container section-grid">
-              <div class="section-kicker">
-                <p class="label-eyebrow reveal">{showFeatured ? "02" : "01"} — 全部收录</p>
-              </div>
-              <h2 id="all-title" class="section-heading display reveal">
-                按口味，<br />
-                <span style="color: var(--ember);">慢慢逛</span>
-              </h2>
+            <div class="container">
+              <header class="section-head">
+                <p class="label-eyebrow reveal">{no("all")} — 全部收录</p>
+                <h2 id="all-title" class="section-title display reveal">
+                  按口味，<span style="color: var(--ember);">慢慢逛</span>
+                </h2>
+              </header>
 
               <nav class="cuisine-nav reveal" aria-label="按品类浏览">
                 {cuisines.map((cuisine) => (
@@ -157,14 +167,13 @@ const structuredData = {
     }
 
     <section class="section" aria-labelledby="method-title">
-      <div class="container section-grid">
-        <div class="section-kicker">
-          <p class="label-eyebrow reveal">03 — 怎么写的</p>
-        </div>
-        <h2 id="method-title" class="section-heading display reveal">
-          吃过的，<br />
-          <span style="color: var(--ember);">才写</span>。
-        </h2>
+      <div class="container">
+        <header class="section-head">
+          <p class="label-eyebrow reveal">{no("method")} — 怎么写的</p>
+          <h2 id="method-title" class="section-title display reveal">
+            吃过的，<span style="color: var(--ember);">才写</span>。
+          </h2>
+        </header>
 
         <div class="feature-grid">
           <section class="reveal">
@@ -186,7 +195,7 @@ const structuredData = {
     <section class="section reservation" aria-labelledby="submit-title">
       <div class="container section-grid">
         <div class="reservation-copy">
-          <p class="label-eyebrow reveal">04 — 投稿</p>
+          <p class="label-eyebrow reveal">{no("submit")} — 投稿</p>
           <h2 id="submit-title" class="display reveal">
             你常去的那家，<br />
             <span style="color: var(--ember);">也值得被记下来</span>

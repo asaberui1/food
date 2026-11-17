@@ -316,6 +316,10 @@ a:hover {
   object-fit: cover;
 }
 
+.shop-hero img {
+  object-position: center top;
+}
+
 .media-fill {
   position: absolute;
   inset: 0;
@@ -1101,6 +1105,7 @@ textarea {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   transition: transform 600ms cubic-bezier(0.2, 0.7, 0.2, 1);
 }
 
@@ -1175,9 +1180,14 @@ textarea {
   transition: border-color 160ms ease, color 160ms ease;
 }
 
-.chip:hover {
+.chip:hover,
+.chip.is-active {
   border-color: var(--ember);
   color: var(--ember);
+}
+
+[hidden] {
+  display: none !important;
 }
 
 .chip--muted {
@@ -1873,11 +1883,48 @@ textarea {
     columns: 1;
   }
 
-  .menu-acc__head {
-    grid-template-columns: minmax(0, 1fr) auto auto;
-  }
-
   .menu-acc__count {
     display: none;
+  }
+}
+
+/* ---------- 首页栏目标题（小标题在上，大标题在下） ---------- */
+
+.section-head {
+  display: grid;
+  gap: 0.9rem;
+  max-width: 54rem;
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+.section-title {
+  margin: 0;
+  font-size: clamp(2rem, 4.2vw, 3.5rem);
+  line-height: 1.22;
+  letter-spacing: 0.01em;
+}
+
+.section-head + .cuisine-nav {
+  margin-top: 0;
+}
+
+.section-more {
+  margin-top: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+/* 菜单表头：固定列宽，保证每一行的价格区间和条数对齐 */
+.menu-acc__head {
+  grid-template-columns: minmax(0, 1fr) 6.5rem 4.5rem 1.8rem;
+}
+
+.menu-acc__range,
+.menu-acc__count {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+  .menu-acc__head {
+    grid-template-columns: minmax(0, 1fr) 5.5rem 1.8rem;
   }
 }
