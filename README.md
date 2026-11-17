@@ -51,10 +51,11 @@ dishes:
     note: 现炸的排条裹一层薄糊，和洋葱丝、芹菜段一起上桌。
     image: ./paigu.webp
 
-bill:
-  people: 两人
-  items: 椒盐排条 + 白斩草鸡 + 酒香草头
-  total: ¥93
+bills:
+  - label: 最近一次
+    people: 两人
+    items: 椒盐排条 + 白斩草鸡 + 酒香草头
+    total: ¥93
 
 tags: [多人聚餐, 本帮菜]
 featured: true
@@ -85,7 +86,7 @@ order:
 | --- | --- | --- |
 | `name` | 是 | 店名 |
 | `cuisine` | 是 | 品类，首页品类标签和列表锚点都由它生成 |
-| `dining` | 否 | `group`（默认）或 `single`，决定是否显示人均 |
+| `dining` | 否 | `group`（默认）/ `single` / `both`，决定是否显示人均 |
 | `priceRange` | 否 | 人均，如 `人均约 ¥47`；单人餐不填 |
 | `distance` | 否 | 步行距离，如 `步行 10 分钟`；不填显示「待补充」 |
 | `address` | 是 | 地址 |
@@ -95,7 +96,7 @@ order:
 | `gallery` | 否 | 环境照数组，每项 `src` + `alt` |
 | `dishes` | 否 | 推荐菜数组，`name` 必填，`price`、`note`、`image` 可选 |
 | `menu` | 否 | 菜单分组，`title` + `items[]`（`name`、`price` 必填） |
-| `bill` | 否 | 消费记录：`people`、`items`、`total` |
+| `bills` | 否 | 消费记录，可多条：`label`、`people`、`items`、`total` |
 | `order` | 否 | 扫码点餐：`url`、`qr`（二维码图片）、`note`、`tip`（小提示） |
 | `tags` | 否 | 标签，显示在详情页底部 |
 | `featured` | 否 | 是否进首页「最近吃过」（需要至少两家才会出现该区块） |

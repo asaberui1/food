@@ -35,6 +35,12 @@
     rgb(15 11 8 / 0.32) 62%,
     rgb(12 9 7 / 0.62) 100%
   );
+  --grad-shop-veil: linear-gradient(
+    180deg,
+    rgb(15 11 8 / 0.45) 0%,
+    rgb(15 11 8 / 0.52) 42%,
+    rgb(15 11 8 / 0.88) 100%
+  );
   --grad-veil: linear-gradient(
     180deg,
     rgb(15 11 8 / 0) 0%,
@@ -1627,6 +1633,24 @@ textarea {
   border: 1px solid var(--border);
   background: rgb(32 26 21 / 0.55);
   padding: 1.25rem clamp(1rem, 2vw, 1.5rem);
+}
+
+.bill__list {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bill__label {
+  display: inline-block;
+  min-width: 4.2em;
+  margin-right: 0.5rem;
+  color: var(--ember);
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
 }
 
 .bill__line {

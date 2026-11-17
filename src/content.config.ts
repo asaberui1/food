@@ -9,6 +9,7 @@ import { z } from "astro/zod";
  * dining 区分两种记录方式：
  * - group  多人聚餐：记人均 / 实际消费
  * - single 单人餐：不记人均，只列菜单，丰俭由人
+ * - both   两种吃法都有
  */
 const restaurants = defineCollection({
   loader: glob({
@@ -20,7 +21,7 @@ const restaurants = defineCollection({
     z.object({
       name: z.string(),
       cuisine: z.string(),
-      dining: z.enum(["group", "single"]).default("group"),
+      dining: z.enum(["group", "single", "both"]).default("group"),
       priceRange: z.string().optional(),
       distance: z.string().optional(),
       address: z.string(),
@@ -47,10 +48,17 @@ const restaurants = defineCollection({
           }),
         )
         .default([]),
-      /** 多人聚餐的实际消费记录 */
-      bill: z
-        .object({ people: z.string(), items: z.string(), total: z.string() })
-        .optional(),
+      /** 多人聚餐的实际消费记录，可记多次 */
+      bills: z
+        .array(
+          z.object({
+            label: z.string().optional(),
+            people: z.string(),
+            items: z.string(),
+            total: z.string(),
+          }),
+        )
+        .default([]),
       /** 店家的扫码点餐入口（微信/支付宝小程序，网页端打不开） */
       order: z
         .object({

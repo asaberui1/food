@@ -6,12 +6,12 @@ priceRange: 人均约 ¥47
 distance: 待补充
 address: 建华路 38 号，菜市场后面的弄堂里
 summary: 白斩鸡和椒盐排条是招牌，圆台面，适合一家人或一群朋友坐下来慢慢吃。
-cover: ./room-wide.webp
+cover: ./door.webp
 gallery:
-  - src: ./room-door.webp
-    alt: 包厢门口，浅蓝墙面配深色木门，门牌写着「五福临门」
   - src: ./room-wide.webp
     alt: 大堂里的圆桌，白桌布、玻璃转盘，靠墙还有一张小方桌
+  - src: ./room-door.webp
+    alt: 包厢门口，浅蓝墙面配深色木门，门牌写着「五福临门」
 dishes:
   - name: 椒盐排条
     note: 现炸的排条裹一层薄糊，和洋葱丝、芹菜段一起上桌，趁热吃最脆。
@@ -20,10 +20,11 @@ dishes:
     note: 皮黄肉紧，蘸一点酱油就够。
   - name: 酒香草头
     note: 草头嫩的时候才点得到，酒味很冲，下饭。
-bill:
-  people: 两人
-  items: 椒盐排条 + 白斩草鸡 + 酒香草头
-  total: ¥93
+bills:
+  - label: 最近一次
+    people: 两人
+    items: 椒盐排条 + 白斩草鸡 + 酒香草头
+    total: ¥93
 tags: [多人聚餐, 本帮菜, 家常菜]
 featured: true
 ---

@@ -28,7 +28,7 @@ const {
   gallery,
   dishes,
   menu,
-  bill,
+  bills,
   order,
   tags,
   sample,
@@ -36,7 +36,8 @@ const {
 const { Content } = await render(shop);
 
 const hasBody = Boolean(shop.body?.trim());
-const diningLabel = dining === "group" ? "多人聚餐" : "单人餐";
+const diningLabel =
+  dining === "group" ? "多人聚餐" : dining === "single" ? "单人餐" : "聚餐 / 单人餐";
 
 // 区块编号按实际渲染的区块算，缺哪个都不会跳号
 const steps = [
@@ -116,7 +117,7 @@ const structuredData = sample
                 decoding="sync"
               />
               <div class="overlay" style="background: var(--grad-vignette);"></div>
-              <div class="overlay" style="background: var(--grad-veil);"></div>
+              <div class="overlay" style="background: var(--grad-shop-veil);"></div>
             </>
           )
         }
@@ -149,12 +150,17 @@ const structuredData = sample
         </dl>
 
         {
-          bill && (
+          bills.length > 0 && (
             <div class="bill">
               <p class="label-eyebrow">消费记录</p>
-              <p class="bill__line">
-                {bill.people} · {bill.items} · 共 <strong>{bill.total}</strong>
-              </p>
+              <ul class="bill__list">
+                {bills.map((record) => (
+                  <li class="bill__line">
+                    {record.label && <span class="bill__label">{record.label}</span>}
+                    {record.people} · {record.items} · 共 <strong>{record.total}</strong>
+                  </li>
+                ))}
+              </ul>
             </div>
           )
         }
