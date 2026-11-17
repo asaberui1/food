@@ -1,0 +1,74 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import ShopCard from "../../components/ShopCard.astro";
+import { siteConfig } from "../../config/site";
+
+const shops = (await getCollection("restaurants")).sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.name.localeCompare(b.data.name, "zh"),
+);
+
+const cuisines = [...new Set(shops.map((shop) => shop.data.cuisine))];
+const samples = shops.filter((shop) => shop.data.sample).length;
+
+// 每个品类只给第一张卡片挂锚点，供顶部品类导航跳转
+const seen = new Set<string>();
+---
+
+<BaseLayout
+  title="全部餐馆"
+  description={`${siteConfig.school.name}周边已收录的 ${shops.length} 家餐馆，含人均、步行距离与推荐菜。`}
+>
+  <Nav />
+
+  <main id="main">
+    <section class="page-head">
+      <div class="container page-head__inner">
+        <p class="label-eyebrow">All entries</p>
+        <h1 class="page-title display">全部餐馆</h1>
+        <p class="page-lead">
+          共 {shops.length} 家。价格是最近一次结账时的人均，距离按从学院大门步行计算。
+        </p>
+        {samples > 0 && <p class="notice">其中 {samples} 家为示例条目，用于展示版式，正式收录后可替换或删除。</p>}
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container">
+        {
+          shops.length === 0 ? (
+            <div class="empty-state">
+              <h2 class="display">还没有记录。</h2>
+              <p>把第一家店的照片和菜单发过来，这里就会有内容。</p>
+            </div>
+          ) : (
+            <>
+              <nav class="cuisine-nav cuisine-nav--page" aria-label="按品类跳转">
+                {cuisines.map((cuisine) => (
+                  <a class="chip" href={`#${cuisine}`}>
+                    {cuisine}
+                  </a>
+                ))}
+              </nav>
+              <div class="shop-grid shop-grid--list">
+                {shops.map((shop) => {
+                  const isFirst = !seen.has(shop.data.cuisine);
+                  seen.add(shop.data.cuisine);
+                  return (
+                    <div id={isFirst ? shop.data.cuisine : undefined} class="anchor-target">
+                      <ShopCard shop={shop} />
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )
+        }
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,52 @@
+---
+import { siteConfig } from "../config/site";
+import { withBase } from "../lib/urls";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <strong>{siteConfig.name}</strong>
+      <p>在{siteConfig.school.short}周边，一家一家吃过去。环境、菜单、人均，都是我们自己拍的、自己付的钱。</p>
+    </div>
+
+    <div class="footer-col">
+      <p class="label-eyebrow">浏览</p>
+      <ul>
+        <li><a href={withBase("/restaurants/")}>全部餐馆</a></li>
+        <li><a href={withBase("/about/")}>关于本站</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <p class="label-eyebrow">联系</p>
+      <p><a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a></p>
+      <p>欢迎投稿、纠错、补充菜单</p>
+    </div>
+
+    <div class="footer-col">
+      <p class="label-eyebrow">Elsewhere</p>
+      <ul>
+        {
+          siteConfig.social.map((item) => (
+            <li>
+              <a href={item.href} target="_blank" rel="noreferrer">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {year} {siteConfig.name} · 非官方站点，与{siteConfig.school.name}无关</p>
+      <p>
+        <span class="ember-dot" aria-hidden="true" />
+        更新于 {new Date().toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" })}
+      </p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="创智食单">
+  <rect width="64" height="64" rx="14" fill="#17130f"/>
+  <path d="M13 31h38c0 11.6-8.5 20-19 20s-19-8.4-19-20Z" fill="none" stroke="#f0e7d8" stroke-width="3.4" stroke-linejoin="round"/>
+  <circle cx="32" cy="19" r="5" fill="#d98a34"/>
+</svg>

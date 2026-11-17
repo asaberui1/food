@@ -1,0 +1,51 @@
+---
+import { siteConfig } from "../config/site";
+import { withBase, isActive } from "../lib/urls";
+
+const current = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="nav-grid">
+    <a class="brand" href={withBase("/")} aria-label={`${siteConfig.name} 首页`}>
+      <span>{siteConfig.name}</span>
+      <span class="brand-sub">FOOD AROUND SII</span>
+    </a>
+
+    <nav class="nav-links" aria-label="主导航">
+      {
+        siteConfig.nav.map((item) => (
+          <a
+            href={withBase(item.href)}
+            class:list={{ "is-active": isActive(current, item.href) }}
+            aria-current={isActive(current, item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+      <a class="button-link button-link--outline" href={`mailto:${siteConfig.contact.email}`}>
+        <span class="ember-dot" aria-hidden="true" />
+        投稿
+      </a>
+    </nav>
+
+    <details class="mobile-nav">
+      <summary class="mobile-nav__toggle">菜单</summary>
+      <nav class="mobile-nav__panel" aria-label="移动端导航">
+        {
+          siteConfig.nav.map((item) => (
+            <a
+              href={withBase(item.href)}
+              class:list={{ "is-active": isActive(current, item.href) }}
+              aria-current={isActive(current, item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          ))
+        }
+        <a class="button-link" href={`mailto:${siteConfig.contact.email}`}>投稿</a>
+      </nav>
+    </details>
+  </div>
+</header>

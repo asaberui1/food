@@ -1,0 +1,215 @@
+---
+import { Image } from "astro:assets";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Nav from "../../components/Nav.astro";
+import Footer from "../../components/Footer.astro";
+import { siteConfig } from "../../config/site";
+import { withBase } from "../../lib/urls";
+
+export async function getStaticPaths() {
+  const shops = await getCollection("restaurants");
+  return shops.map((shop) => ({ params: { slug: shop.id }, props: { shop } }));
+}
+
+type Props = { shop: CollectionEntry<"restaurants"> };
+
+const { shop } = Astro.props;
+const { name, cuisine, priceRange, distance, address, hours, summary, cover, gallery, dishes, menu, tags, sample } =
+  shop.data;
+const { Content } = await render(shop);
+
+const siteUrl = Astro.site ?? new URL("https://asaberui1.github.io");
+const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
+
+const structuredData = sample
+  ? {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "首页", item: new URL(import.meta.env.BASE_URL, siteUrl).href },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "全部餐馆",
+          item: new URL(`${import.meta.env.BASE_URL}restaurants/`, siteUrl).href,
+        },
+        { "@type": "ListItem", position: 3, name, item: pageUrl },
+      ],
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      name,
+      description: summary,
+      url: pageUrl,
+      servesCuisine: cuisine,
+      priceRange,
+      address: { "@type": "PostalAddress", streetAddress: address, addressCountry: "CN" },
+      ...(hours ? { openingHours: hours } : {}),
+    };
+---
+
+<BaseLayout
+  title={name}
+  description={`${name}：${summary}（${cuisine} · 人均 ${priceRange} · ${distance}）`}
+  image={cover.src}
+  structuredData={structuredData}
+>
+  <Nav />
+
+  <main id="main">
+    <article class="shop">
+      <header class="shop-hero">
+        <Image
+          class="media-fill"
+          src={cover}
+          alt={`${name} 的店内环境`}
+          widths={[960, 1440, 2000]}
+          sizes="100vw"
+          loading="eager"
+          decoding="sync"
+        />
+        <div class="overlay" style="background: var(--grad-vignette);"></div>
+        <div class="overlay" style="background: var(--grad-veil);"></div>
+
+        <div class="shop-hero__content">
+          <p class="label-eyebrow">{cuisine}{sample && " · 示例条目"}</p>
+          <h1 class="shop-title display">{name}</h1>
+          <p class="shop-summary">{summary}</p>
+        </div>
+      </header>
+
+      <div class="container">
+        <dl class="shop-meta">
+          <div>
+            <dt class="label-eyebrow">人均</dt>
+            <dd>{priceRange}</dd>
+          </div>
+          <div>
+            <dt class="label-eyebrow">距离</dt>
+            <dd>{distance}</dd>
+          </div>
+          <div>
+            <dt class="label-eyebrow">营业</dt>
+            <dd>{hours || "未记录"}</dd>
+          </div>
+          <div>
+            <dt class="label-eyebrow">地址</dt>
+            <dd>{address}</dd>
+          </div>
+        </dl>
+
+        {
+          gallery.length > 0 && (
+            <section class="shop-section" aria-labelledby="gallery-title">
+              <div class="shop-section__head">
+                <p class="label-eyebrow">01 — 环境</p>
+                <h2 id="gallery-title" class="display">坐下来，先看看店</h2>
+              </div>
+              <div class="gallery">
+                {gallery.map((photo) => (
+                  <figure class="gallery__item">
+                    <Image src={photo.src} alt={photo.alt} widths={[480, 960]} sizes="(min-width: 900px) 50vw, 100vw" loading="lazy" />
+                  </figure>
+                ))}
+              </div>
+            </section>
+          )
+        }
+
+        {
+          dishes.length > 0 && (
+            <section class="shop-section" aria-labelledby="dishes-title">
+              <div class="shop-section__head">
+                <p class="label-eyebrow">02 — 推荐菜</p>
+                <h2 id="dishes-title" class="display">回头还会再点的</h2>
+              </div>
+              <ol class="dish-list">
+                {dishes.map((dish, index) => (
+                  <li class="dish">
+                    <span class="dish__no">{String(index + 1).padStart(2, "0")}</span>
+                    <div>
+                      <h3 class="dish__name">
+                        {dish.name}
+                        {dish.price && <span class="dish__price">{dish.price}</span>}
+                      </h3>
+                      {dish.note && <p class="dish__note">{dish.note}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )
+        }
+
+        {
+          menu.length > 0 && (
+            <section class="shop-section" aria-labelledby="menu-title">
+              <div class="shop-section__head">
+                <p class="label-eyebrow">03 — 菜单</p>
+                <h2 id="menu-title" class="display">价目表</h2>
+              </div>
+              <div class="menu-columns">
+                {menu.map((group) => (
+                  <section class="menu-group">
+                    <h3 class="menu-group__title label-eyebrow">{group.title}</h3>
+                    <table class="menu-table">
+                      <tbody>
+                        {group.items.map((item) => (
+                          <tr>
+                            <th scope="row">
+                              {item.name}
+                              {item.note && <span class="menu-note">{item.note}</span>}
+                            </th>
+                            <td>{item.price}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </section>
+                ))}
+              </div>
+              <p class="menu-caveat">价格以最后一次到店为准，如有变动以店内菜单为准。</p>
+            </section>
+          )
+        }
+
+        {
+          shop.body?.trim() && (
+            <section class="shop-section" aria-labelledby="notes-title">
+              <div class="shop-section__head">
+                <p class="label-eyebrow">04 — 备注</p>
+                <h2 id="notes-title" class="display">去之前知道这些</h2>
+              </div>
+              <div class="prose">
+                <Content />
+              </div>
+            </section>
+          )
+        }
+
+        {
+          tags.length > 0 && (
+            <ul class="tag-row" aria-label="标签">
+              {tags.map((tag) => (
+                <li class="chip chip--muted">{tag}</li>
+              ))}
+            </ul>
+          )
+        }
+
+        <nav class="shop-foot" aria-label="页面导航">
+          <a class="text-link" href={withBase("/restaurants/")}>
+            <span aria-hidden="true">&lt;-</span> 回到全部餐馆
+          </a>
+          <a class="text-link" href={`mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(`关于「${name}」的补充`)}`}>
+            补充信息或纠错 <span aria-hidden="true">-&gt;</span>
+          </a>
+        </nav>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>

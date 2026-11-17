@@ -1,0 +1,39 @@
+{
+  "name": "chuangzhi-shidan",
+  "version": "1.0.0",
+  "description": "创智食单：上海创智学院周边餐馆指南，基于 Astro 的静态站点。",
+  "type": "module",
+  "license": "MIT",
+  "author": "asaberui1",
+  "homepage": "https://asaberui1.github.io/food/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asaberui1/food.git"
+  },
+  "keywords": ["astro", "restaurant", "food-guide", "static-site", "github-pages"],
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "og": "node scripts/og.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/cormorant-garamond": "^5.2.11",
+    "@fontsource/source-sans-3": "^5.2.9",
+    "astro": "^7.1.0",
+    "sharp": "^0.35.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "prettier": "^3.8.4",
+    "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "yaml": "^2.9.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

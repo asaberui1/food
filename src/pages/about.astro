@@ -1,0 +1,79 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { siteConfig } from "../config/site";
+import { withBase } from "../lib/urls";
+---
+
+<BaseLayout
+  title="关于"
+  description={`关于「${siteConfig.name}」：收录标准、价格与照片的来源，以及怎么投稿。`}
+>
+  <Nav />
+
+  <main id="main">
+    <section class="page-head">
+      <div class="container page-head__inner">
+        <p class="label-eyebrow">About</p>
+        <h1 class="page-title display">关于这个站</h1>
+        <p class="page-lead">
+          一个很小的私人项目：把{siteConfig.school.name}附近好吃的店记下来，省得每次「今天吃什么」都要重新踩雷。
+        </p>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container prose-wrap">
+        <div class="prose">
+          <h2>为什么是「食单」而不是「榜单」</h2>
+          <p>
+            榜单要排名，排名要吵架。食单只负责记录：这家店在哪里、大概多少钱、点什么不会错、什么时候去不用排队。
+            好不好吃最后仍然是你自己的事。
+          </p>
+
+          <h2>收录标准</h2>
+          <ul>
+            <li>从{siteConfig.school.short}大门步行十五分钟以内，或者骑车五分钟以内；</li>
+            <li>至少去过两次，且两次都不是被人请客；</li>
+            <li>能拍清楚店里的环境和至少一道菜；</li>
+            <li>价格能对上小票或菜单照片。</li>
+          </ul>
+
+          <h2>关于价格与照片</h2>
+          <p>
+            人均是「一个人正常点单」的实付金额，不含酒水时会在备注里写明。照片用手机拍，不补光、不调色，
+            室内偏暗就偏暗。菜单照片有时会拍到店家的手写字，如果店家介意，请告诉我，我会撤下。
+          </p>
+
+          <h2>投稿与纠错</h2>
+          <p>
+            想推荐一家店，或者发现某家已经关门、涨价、换老板，直接发邮件到
+            <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a>。
+            附上店名、大致位置、几张照片就够，剩下的我来整理。
+          </p>
+
+          <h2>免责声明</h2>
+          <p>
+            本站是非官方的个人记录，与{siteConfig.school.name}没有任何隶属关系。所有价格与营业时间以店家现场为准，
+            本站不为任何消费决策负责——但欢迎你吃完回来告诉我哪里写错了。
+          </p>
+        </div>
+
+        <aside class="prose-aside">
+          <p class="label-eyebrow">范围</p>
+          <p>{siteConfig.school.note}</p>
+          <div class="hairline"></div>
+          <p class="label-eyebrow">联系</p>
+          <p><a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a></p>
+          <div class="hairline"></div>
+          <a class="button-link" href={withBase("/restaurants/")}>
+            去看看有哪些店 <span aria-hidden="true">-&gt;</span>
+          </a>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

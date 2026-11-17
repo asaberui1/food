@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import { withBase } from "../lib/urls";
+
+type Props = {
+  shop: CollectionEntry<"restaurants">;
+  large?: boolean;
+};
+
+const { shop, large = false } = Astro.props;
+const { name, cuisine, priceRange, distance, summary, cover, sample } = shop.data;
+---
+
+<a class:list={["shop-card", { "shop-card--large": large }]} href={withBase(`/restaurants/${shop.id}/`)}>
+  <div class="shop-card__media">
+    <Image
+      src={cover}
+      alt={`${name} 的店内照片`}
+      widths={large ? [640, 960, 1440] : [400, 640, 900]}
+      sizes={large ? "(min-width: 900px) 60vw, 100vw" : "(min-width: 900px) 33vw, 100vw"}
+      loading="lazy"
+    />
+    {sample && <span class="shop-card__badge">示例</span>}
+  </div>
+  <div class="shop-card__body">
+    <p class="label-eyebrow">{cuisine}</p>
+    <h3 class="shop-card__name">{name}</h3>
+    <p class="shop-card__summary">{summary}</p>
+    <p class="shop-card__meta">
+      <span>{priceRange}</span>
+      <span aria-hidden="true">·</span>
+      <span>{distance}</span>
+    </p>
+  </div>
+</a>

@@ -1,0 +1,217 @@
+---
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import ShopCard from "../components/ShopCard.astro";
+import { siteConfig } from "../config/site";
+import { withBase } from "../lib/urls";
+import heroImage from "../assets/hero.webp";
+
+const shops = (await getCollection("restaurants")).sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.name.localeCompare(b.data.name, "zh"),
+);
+
+const featured = shops.filter((shop) => shop.data.featured).slice(0, 3);
+const cuisines = [...new Set(shops.map((shop) => shop.data.cuisine))];
+const samples = shops.filter((shop) => shop.data.sample).length;
+
+// 品类太少时，跑马灯改用「一天里的吃饭时刻」，避免同一句话循环得过于明显
+const marqueeItems =
+  cuisines.length >= 6
+    ? cuisines
+    : ["早市", "午市", "下午茶", "晚饭", "夜宵", "一人食", "朋友聚餐", "打包带走"];
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: siteConfig.name,
+  description: siteConfig.description,
+  url: new URL(import.meta.env.BASE_URL, Astro.site ?? "https://asaberui1.github.io").href,
+  inLanguage: "zh-CN",
+};
+---
+
+<BaseLayout description={siteConfig.description} image={siteConfig.defaultImage} structuredData={structuredData}>
+  <Nav />
+
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <Image
+        class="media-fill"
+        src={heroImage}
+        alt="后厨里正在摆盘的一双手，背景是炭火"
+        widths={[960, 1440, 2000]}
+        sizes="100vw"
+        loading="eager"
+        decoding="sync"
+      />
+      <div class="overlay" style="background: var(--grad-vignette);"></div>
+      <div class="overlay" style="background: var(--grad-veil);"></div>
+      <div class="hero-content">
+        <div class="hero-grid">
+          <div class="hero-heading">
+            <p class="label-eyebrow reveal">{siteConfig.school.name} · 周边食单</p>
+            <h1 id="hero-title" class="hero-title display reveal reveal-delay-1">
+              在创智，<br />
+              <span style="color: var(--ember);">好好吃饭</span>
+            </h1>
+          </div>
+
+          <div class="hero-copy reveal reveal-delay-2">
+            <p>
+              步行十五分钟以内的店，我们一家一家吃过去：环境是随手拍的，价格是自己付的，推荐菜是回头还会再点的那一道。
+            </p>
+            <div class="hero-actions">
+              <a class="button-link" href={withBase("/restaurants/")}>
+                看看附近有什么 <span aria-hidden="true">-&gt;</span>
+              </a>
+              <a class="text-link" href={withBase("/about/")}>这个站怎么来的</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="marquee" aria-label="收录的品类">
+      <div class="marquee-track">
+        {
+          [...marqueeItems, ...marqueeItems].map((item) => (
+            <span>
+              {item}
+              <b aria-hidden="true">*</b>
+            </span>
+          ))
+        }
+      </div>
+    </section>
+
+    {
+      shops.length === 0 ? (
+        <section class="section">
+          <div class="container empty-state">
+            <p class="label-eyebrow">00 — 空</p>
+            <h2 class="display">这里还没有店。</h2>
+            <p>第一张照片、第一份菜单放进来之后，这个页面就会热闹起来。</p>
+          </div>
+        </section>
+      ) : (
+        <>
+          <section class="section" aria-labelledby="featured-title">
+            <div class="container section-grid">
+              <div class="section-kicker">
+                <p class="label-eyebrow reveal">01 — 最近吃过</p>
+              </div>
+              <h2 id="featured-title" class="section-heading display reveal">
+                这个月，<br />
+                <span style="color: var(--ember);">值得再去</span>的几家
+              </h2>
+              <div class="shop-grid shop-grid--featured">
+                {featured.map((shop, index) => (
+                  <div class:list={["reveal", index === 0 && "shop-grid__lead"]}>
+                    <ShopCard shop={shop} large={index === 0} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section class="section surface-section" aria-labelledby="all-title">
+            <div class="container section-grid">
+              <div class="section-kicker">
+                <p class="label-eyebrow reveal">02 — 全部收录</p>
+              </div>
+              <h2 id="all-title" class="section-heading display reveal">
+                按口味，<br />
+                <span style="color: var(--ember);">慢慢逛</span>
+              </h2>
+
+              <nav class="cuisine-nav reveal" aria-label="按品类浏览">
+                {cuisines.map((cuisine) => (
+                  <a class="chip" href={`${withBase("/restaurants/")}#${encodeURIComponent(cuisine)}`}>
+                    {cuisine}
+                  </a>
+                ))}
+              </nav>
+
+              <div class="shop-grid">
+                {shops.slice(0, 6).map((shop) => (
+                  <div class="reveal">
+                    <ShopCard shop={shop} />
+                  </div>
+                ))}
+              </div>
+
+              <p class="section-more reveal">
+                <a class="text-link" href={withBase("/restaurants/")}>
+                  查看全部 {shops.length} 家 <span aria-hidden="true">-&gt;</span>
+                </a>
+              </p>
+            </div>
+          </section>
+        </>
+      )
+    }
+
+    <section class="section" aria-labelledby="method-title">
+      <div class="container section-grid">
+        <div class="section-kicker">
+          <p class="label-eyebrow reveal">03 — 怎么写的</p>
+        </div>
+        <h2 id="method-title" class="section-heading display reveal">
+          吃过的，<br />
+          <span style="color: var(--ember);">才写</span>。
+        </h2>
+
+        <div class="feature-grid">
+          <section class="reveal">
+            <p class="label-eyebrow">亲自吃过</p>
+            <p>每一家都至少去过两次，一次吃招牌，一次点别的。</p>
+          </section>
+          <section class="reveal reveal-delay-1">
+            <p class="label-eyebrow">价格是实付</p>
+            <p>菜单上的价钱和结账小票对过，涨价了会改。</p>
+          </section>
+          <section class="reveal reveal-delay-2">
+            <p class="label-eyebrow">照片不修图</p>
+            <p>手机原图，室内偏暗就是偏暗，不补光。</p>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reservation" aria-labelledby="submit-title">
+      <div class="container section-grid">
+        <div class="reservation-copy">
+          <p class="label-eyebrow reveal">04 — 投稿</p>
+          <h2 id="submit-title" class="display reveal">
+            你常去的那家，<br />
+            <span style="color: var(--ember);">也值得被记下来</span>
+          </h2>
+          <p class="reveal reveal-delay-1">
+            有想推荐的店、发现菜单变了、或者哪家已经关门，都可以直接说。附上照片和大概人均就更好。
+          </p>
+          <div class="hero-actions reveal reveal-delay-2">
+            <a class="button-link" href={`mailto:${siteConfig.contact.email}`}>
+              写邮件投稿 <span aria-hidden="true">-&gt;</span>
+            </a>
+            <a class="text-link" href={withBase("/about/")}>收录标准</a>
+          </div>
+        </div>
+        <div class="reservation-facts reveal">
+          <div>
+            <p class="label-eyebrow">当前收录</p>
+            <p>{shops.length} 家{samples > 0 ? `（其中 ${samples} 家为示例）` : ""}</p>
+          </div>
+          <div>
+            <p class="label-eyebrow">范围</p>
+            <p>{siteConfig.school.note}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
