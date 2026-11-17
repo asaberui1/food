@@ -1,0 +1,25 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { withBase } from "../lib/urls";
+---
+
+<BaseLayout title="页面不存在" description="这个地址没有对应的页面。" enableReveal={false}>
+  <Nav />
+
+  <main id="main" class="container page-head">
+    <div class="page-head__inner">
+      <p class="label-eyebrow">404</p>
+      <h1 class="page-title display">这条街没有这家店</h1>
+      <p class="page-lead">地址可能拼错了，或者店已经搬走了。要不回列表里再看看？</p>
+      <p style="margin-top: 1.5rem;">
+        <a class="button-link" href={withBase("/restaurants/")}>
+          回到全部餐馆 <span aria-hidden="true">-&gt;</span>
+        </a>
+      </p>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
