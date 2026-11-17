@@ -47,6 +47,17 @@ const steps = [
 ].filter(Boolean) as string[];
 const step = (label: string) => String(steps.indexOf(label) + 1).padStart(2, "0");
 
+const priceValue = (price: string) => Number(price.replace(/[^\d.]/g, ""));
+const menuGroups = menu.map((group) => {
+  const values = group.items
+    .map((item) => priceValue(item.price))
+    .filter((value) => Number.isFinite(value) && value > 0);
+  const min = values.length > 0 ? Math.min(...values) : null;
+  const max = values.length > 0 ? Math.max(...values) : null;
+  const range = min === null ? "" : min === max ? `¥${min}` : `¥${min}–${max}`;
+  return { ...group, range };
+});
+
 const priceText = priceRange ?? (dining === "single" ? "丰俭由人" : "待补充");
 const distanceText = distance ?? "待补充";
 
@@ -217,24 +228,28 @@ const structuredData = sample
               </div>
 
               {menu.length > 0 && (
-                <div class="menu-columns">
-                  {menu.map((group) => (
-                    <section class="menu-group">
-                      <h3 class="menu-group__title label-eyebrow">{group.title}</h3>
-                      <table class="menu-table">
-                        <tbody>
+                <div class="menu-acc-list">
+                  {menuGroups.map((group, index) => (
+                    <details class="menu-acc" open={index === 0}>
+                      <summary class="menu-acc__head">
+                        <span class="menu-acc__title">{group.title}</span>
+                        <span class="menu-acc__range">{group.range}</span>
+                        <span class="menu-acc__count">{group.items.length} 道</span>
+                        <span class="menu-acc__chev" aria-hidden="true">+</span>
+                      </summary>
+                      <div class="menu-acc__body">
+                        {group.note && <p class="menu-acc__note">{group.note}</p>}
+                        <ul class="menu-items">
                           {group.items.map((item) => (
-                            <tr>
-                              <th scope="row">
-                                {item.name}
-                                {item.note && <span class="menu-note">{item.note}</span>}
-                              </th>
-                              <td>{item.price}</td>
-                            </tr>
+                            <li class="menu-item">
+                              <span class="menu-item__name">{item.name}</span>
+                              <span class="menu-item__leader" aria-hidden="true"></span>
+                              <span class="menu-item__price">{item.price}</span>
+                            </li>
                           ))}
-                        </tbody>
-                      </table>
-                    </section>
+                        </ul>
+                      </div>
+                    </details>
                   ))}
                 </div>
               )}

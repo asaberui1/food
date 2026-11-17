@@ -1710,3 +1710,131 @@ textarea {
     height: 150px;
   }
 }
+
+/* ---------- 菜单折叠面板 ---------- */
+
+.menu-acc-list {
+  border-top: 1px solid var(--border);
+}
+
+.menu-acc {
+  border-bottom: 1px solid var(--border);
+}
+
+.menu-acc__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.5rem);
+  padding: 1.15rem 0;
+  cursor: pointer;
+  list-style: none;
+}
+
+.menu-acc__head::-webkit-details-marker {
+  display: none;
+}
+
+.menu-acc__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.2vw, 1.6rem);
+  color: var(--cream);
+  transition: color 160ms ease;
+}
+
+.menu-acc__head:hover .menu-acc__title,
+.menu-acc[open] .menu-acc__title {
+  color: var(--ember);
+}
+
+.menu-acc__range {
+  color: var(--ember);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+}
+
+.menu-acc__count {
+  color: var(--muted-foreground);
+  font-size: 0.78rem;
+}
+
+.menu-acc__chev {
+  display: grid;
+  place-items: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--cream);
+  font-size: 0.95rem;
+  line-height: 1;
+  transition:
+    transform 250ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.menu-acc[open] .menu-acc__chev {
+  transform: rotate(45deg);
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+.menu-acc__body {
+  padding-bottom: 1.75rem;
+}
+
+.menu-acc__note {
+  margin: 0 0 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.86rem;
+}
+
+.menu-items {
+  columns: 2;
+  column-gap: clamp(2rem, 5vw, 4rem);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.32rem 0;
+  break-inside: avoid;
+}
+
+.menu-item__name {
+  color: rgb(240 231 216 / 0.88);
+  font-size: 0.95rem;
+}
+
+.menu-item__leader {
+  flex: 1;
+  min-width: 1rem;
+  border-bottom: 1px dotted rgb(117 97 76 / 0.45);
+  transform: translateY(-0.2em);
+}
+
+.menu-item__price {
+  color: var(--cream);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 760px) {
+  .menu-items {
+    columns: 1;
+  }
+
+  .menu-acc__head {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .menu-acc__count {
+    display: none;
+  }
+}

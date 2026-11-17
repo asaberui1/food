@@ -42,6 +42,7 @@ const restaurants = defineCollection({
         .array(
           z.object({
             title: z.string(),
+            note: z.string().optional(),
             items: z.array(z.object({ name: z.string(), price: z.string(), note: z.string().optional() })),
           }),
         )
