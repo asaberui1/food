@@ -8,6 +8,7 @@ order:
   url: https://zzgfs.leshuazf.com/zzg-mini-order/code-restaurant.html?qrCodeNo=3520492341479868416
   qr: ./order-qr.png
   note: 菜单可能随时调整，以店内扫码点餐页为准。
+  tip: 可以在到店前 5 分钟先下单，减少等待；到店后跟老板说一声「提前点过了」。
 menu:
   - title: 面条
     note: 汤面、拌面都在这一类，加浇头另算。

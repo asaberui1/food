@@ -96,7 +96,7 @@ order:
 | `dishes` | 否 | 推荐菜数组，`name` 必填，`price`、`note`、`image` 可选 |
 | `menu` | 否 | 菜单分组，`title` + `items[]`（`name`、`price` 必填） |
 | `bill` | 否 | 消费记录：`people`、`items`、`total` |
-| `order` | 否 | 扫码点餐：`url`、`qr`（二维码图片）、`note` |
+| `order` | 否 | 扫码点餐：`url`、`qr`（二维码图片）、`note`、`tip`（小提示） |
 | `tags` | 否 | 标签，显示在详情页底部 |
 | `featured` | 否 | 是否进首页「最近吃过」（需要至少两家才会出现该区块） |
 | `sample` | 否 | 示例条目会打上「示例」角标 |
@@ -115,6 +115,7 @@ node scripts/qr-code.mjs "<点餐页 URL>" src/content/restaurants/<slug>/order-
 - 域名与子路径：`astro.config.mjs` 里的 `site` / `base`（当前部署在 `/food/`，链接前缀由 `src/lib/urls.ts` 统一处理）
 - 首页文案：`src/pages/index.astro`
 - 社交预览图：`npm run og` 重新生成 `public/og.png`
+- 字体：中文用思源宋体（Noto Serif SC），只打包站里用到的字（约 150 KB）。新增大量菜名后跑一次 `npm run fonts` 重新生成子集（需要联网）
 - 颜色、字体、间距：`src/styles.css` 顶部的 CSS 变量
 
 ## 部署

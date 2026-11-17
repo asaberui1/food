@@ -53,7 +53,12 @@ const restaurants = defineCollection({
         .optional(),
       /** 店家的扫码点餐入口（微信/支付宝小程序，网页端打不开） */
       order: z
-        .object({ url: z.string().url(), qr: image().optional(), note: z.string().optional() })
+        .object({
+          url: z.string().url(),
+          qr: image().optional(),
+          note: z.string().optional(),
+          tip: z.string().optional(),
+        })
         .optional(),
       tags: z.array(z.string()).default([]),
       featured: z.boolean().default(false),

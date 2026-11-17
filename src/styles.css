@@ -3,10 +3,11 @@
 @import "@fontsource/cormorant-garamond/latin-600.css";
 @import "@fontsource/source-sans-3/latin-400.css";
 @import "@fontsource/source-sans-3/latin-600.css";
+@import "./styles-fonts.css";
 
 :root {
   --font-display:
-    "Cormorant Garamond", "Songti SC", "Noto Serif SC", "Source Han Serif SC", "STSong", "SimSun",
+    "Cormorant Garamond", "Noto Serif SC", "Source Han Serif SC", "Songti SC", "STSong", "SimSun",
     Georgia, "Times New Roman", serif;
   --font-sans:
     "Source Sans 3", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Source Han Sans SC",
@@ -1668,6 +1669,12 @@ textarea {
   line-height: 1.65;
 }
 
+.order-tip {
+  border-left: 2px solid var(--ember);
+  padding-left: 0.75rem;
+  color: rgb(240 231 216 / 0.9) !important;
+}
+
 .order-block__hint {
   color: var(--muted-foreground) !important;
   font-size: 0.82rem !important;
@@ -1792,8 +1799,8 @@ textarea {
 }
 
 .menu-items {
-  columns: 2;
-  column-gap: clamp(2rem, 5vw, 4rem);
+  columns: 3;
+  column-gap: clamp(2rem, 4vw, 3.5rem);
   list-style: none;
   margin: 0;
   padding: 0;
@@ -1823,6 +1830,18 @@ textarea {
   color: var(--cream);
   font-family: var(--font-mono);
   font-size: 0.82rem;
+}
+
+@media (min-width: 1600px) {
+  .menu-items {
+    columns: 4;
+  }
+}
+
+@media (max-width: 1100px) {
+  .menu-items {
+    columns: 2;
+  }
 }
 
 @media (max-width: 760px) {

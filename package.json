@@ -22,7 +22,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "og": "node scripts/og.mjs"
+    "og": "node scripts/og.mjs",
+    "fonts": "node scripts/font-subset.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

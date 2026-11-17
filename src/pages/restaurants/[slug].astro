@@ -229,8 +229,8 @@ const structuredData = sample
 
               {menu.length > 0 && (
                 <div class="menu-acc-list">
-                  {menuGroups.map((group, index) => (
-                    <details class="menu-acc" open={index === 0}>
+                  {menuGroups.map((group) => (
+                    <details class="menu-acc">
                       <summary class="menu-acc__head">
                         <span class="menu-acc__title">{group.title}</span>
                         <span class="menu-acc__range">{group.range}</span>
@@ -269,6 +269,7 @@ const structuredData = sample
                   <div class="order-block__copy">
                     <p class="label-eyebrow">扫码点餐</p>
                     <p>{order.note ?? "店内扫码点餐，菜单和价格以扫码页面为准。"}</p>
+                    {order.tip && <p class="order-tip">{order.tip}</p>}
                     <p class="order-block__hint">
                       用微信或支付宝扫左边的码；这个页面是点餐小程序，电脑浏览器打不开。
                     </p>
