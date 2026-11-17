@@ -10,7 +10,13 @@
     "type": "git",
     "url": "https://github.com/asaberui1/food.git"
   },
-  "keywords": ["astro", "restaurant", "food-guide", "static-site", "github-pages"],
+  "keywords": [
+    "astro",
+    "restaurant",
+    "food-guide",
+    "static-site",
+    "github-pages"
+  ],
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -28,6 +34,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "prettier": "^3.8.4",
+    "qrcode": "^1.5.4",
     "typescript": "^6.0.3"
   },
   "overrides": {

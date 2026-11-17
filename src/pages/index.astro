@@ -14,6 +14,8 @@ const shops = (await getCollection("restaurants")).sort(
 );
 
 const featured = shops.filter((shop) => shop.data.featured).slice(0, 3);
+// 只有一条「精选」时不上单独的精选区，避免一列大图孤零零地挂着
+const showFeatured = featured.length >= 2;
 const cuisines = [...new Set(shops.map((shop) => shop.data.cuisine))];
 const samples = shops.filter((shop) => shop.data.sample).length;
 
@@ -61,7 +63,7 @@ const structuredData = {
 
           <div class="hero-copy reveal reveal-delay-2">
             <p>
-              步行十五分钟以内的店，我们一家一家吃过去：环境是随手拍的，价格是自己付的，推荐菜是回头还会再点的那一道。
+              步行二十分钟、骑车八分钟以内的店，我们一家一家吃过去：环境是随手拍的，价格是自己付的，推荐菜是回头还会再点的那一道。
             </p>
             <div class="hero-actions">
               <a class="button-link" href={withBase("/restaurants/")}>
@@ -98,7 +100,7 @@ const structuredData = {
         </section>
       ) : (
         <>
-          <section class="section" aria-labelledby="featured-title">
+          {showFeatured && <section class="section" aria-labelledby="featured-title">
             <div class="container section-grid">
               <div class="section-kicker">
                 <p class="label-eyebrow reveal">01 — 最近吃过</p>
@@ -115,12 +117,12 @@ const structuredData = {
                 ))}
               </div>
             </div>
-          </section>
+          </section>}
 
           <section class="section surface-section" aria-labelledby="all-title">
             <div class="container section-grid">
               <div class="section-kicker">
-                <p class="label-eyebrow reveal">02 — 全部收录</p>
+                <p class="label-eyebrow reveal">{showFeatured ? "02" : "01"} — 全部收录</p>
               </div>
               <h2 id="all-title" class="section-heading display reveal">
                 按口味，<br />
@@ -170,8 +172,8 @@ const structuredData = {
             <p>每一家都至少去过两次，一次吃招牌，一次点别的。</p>
           </section>
           <section class="reveal reveal-delay-1">
-            <p class="label-eyebrow">价格是实付</p>
-            <p>菜单上的价钱和结账小票对过，涨价了会改。</p>
+            <p class="label-eyebrow">价格对得上小票</p>
+            <p>多人聚餐记实际结账的金额；单人餐只列菜单，丰俭由人。</p>
           </section>
           <section class="reveal reveal-delay-2">
             <p class="label-eyebrow">照片不修图</p>

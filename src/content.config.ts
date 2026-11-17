@@ -1,10 +1,14 @@
 import { defineCollection } from "astro:content";
-import { z } from "astro/zod";
 import { glob } from "astro/loaders";
+import { z } from "astro/zod";
 
 /**
  * 每家餐馆一个目录：src/content/restaurants/<slug>/index.md
  * 照片放在同一目录下，用相对路径引用（./cover.jpg）。
+ *
+ * dining 区分两种记录方式：
+ * - group  多人聚餐：记人均 / 实际消费
+ * - single 单人餐：不记人均，只列菜单，丰俭由人
  */
 const restaurants = defineCollection({
   loader: glob({
@@ -16,15 +20,23 @@ const restaurants = defineCollection({
     z.object({
       name: z.string(),
       cuisine: z.string(),
-      priceRange: z.string(),
-      distance: z.string(),
+      dining: z.enum(["group", "single"]).default("group"),
+      priceRange: z.string().optional(),
+      distance: z.string().optional(),
       address: z.string(),
       hours: z.string().default(""),
       summary: z.string(),
-      cover: image(),
+      cover: image().optional(),
       gallery: z.array(z.object({ src: image(), alt: z.string() })).default([]),
       dishes: z
-        .array(z.object({ name: z.string(), price: z.string().optional(), note: z.string().optional() }))
+        .array(
+          z.object({
+            name: z.string(),
+            price: z.string().optional(),
+            note: z.string().optional(),
+            image: image().optional(),
+          }),
+        )
         .default([]),
       menu: z
         .array(
@@ -34,6 +46,14 @@ const restaurants = defineCollection({
           }),
         )
         .default([]),
+      /** 多人聚餐的实际消费记录 */
+      bill: z
+        .object({ people: z.string(), items: z.string(), total: z.string() })
+        .optional(),
+      /** 店家的扫码点餐入口（微信/支付宝小程序，网页端打不开） */
+      order: z
+        .object({ url: z.string().url(), qr: image().optional(), note: z.string().optional() })
+        .optional(),
       tags: z.array(z.string()).default([]),
       featured: z.boolean().default(false),
       sample: z.boolean().default(false),

@@ -14,11 +14,10 @@ export const siteConfig = {
   school: {
     name: "上海创智学院",
     short: "创智学院",
-    note: "以学院为圆心，步行十五分钟内。",
+    note: "以学院为圆心，步行二十分钟、骑车八分钟以内。",
   },
   contact: {
-    // 投稿/纠错邮箱，可换成你的常用邮箱
-    email: "739401566@qq.com",
+    email: "253107060019@sii.edu.cn",
   },
   social: [
     { label: "GitHub", href: "https://github.com/asaberui1" },

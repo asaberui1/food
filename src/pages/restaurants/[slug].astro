@@ -15,9 +15,40 @@ export async function getStaticPaths() {
 type Props = { shop: CollectionEntry<"restaurants"> };
 
 const { shop } = Astro.props;
-const { name, cuisine, priceRange, distance, address, hours, summary, cover, gallery, dishes, menu, tags, sample } =
-  shop.data;
+const {
+  name,
+  cuisine,
+  dining,
+  priceRange,
+  distance,
+  address,
+  hours,
+  summary,
+  cover,
+  gallery,
+  dishes,
+  menu,
+  bill,
+  order,
+  tags,
+  sample,
+} = shop.data;
 const { Content } = await render(shop);
+
+const hasBody = Boolean(shop.body?.trim());
+const diningLabel = dining === "group" ? "多人聚餐" : "单人餐";
+
+// 区块编号按实际渲染的区块算，缺哪个都不会跳号
+const steps = [
+  gallery.length > 0 && "环境",
+  dishes.length > 0 && "推荐菜",
+  (menu.length > 0 || order) && "菜单",
+  hasBody && "备注",
+].filter(Boolean) as string[];
+const step = (label: string) => String(steps.indexOf(label) + 1).padStart(2, "0");
+
+const priceText = priceRange ?? (dining === "single" ? "丰俭由人" : "待补充");
+const distanceText = distance ?? "待补充";
 
 const siteUrl = Astro.site ?? new URL("https://asaberui1.github.io");
 const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
@@ -44,7 +75,7 @@ const structuredData = sample
       description: summary,
       url: pageUrl,
       servesCuisine: cuisine,
-      priceRange,
+      ...(priceRange ? { priceRange } : {}),
       address: { "@type": "PostalAddress", streetAddress: address, addressCountry: "CN" },
       ...(hours ? { openingHours: hours } : {}),
     };
@@ -52,29 +83,35 @@ const structuredData = sample
 
 <BaseLayout
   title={name}
-  description={`${name}：${summary}（${cuisine} · 人均 ${priceRange} · ${distance}）`}
-  image={cover.src}
+  description={`${name}：${summary}（${cuisine} · ${diningLabel}${priceRange ? ` · 人均 ${priceRange}` : ""}）`}
+  image={cover?.src ?? siteConfig.defaultImage}
   structuredData={structuredData}
 >
   <Nav />
 
   <main id="main">
     <article class="shop">
-      <header class="shop-hero">
-        <Image
-          class="media-fill"
-          src={cover}
-          alt={`${name} 的店内环境`}
-          widths={[960, 1440, 2000]}
-          sizes="100vw"
-          loading="eager"
-          decoding="sync"
-        />
-        <div class="overlay" style="background: var(--grad-vignette);"></div>
-        <div class="overlay" style="background: var(--grad-veil);"></div>
+      <header class:list={["shop-hero", { "shop-hero--plain": !cover }]}>
+        {
+          cover && (
+            <>
+              <Image
+                class="media-fill"
+                src={cover}
+                alt={`${name} 的店内环境`}
+                widths={[960, 1440, 2000]}
+                sizes="100vw"
+                loading="eager"
+                decoding="sync"
+              />
+              <div class="overlay" style="background: var(--grad-vignette);"></div>
+              <div class="overlay" style="background: var(--grad-veil);"></div>
+            </>
+          )
+        }
 
         <div class="shop-hero__content">
-          <p class="label-eyebrow">{cuisine}{sample && " · 示例条目"}</p>
+          <p class="label-eyebrow">{cuisine} · {diningLabel}{sample && " · 示例条目"}</p>
           <h1 class="shop-title display">{name}</h1>
           <p class="shop-summary">{summary}</p>
         </div>
@@ -84,11 +121,11 @@ const structuredData = sample
         <dl class="shop-meta">
           <div>
             <dt class="label-eyebrow">人均</dt>
-            <dd>{priceRange}</dd>
+            <dd>{priceText}</dd>
           </div>
           <div>
             <dt class="label-eyebrow">距离</dt>
-            <dd>{distance}</dd>
+            <dd>{distanceText}</dd>
           </div>
           <div>
             <dt class="label-eyebrow">营业</dt>
@@ -101,16 +138,33 @@ const structuredData = sample
         </dl>
 
         {
+          bill && (
+            <div class="bill">
+              <p class="label-eyebrow">消费记录</p>
+              <p class="bill__line">
+                {bill.people} · {bill.items} · 共 <strong>{bill.total}</strong>
+              </p>
+            </div>
+          )
+        }
+
+        {
           gallery.length > 0 && (
             <section class="shop-section" aria-labelledby="gallery-title">
               <div class="shop-section__head">
-                <p class="label-eyebrow">01 — 环境</p>
+                <p class="label-eyebrow">{step("环境")} — 环境</p>
                 <h2 id="gallery-title" class="display">坐下来，先看看店</h2>
               </div>
               <div class="gallery">
                 {gallery.map((photo) => (
                   <figure class="gallery__item">
-                    <Image src={photo.src} alt={photo.alt} widths={[480, 960]} sizes="(min-width: 900px) 50vw, 100vw" loading="lazy" />
+                    <Image
+                      src={photo.src}
+                      alt={photo.alt}
+                      widths={[480, 960]}
+                      sizes="(min-width: 900px) 50vw, 100vw"
+                      loading="lazy"
+                    />
                   </figure>
                 ))}
               </div>
@@ -122,20 +176,31 @@ const structuredData = sample
           dishes.length > 0 && (
             <section class="shop-section" aria-labelledby="dishes-title">
               <div class="shop-section__head">
-                <p class="label-eyebrow">02 — 推荐菜</p>
+                <p class="label-eyebrow">{step("推荐菜")} — 推荐菜</p>
                 <h2 id="dishes-title" class="display">回头还会再点的</h2>
               </div>
               <ol class="dish-list">
                 {dishes.map((dish, index) => (
-                  <li class="dish">
+                  <li class:list={["dish", { "dish--with-media": Boolean(dish.image) }]}>
                     <span class="dish__no">{String(index + 1).padStart(2, "0")}</span>
-                    <div>
+                    <div class="dish__body">
                       <h3 class="dish__name">
                         {dish.name}
                         {dish.price && <span class="dish__price">{dish.price}</span>}
                       </h3>
                       {dish.note && <p class="dish__note">{dish.note}</p>}
                     </div>
+                    {dish.image && (
+                      <div class="dish__media">
+                        <Image
+                          src={dish.image}
+                          alt={dish.name}
+                          widths={[160, 320]}
+                          sizes="120px"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
                   </li>
                 ))}
               </ol>
@@ -144,42 +209,71 @@ const structuredData = sample
         }
 
         {
-          menu.length > 0 && (
+          (menu.length > 0 || order) && (
             <section class="shop-section" aria-labelledby="menu-title">
               <div class="shop-section__head">
-                <p class="label-eyebrow">03 — 菜单</p>
-                <h2 id="menu-title" class="display">价目表</h2>
+                <p class="label-eyebrow">{step("菜单")} — 菜单</p>
+                <h2 id="menu-title" class="display">价目与点单</h2>
               </div>
-              <div class="menu-columns">
-                {menu.map((group) => (
-                  <section class="menu-group">
-                    <h3 class="menu-group__title label-eyebrow">{group.title}</h3>
-                    <table class="menu-table">
-                      <tbody>
-                        {group.items.map((item) => (
-                          <tr>
-                            <th scope="row">
-                              {item.name}
-                              {item.note && <span class="menu-note">{item.note}</span>}
-                            </th>
-                            <td>{item.price}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </section>
-                ))}
-              </div>
-              <p class="menu-caveat">价格以最后一次到店为准，如有变动以店内菜单为准。</p>
+
+              {menu.length > 0 && (
+                <div class="menu-columns">
+                  {menu.map((group) => (
+                    <section class="menu-group">
+                      <h3 class="menu-group__title label-eyebrow">{group.title}</h3>
+                      <table class="menu-table">
+                        <tbody>
+                          {group.items.map((item) => (
+                            <tr>
+                              <th scope="row">
+                                {item.name}
+                                {item.note && <span class="menu-note">{item.note}</span>}
+                              </th>
+                              <td>{item.price}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </section>
+                  ))}
+                </div>
+              )}
+
+              {order && (
+                <div class="order-block">
+                  {order.qr && (
+                    <Image
+                      class="order-block__qr"
+                      src={order.qr}
+                      alt={`${name} 的扫码点餐二维码`}
+                      widths={[240, 480]}
+                      sizes="180px"
+                      loading="lazy"
+                    />
+                  )}
+                  <div class="order-block__copy">
+                    <p class="label-eyebrow">扫码点餐</p>
+                    <p>{order.note ?? "店内扫码点餐，菜单和价格以扫码页面为准。"}</p>
+                    <p class="order-block__hint">
+                      用微信或支付宝扫左边的码；这个页面是点餐小程序，电脑浏览器打不开。
+                    </p>
+                    {menu.length === 0 && <p class="menu-caveat">价目表待补充。</p>}
+                  </div>
+                </div>
+              )}
+
+              {menu.length > 0 && (
+                <p class="menu-caveat">价格以最后一次到店为准，如有变动以店内为准。</p>
+              )}
             </section>
           )
         }
 
         {
-          shop.body?.trim() && (
+          hasBody && (
             <section class="shop-section" aria-labelledby="notes-title">
               <div class="shop-section__head">
-                <p class="label-eyebrow">04 — 备注</p>
+                <p class="label-eyebrow">{step("备注")} — 备注</p>
                 <h2 id="notes-title" class="display">去之前知道这些</h2>
               </div>
               <div class="prose">
@@ -203,7 +297,10 @@ const structuredData = sample
           <a class="text-link" href={withBase("/restaurants/")}>
             <span aria-hidden="true">&lt;-</span> 回到全部餐馆
           </a>
-          <a class="text-link" href={`mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(`关于「${name}」的补充`)}`}>
+          <a
+            class="text-link"
+            href={`mailto:${siteConfig.contact.email}?subject=${encodeURIComponent(`关于「${name}」的补充`)}`}
+          >
             补充信息或纠错 <span aria-hidden="true">-&gt;</span>
           </a>
         </nav>

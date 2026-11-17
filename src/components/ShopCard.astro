@@ -9,28 +9,49 @@ type Props = {
 };
 
 const { shop, large = false } = Astro.props;
-const { name, cuisine, priceRange, distance, summary, cover, sample } = shop.data;
+const { name, cuisine, priceRange, distance, summary, cover, sample, dining } = shop.data;
+
+// 单人餐只列菜单，卡片上就不写人均
+const priceText = priceRange ?? (dining === "single" ? "丰俭由人" : undefined);
+const meta = [priceText, distance].filter(Boolean);
 ---
 
 <a class:list={["shop-card", { "shop-card--large": large }]} href={withBase(`/restaurants/${shop.id}/`)}>
-  <div class="shop-card__media">
-    <Image
-      src={cover}
-      alt={`${name} 的店内照片`}
-      widths={large ? [640, 960, 1440] : [400, 640, 900]}
-      sizes={large ? "(min-width: 900px) 60vw, 100vw" : "(min-width: 900px) 33vw, 100vw"}
-      loading="lazy"
-    />
+  <div class:list={["shop-card__media", { "shop-card__media--blank": !cover }]}>
+    {
+      cover ? (
+        <Image
+          src={cover}
+          alt={`${name} 的店内照片`}
+          widths={large ? [640, 960, 1440] : [400, 640, 900]}
+          sizes={large ? "(min-width: 900px) 60vw, 100vw" : "(min-width: 900px) 33vw, 100vw"}
+          loading="lazy"
+        />
+      ) : (
+        <span class="shop-card__blank">
+          <span class="label-eyebrow">{cuisine}</span>
+          <span class="shop-card__blank-name display">{name}</span>
+          <span class="label-eyebrow">照片待补充</span>
+        </span>
+      )
+    }
     {sample && <span class="shop-card__badge">示例</span>}
   </div>
   <div class="shop-card__body">
-    <p class="label-eyebrow">{cuisine}</p>
+    <p class="label-eyebrow">{cuisine} · {dining === "group" ? "多人聚餐" : "单人餐"}</p>
     <h3 class="shop-card__name">{name}</h3>
     <p class="shop-card__summary">{summary}</p>
-    <p class="shop-card__meta">
-      <span>{priceRange}</span>
-      <span aria-hidden="true">·</span>
-      <span>{distance}</span>
-    </p>
+    {
+      meta.length > 0 && (
+        <p class="shop-card__meta">
+          {meta.map((item, index) => (
+            <>
+              {index > 0 && <span aria-hidden="true">·</span>}
+              <span>{item}</span>
+            </>
+          ))}
+        </p>
+      )
+    }
   </div>
 </a>
