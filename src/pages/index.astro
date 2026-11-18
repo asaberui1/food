@@ -9,32 +9,21 @@ import SearchDialog from "../components/SearchDialog.astro";
 import { siteConfig } from "../config/site";
 import { withBase } from "../lib/urls";
 import { allTagsOf } from "../lib/shops";
+import { buildSearchIndex } from "../lib/search-index";
 import heroImage from "../assets/hero.jpg";
 import Icon from "../components/Icon.astro";
 
-const shops = (await getCollection("restaurants")).sort(
-  (a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.name.localeCompare(b.data.name, "zh"),
-);
-
-const featured = shops.filter((shop) => shop.data.featured).slice(0, 3);
-// 只有一条「精选」时不上单独的精选区，避免一列大图孤零零地挂着
-const showFeatured = featured.length >= 2;
+const shops = (await getCollection("restaurants")).sort((a, b) => a.data.name.localeCompare(b.data.name, "zh"));
 const samples = shops.filter((shop) => shop.data.sample).length;
 
 // 跑马灯直接用站内标签，点一下就能跳到对应的筛选结果
 const marqueeItems = allTagsOf(shops);
 
 // 首页也能直接搜菜名，不用先跳转
-const searchIndex = shops.map((shop) => ({
-  id: shop.id,
-  name: shop.data.name,
-  menu: shop.data.menu.flatMap((group) =>
-    group.items.map((item) => ({ name: item.name, price: item.price, group: group.title })),
-  ),
-}));
+const searchIndex = buildSearchIndex(shops);
 
 // 区块编号按实际渲染的区块算，跳过哪个都不会跳号
-const steps = [showFeatured && "recent", shops.length > 0 && "all", "submit"].filter(Boolean) as string[];
+const steps = [shops.length > 0 && "all", "submit"].filter(Boolean) as string[];
 const no = (key: string) => String(steps.indexOf(key) + 1).padStart(2, "0");
 
 const structuredData = {
@@ -60,6 +49,7 @@ const structuredData = {
         sizes="100vw"
         loading="eager"
         decoding="sync"
+        fetchpriority="high"
       />
       <div class="overlay" style="background: var(--grad-vignette);"></div>
       <div class="overlay" style="background: var(--grad-veil);"></div>
@@ -114,27 +104,6 @@ const structuredData = {
         </section>
       ) : (
         <>
-          {showFeatured && (
-            <section class="section" aria-labelledby="featured-title">
-              <div class="container">
-                <header class="section-head">
-                  <p class="label-eyebrow reveal">{no("recent")} — 最近吃过</p>
-                  <h2 id="featured-title" class="section-title display reveal">
-                    这个月，
-                    <span style="color: var(--ember);">值得再去</span>的几家
-                  </h2>
-                </header>
-                <div class="shop-grid shop-grid--featured">
-                  {featured.map((shop, index) => (
-                    <div class:list={["reveal", index === 0 && "shop-grid__lead"]}>
-                      <ShopCard shop={shop} large={index === 0} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </section>
-          )}
-
           <section class="section surface-section" aria-labelledby="random-title">
             <div class="container">
               <header class="section-head">

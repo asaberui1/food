@@ -7,6 +7,7 @@ import ShopCard from "../../components/ShopCard.astro";
 import SearchDialog from "../../components/SearchDialog.astro";
 import { siteConfig } from "../../config/site";
 import { allTagsOf, tagsOf } from "../../lib/shops";
+import { buildSearchIndex } from "../../lib/search-index";
 
 const shops = (await getCollection("restaurants")).sort(
   (a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.name.localeCompare(b.data.name, "zh"),
@@ -17,13 +18,7 @@ const tagged = shops.map((shop) => ({ shop, tags: tagsOf(shop) }));
 const allTags = allTagsOf(shops);
 
 // 菜名搜索索引：只有录入了菜单的店才有可搜的菜名
-const searchIndex = shops.map((shop) => ({
-  id: shop.id,
-  name: shop.data.name,
-  menu: shop.data.menu.flatMap((group) =>
-    group.items.map((item) => ({ name: item.name, price: item.price, group: group.title })),
-  ),
-}));
+const searchIndex = buildSearchIndex(shops);
 
 // 每个品类只给第一张卡片挂锚点，供首页的品类链接跳转
 const seen = new Set<string>();

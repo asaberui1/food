@@ -1,0 +1,35 @@
+---
+/** 点击任意带 data-lightbox 的图片即可放大查看 */
+---
+
+<dialog class="lightbox" data-lightbox-dialog>
+  <button type="button" class="lightbox__close" data-lightbox-close aria-label="关闭大图">关闭</button>
+  <img data-lightbox-img alt="" />
+</dialog>
+
+<script is:inline>
+  (() => {
+    const dialog = document.querySelector("[data-lightbox-dialog]");
+    const image = dialog?.querySelector("[data-lightbox-img]");
+    if (!dialog || !image) return;
+
+    const close = () => {
+      if (typeof dialog.close === "function") dialog.close();
+      else dialog.removeAttribute("open");
+    };
+
+    document.querySelectorAll("[data-lightbox]").forEach((img) => {
+      img.addEventListener("click", () => {
+        image.src = img.currentSrc || img.src;
+        image.alt = img.alt || "";
+        if (typeof dialog.showModal === "function") dialog.showModal();
+        else dialog.setAttribute("open", "");
+      });
+    });
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) close();
+    });
+    dialog.querySelector("[data-lightbox-close]").addEventListener("click", close);
+  })();
+</script>

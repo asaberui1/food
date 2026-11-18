@@ -1,17 +1,17 @@
 /**
  * 生成思源宋体（Noto Serif SC）子集：node scripts/font-subset.mjs
  *
- * 1. 从 dist/ 的 HTML 里收集实际用到的汉字与中文标点；
- * 2. 并入一份常用「吃」词汇，避免以后新增菜名时缺字；
+ * 1. 从 src/ 的内容与页面里收集实际用到的汉字与中文标点；
+ * 2. 并入一份常用「吃」词汇，避免新增菜名时缺字；
  * 3. 按 140 字一批调用 Google Fonts 的 text= 子集接口，拿到只含这些字的 woff2；
- * 4. 生成 src/styles-fonts.css（按 unicode-range 挂上每批字体）。
+ * 4. 全部成功后原子替换 src/assets/fonts，并生成 src/styles-fonts.css。
  *
- * 新增大量内容后重跑一次即可（需要联网）。
+ * 网络不可用时只打印警告、保留旧字体，不阻断构建。
  */
-import { readFile, writeFile, readdir, mkdir, rm } from "node:fs/promises";
+import { readFile, writeFile, readdir, mkdir, rm, rename } from "node:fs/promises";
 import { join } from "node:path";
 
-const DIST = "dist";
+const SRC = "src";
 const FONT_DIR = "src/assets/fonts";
 const CSS_FILE = "src/styles-fonts.css";
 const BATCH = 140;
@@ -23,65 +23,68 @@ const EXTRA =
   + "早市午晚夜宵一人食朋友聚餐带走米饭盖浇牛蛙肥肠猪肝大排素鸡雪菜肉丝榨菜豌杂万州热干重庆小酸辣香菇筋品自制咸扣梅干菜外婆宫保丁土豆包菜番茄韭菜洋葱黄瓜木耳豆腐鱼香茄子白菜荠菜猪白饺炒生菜老干妈葱蛋豆角红肠肚牛肉鸡杂腰花泡椒双拼黑鱼片糟卤毛豆烧小公鸡茭白干回锅花菜西葫芦鸡蛋水煮肉片尖椒洋葱丝汤拌浇头加另算"
   + "·—、，。：；！？（）《》「」『』…";
 
-const used = new Set();
-for (const ch of EXTRA) used.add(ch);
-
-async function walk(dir) {
-  for (const entry of await readdir(dir, { withFileTypes: true })) {
-    const path = join(dir, entry.name);
-    if (entry.isDirectory()) await walk(path);
-    else if (entry.name.endsWith(".html")) {
-      const html = await readFile(path, "utf8");
-      const text = html
-        .replace(/<script[\s\S]*?<\/script>/gi, " ")
-        .replace(/<style[\s\S]*?<\/style>/gi, " ")
-        .replace(/<[^>]+>/g, " ");
-      for (const ch of text) {
-        const code = ch.codePointAt(0);
-        if (
-          (code >= 0x4e00 && code <= 0x9fff) ||
-          (code >= 0x3000 && code <= 0x303f) ||
-          (code >= 0xff00 && code <= 0xffef) ||
-          "·—…".includes(ch)
-        ) {
-          used.add(ch);
-        }
-      }
-    }
-  }
-}
-
-await walk(DIST);
-
-const chars = [...used];
-const batches = [];
-for (let i = 0; i < chars.length; i += BATCH) batches.push(chars.slice(i, i + BATCH));
-
-await rm(FONT_DIR, { recursive: true, force: true });
-await mkdir(FONT_DIR, { recursive: true });
-
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
-let css = "/* 由 scripts/font-subset.mjs 生成，不要手改 */\n";
-let total = 0;
+/** 收集站点里出现的汉字与中文标点 */
+async function collectChars() {
+  const used = new Set([...EXTRA]);
 
-for (let index = 0; index < batches.length; index += 1) {
-  const text = batches[index].join("");
-  const url = `https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&text=${encodeURIComponent(text)}&display=swap`;
-  const response = await fetch(url, { headers: { "User-Agent": UA } });
-  const body = await response.text();
-  const match = body.match(/src:\s*url\((https:[^)]+)\)\s*format\('woff2'\)/);
-  if (!match) throw new Error(`第 ${index} 批没有拿到字体地址`);
+  const walk = async (dir) => {
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === "assets") continue;
+        await walk(path);
+      } else if (/\.(md|astro|ts|json)$/.test(entry.name)) {
+        const text = (await readFile(path, "utf8")).replace(/<[^>]+>/g, " ").replace(/^---[\s\S]*?---/, "");
+        for (const char of text) {
+          const code = char.codePointAt(0);
+          if (
+            (code >= 0x4e00 && code <= 0x9fff) ||
+            (code >= 0x3000 && code <= 0x303f) ||
+            (code >= 0xff00 && code <= 0xffef) ||
+            "·—…".includes(char)
+          ) {
+            used.add(char);
+          }
+        }
+      }
+    }
+  };
 
-  const buffer = Buffer.from(await (await fetch(match[1])).arrayBuffer());
-  total += buffer.length;
+  await walk(SRC);
+  return [...used];
+}
 
-  const file = `noto-serif-sc-${index}.woff2`;
-  await writeFile(join(FONT_DIR, file), buffer);
+async function main() {
+  const chars = await collectChars();
+  const batches = [];
+  for (let i = 0; i < chars.length; i += BATCH) batches.push(chars.slice(i, i + BATCH));
 
-  const range = batches[index].map((ch) => `U+${ch.codePointAt(0).toString(16).toUpperCase()}`).join(", ");
-  css += `@font-face {
+  const tmpDir = `${FONT_DIR}-tmp`;
+  await rm(tmpDir, { recursive: true, force: true });
+  await mkdir(tmpDir, { recursive: true });
+
+  let css = "/* 由 scripts/font-subset.mjs 生成，不要手改 */\n";
+  let total = 0;
+
+  for (let index = 0; index < batches.length; index += 1) {
+    const text = batches[index].join("");
+    const url = `https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&text=${encodeURIComponent(text)}&display=swap`;
+    const response = await fetch(url, { headers: { "User-Agent": UA } });
+    const body = await response.text();
+    const match = body.match(/src:\s*url\((https:[^)]+)\)\s*format\('woff2'\)/);
+    if (!match) throw new Error(`第 ${index} 批没有拿到字体地址`);
+
+    const buffer = Buffer.from(await (await fetch(match[1])).arrayBuffer());
+    total += buffer.length;
+
+    const file = `noto-serif-sc-${index}.woff2`;
+    await writeFile(join(tmpDir, file), buffer);
+
+    const range = batches[index].map((ch) => `U+${ch.codePointAt(0).toString(16).toUpperCase()}`).join(", ");
+    css += `@font-face {
   font-family: "Noto Serif SC";
   font-style: normal;
   font-weight: 500;
@@ -91,7 +94,15 @@ for (let index = 0; index < batches.length; index += 1) {
 }
 
 `;
+  }
+
+  await rm(FONT_DIR, { recursive: true, force: true });
+  await rename(tmpDir, FONT_DIR);
+  await writeFile(CSS_FILE, css);
+  console.log(`字体子集：${chars.length} 字，${batches.length} 批，共 ${(total / 1024).toFixed(0)} KB`);
 }
 
-await writeFile(CSS_FILE, css);
-console.log(`字符 ${chars.length} 个，分 ${batches.length} 批，共 ${(total / 1024).toFixed(0)} KB`);
+main().catch((error) => {
+  console.warn(`[font-subset] 跳过：${error.message}（沿用已有字体）`);
+  process.exit(0);
+});

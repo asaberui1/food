@@ -19,6 +19,10 @@ export const siteConfig = {
   contact: {
     email: "253107060019@sii.edu.cn",
   },
+  // 统计：填 GoatCounter 的站点代码（如 "chuangzhi-shidan"）即可启用，留空不加载
+  analytics: {
+    goatcounter: "",
+  },
   social: [
     { label: "GitHub", href: "https://github.com/asaberui1" },
   ],

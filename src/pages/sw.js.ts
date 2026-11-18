@@ -1,5 +1,12 @@
-/* 静态资源缓存：图片、字体、带指纹的 CSS/JS 走缓存优先，HTML 始终走网络 */
-const CACHE = "shidan-assets-v1";
+/**
+ * Service Worker 入口：每次构建生成新的缓存版本号，
+ * 旧缓存会在 activate 时清掉，避免图片/字体长期停留在旧文件上。
+ */
+export function GET() {
+  const version = `v${Date.now().toString(36)}`;
+
+  const body = `/* 由 src/pages/sw.js.ts 生成 */
+const CACHE = "shidan-assets-${version}";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -23,7 +30,7 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.endsWith("/sw.js")) return;
 
   const cacheable =
-    url.pathname.includes("/_astro/") || /\.(webp|png|jpe?g|svg|woff2?|css|js)$/.test(url.pathname);
+    url.pathname.includes("/_astro/") || /\\.(webp|png|jpe?g|svg|woff2?|css|js)$/.test(url.pathname);
   if (!cacheable) return;
 
   event.respondWith(
@@ -37,3 +44,12 @@ self.addEventListener("fetch", (event) => {
     }),
   );
 });
+`;
+
+  return new Response(body, {
+    headers: {
+      "Content-Type": "text/javascript; charset=utf-8",
+      "Cache-Control": "no-cache",
+    },
+  });
+}

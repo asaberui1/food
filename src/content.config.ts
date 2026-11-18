@@ -68,8 +68,6 @@ const restaurants = defineCollection({
         })
         .optional(),
       tags: z.array(z.string()).default([]),
-      featured: z.boolean().default(false),
-      sample: z.boolean().default(false),
     }),
 });
 

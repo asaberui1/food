@@ -92,7 +92,6 @@ menu:
       - { name: 拌牛杂, price: ¥15/20/30 }
       - { name: 拌猪头肉, price: ¥15/20/30 }
 tags: []
-featured: false
 ---
 
 2003 年开到现在，24 小时营业，夜里也有人进来吃面。

@@ -22,6 +22,6 @@ const svg = `
   <text x="96" y="520" font-family="PingFang SC, sans-serif" font-size="24" fill="#b2a18d">环境 · 菜单 · 人均 · 推荐菜</text>
 </svg>`;
 
-const bg = await sharp(`${base}/src/assets/hero.webp`).resize(W, H, { fit: "cover" }).toBuffer();
+const bg = await sharp(`${base}/src/assets/hero.jpg`).resize(W, H, { fit: "cover" }).toBuffer();
 await sharp(bg).composite([{ input: Buffer.from(svg) }]).png().toFile(`${base}/public/og.png`);
 console.log("ok", fs.statSync(`${base}/public/og.png`).size);

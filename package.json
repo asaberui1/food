@@ -19,11 +19,12 @@
   ],
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/font-subset.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "og": "node scripts/og.mjs",
-    "fonts": "node scripts/font-subset.mjs"
+    "fonts": "node scripts/font-subset.mjs",
+    "share": "node scripts/share-cards.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

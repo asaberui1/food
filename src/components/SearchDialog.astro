@@ -97,7 +97,10 @@ const { index } = Astro.props;
       noResult.hidden = count > 0;
     };
 
-    const open = () => {
+    let opener = null;
+
+    const open = (trigger) => {
+      opener = trigger || document.activeElement;
       if (typeof dialog.showModal === "function") dialog.showModal();
       else dialog.setAttribute("open", "");
       input.value = "";
@@ -109,12 +112,15 @@ const { index } = Astro.props;
     const close = () => {
       if (typeof dialog.close === "function") dialog.close();
       else dialog.removeAttribute("open");
+      window.setTimeout(() => {
+        if (opener && typeof opener.focus === "function") opener.focus();
+      }, 20);
     };
 
     document.querySelectorAll("[data-search-open]").forEach((button) => {
       button.addEventListener("click", (event) => {
         event.preventDefault();
-        open();
+        open(button);
       });
     });
 
