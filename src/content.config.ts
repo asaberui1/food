@@ -48,14 +48,13 @@ const restaurants = defineCollection({
           }),
         )
         .default([]),
-      /** 多人聚餐的实际消费记录，可记多次 */
+      /** 多人聚餐的实际消费记录，可记多次；人均与荤素构成都由它算出来 */
       bills: z
         .array(
           z.object({
-            label: z.string().optional(),
-            people: z.string(),
-            items: z.string(),
-            total: z.string(),
+            people: z.number().int().positive(),
+            dishes: z.array(z.string()).min(1),
+            total: z.number().positive(),
           }),
         )
         .default([]),

@@ -2,7 +2,6 @@
 name: 云西酒家
 cuisine: 本帮菜
 dining: group
-priceRange: 人均约 ¥47
 distance: 待补充
 address: 建华路 38 号，菜市场后面的弄堂里
 summary: 白斩鸡和椒盐排条是招牌，圆台面，适合一家人或一群朋友坐下来慢慢吃。
@@ -21,10 +20,9 @@ dishes:
   - name: 酒香草头
     note: 草头嫩的时候才点得到，酒味很冲，下饭。
 bills:
-  - label: 最近一次
-    people: 两人
-    items: 椒盐排条 + 白斩草鸡 + 酒香草头
-    total: ¥93
+  - people: 2
+    dishes: [椒盐排条, 白斩草鸡, 酒香草头]
+    total: 93
 tags: [本帮菜, 家常菜]
 featured: true
 ---

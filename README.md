@@ -52,10 +52,9 @@ dishes:
     image: ./paigu.webp
 
 bills:
-  - label: 最近一次
-    people: 两人
-    items: 椒盐排条 + 白斩草鸡 + 酒香草头
-    total: ¥93
+  - people: 2
+    dishes: [椒盐排条, 白斩草鸡, 酒香草头]
+    total: 93
 
 tags: [多人聚餐, 本帮菜]
 featured: true
@@ -96,9 +95,9 @@ order:
 | `gallery` | 否 | 环境照数组，每项 `src` + `alt` |
 | `dishes` | 否 | 推荐菜数组，`name` 必填，`price`、`note`、`image` 可选 |
 | `menu` | 否 | 菜单分组，`title` + `items[]`（`name`、`price` 必填） |
-| `bills` | 否 | 消费记录，可多条：`label`、`people`、`items`、`total` |
+| `bills` | 否 | 消费记录，可多条：`people`（人数）、`dishes`（菜名）、`total`（总价）；人均由它动态算出 |
 | `order` | 否 | 扫码点餐：`url`、`qr`（二维码图片）、`note`、`tip`（小提示） |
-| `tags` | 否 | 标签，显示在详情页底部 |
+| `tags` | 否 | 自定义标签；筛选用的标签 = 品类 + 自定义标签 + 就餐方式 |
 | `featured` | 否 | 是否进首页「最近吃过」（需要至少两家才会出现该区块） |
 | `sample` | 否 | 示例条目会打上「示例」角标 |
 

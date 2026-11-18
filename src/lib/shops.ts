@@ -21,3 +21,13 @@ export const DINING_LABEL: Record<string, string> = {
 export function tagsOf(shop: CollectionEntry<"restaurants">): string[] {
   return [...new Set([shop.data.cuisine, ...shop.data.tags, ...(DINING_TAGS[shop.data.dining] ?? [])])];
 }
+
+/** 全站标签：品类在前，其次自定义标签，最后就餐方式 */
+export function allTagsOf(shops: CollectionEntry<"restaurants">[]): string[] {
+  const cuisines = [...new Set(shops.map((shop) => shop.data.cuisine))];
+  const extra = [...new Set(shops.flatMap((shop) => shop.data.tags))].filter((tag) => !cuisines.includes(tag));
+  const dining = ["单人餐", "多人聚餐", "四六分餐馆"].filter((tag) =>
+    shops.some((shop) => tagsOf(shop).includes(tag)),
+  );
+  return [...cuisines, ...extra, ...dining];
+}

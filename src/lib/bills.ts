@@ -1,0 +1,57 @@
+import type { CollectionEntry } from "astro:content";
+
+export type Bill = CollectionEntry<"restaurants">["data"]["bills"][number];
+
+const SOUP = /(汤|羹)/;
+const MEAT = /(肉|鸡|鸭|鹅|牛|羊|猪|鱼|虾|蟹|肚|肠|排|丸|蛙|螺|肝|腰|肫|鳝|蹄|骨|筋|舌|血|翅|鳝)/;
+const VEG = /(菜|豆腐|山药|木耳|茄|土豆|黄瓜|韭|葱|萝卜|藕|笋|菌|菇|玉米|花菜|白菜|菠菜|豆芽|干丝|面筋|皮蛋|花生)/;
+
+// 个别菜名按关键字判断会出错，单独指定
+const OVERRIDES: Record<string, "soup" | "meat" | "veg"> = {
+  辣酱三丁: "meat",
+};
+
+const NUMERALS = ["零", "一", "两", "三", "四", "五", "六", "七", "八", "九", "十"];
+
+function numeral(count: number): string {
+  return NUMERALS[count] ?? String(count);
+}
+
+function kindOf(dish: string): "soup" | "meat" | "veg" {
+  if (OVERRIDES[dish]) return OVERRIDES[dish];
+  if (SOUP.test(dish)) return "soup";
+  if (MEAT.test(dish)) return "meat";
+  if (VEG.test(dish)) return "veg";
+  return "veg";
+}
+
+/** 把一次消费的菜名归成「几荤几素几汤」 */
+export function billComposition(bill: Bill): string {
+  const counts = { meat: 0, veg: 0, soup: 0 };
+  for (const dish of bill.dishes) counts[kindOf(dish)] += 1;
+
+  const parts: string[] = [];
+  if (counts.meat) parts.push(`${numeral(counts.meat)}荤`);
+  if (counts.veg) parts.push(`${numeral(counts.veg)}素`);
+  if (counts.soup) parts.push(`${numeral(counts.soup)}汤`);
+  return parts.join("") || "—";
+}
+
+export function billPerPerson(bill: Bill): number {
+  return Math.round(bill.total / bill.people);
+}
+
+/** 人均按所有消费记录动态折算 */
+export function averagePerPerson(bills: Bill[]): number | null {
+  if (!bills.length) return null;
+  const sum = bills.reduce((total, bill) => total + bill.total / bill.people, 0);
+  return Math.round(sum / bills.length);
+}
+
+/** 卡片和详情页上的「人均」文案 */
+export function priceLabel(shop: CollectionEntry<"restaurants">): string {
+  const average = averagePerPerson(shop.data.bills);
+  if (average) return `人均约 ¥${average}`;
+  if (shop.data.priceRange) return shop.data.priceRange;
+  return shop.data.dining === "single" ? "丰俭由人" : "待补充";
+}

@@ -2,7 +2,6 @@
 name: 华泾家常菜
 cuisine: 家常菜
 dining: both
-priceRange: 聚餐人均约 ¥40
 distance: 待补充
 address: 建华路 147 号
 summary: 四五个人点一桌家常菜，一个人来也能吃份现炒盖浇饭；聚餐人均约 40 元，盖浇饭 15 元起。
@@ -19,10 +18,6 @@ dishes:
     price: ¥28
     note: 外层裹得薄，撒了椒盐，两次都点了。
     image: ./paitiao.webp
-  - name: 孜然牛肉
-    price: ¥28
-    note: 牛肉条拍一层粉炸过再回锅。
-    image: ./ziran-niurou.webp
   - name: 双椒金针菇
     price: ¥22
     note: 青红椒配金针菇，解腻。
@@ -36,14 +31,12 @@ dishes:
     note: 清炒，山药脆，木耳爽。
     image: ./shanyao-muer.webp
 bills:
-  - label: 最近一次
-    people: 4 人
-    items: 川香牛肚 + 辣酱三丁 + 椒盐排条 + 孜然牛肉 + 山药木耳 + 双椒金针菇
-    total: ¥171
-  - label: 上一次
-    people: 5 人
-    items: 椒盐排条 + 双椒金针菇 + 啤酒牛蛙煲 + 爆炒牛肉 + 酒香草头 + 回锅肉 + 辣炒鸡心
-    total: ¥193
+  - people: 4
+    dishes: [川香牛肚, 辣酱三丁, 椒盐排条, 孜然牛肉, 山药木耳, 双椒金针菇]
+    total: 171
+  - people: 5
+    dishes: [椒盐排条, 双椒金针菇, 啤酒牛蛙煲, 爆炒牛肉, 酒香草头, 回锅肉, 辣炒鸡心]
+    total: 193
 menu:
   - title: 汤类
     items:
@@ -252,7 +245,7 @@ menu:
       - { name: 扬州炒饭, price: ¥16 }
       - { name: 蛋炒饭, price: ¥15 }
       - { name: 酒酿小圆子, price: ¥19 }
-tags: [本帮菜, 家常菜]
+tags: [本帮菜, 家常菜, 盖浇饭]
 featured: false
 ---
 

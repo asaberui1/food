@@ -7,6 +7,7 @@ import Footer from "../../components/Footer.astro";
 import { siteConfig } from "../../config/site";
 import { withBase } from "../../lib/urls";
 import { tagsOf } from "../../lib/shops";
+import { averagePerPerson, billComposition, billPerPerson, priceLabel } from "../../lib/bills";
 
 export async function getStaticPaths() {
   const shops = await getCollection("restaurants");
@@ -20,7 +21,6 @@ const {
   name,
   cuisine,
   dining,
-  priceRange,
   distance,
   address,
   hours,
@@ -49,18 +49,25 @@ const steps = [
 ].filter(Boolean) as string[];
 const step = (label: string) => String(steps.indexOf(label) + 1).padStart(2, "0");
 
-const priceValue = (price: string) => Number(price.replace(/[^\d.]/g, ""));
+// 价格可能是「¥98–208」或「¥18/小份」这类写法，取区间两端
+const priceNumbers = (price: string) => (price.match(/\d+(?:\.\d+)?/g) ?? []).map(Number);
 const menuGroups = menu.map((group) => {
-  const values = group.items
-    .map((item) => priceValue(item.price))
-    .filter((value) => Number.isFinite(value) && value > 0);
-  const min = values.length > 0 ? Math.min(...values) : null;
-  const max = values.length > 0 ? Math.max(...values) : null;
+  const firsts: number[] = [];
+  const lasts: number[] = [];
+  for (const item of group.items) {
+    const values = priceNumbers(item.price).filter((value) => value > 0);
+    if (!values.length) continue;
+    firsts.push(values[0]);
+    lasts.push(values[values.length - 1]);
+  }
+  const min = firsts.length ? Math.min(...firsts) : null;
+  const max = lasts.length ? Math.max(...lasts) : null;
   const range = min === null ? "" : min === max ? `¥${min}` : `¥${min}–${max}`;
   return { ...group, range };
 });
 
-const priceText = priceRange ?? (dining === "single" ? "丰俭由人" : "待补充");
+const priceText = priceLabel(shop);
+const billsAverage = averagePerPerson(bills);
 const distanceText = distance ?? "待补充";
 
 const siteUrl = Astro.site ?? new URL("https://asaberui1.github.io");
@@ -88,7 +95,7 @@ const structuredData = sample
       description: summary,
       url: pageUrl,
       servesCuisine: cuisine,
-      ...(priceRange ? { priceRange } : {}),
+      ...(priceText ? { priceRange: priceText } : {}),
       address: { "@type": "PostalAddress", streetAddress: address, addressCountry: "CN" },
       ...(hours ? { openingHours: hours } : {}),
     };
@@ -96,7 +103,7 @@ const structuredData = sample
 
 <BaseLayout
   title={name}
-  description={`${name}：${summary}（${cuisine} · ${diningLabel}${priceRange ? ` · 人均 ${priceRange}` : ""}）`}
+  description={`${name}：${summary}（${cuisine} · ${diningLabel}${priceText ? ` · ${priceText}` : ""}）`}
   image={cover?.src ?? siteConfig.defaultImage}
   structuredData={structuredData}
 >
@@ -152,17 +159,46 @@ const structuredData = sample
 
         {
           bills.length > 0 && (
-            <div class="bill">
-              <p class="label-eyebrow">消费记录</p>
-              <ul class="bill__list">
-                {bills.map((record) => (
-                  <li class="bill__line">
-                    {record.label && <span class="bill__label">{record.label}</span>}
-                    {record.people} · {record.items} · 共 <strong>{record.total}</strong>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <details class="bill-block">
+              <summary class="bill-block__head">
+                <span class="label-eyebrow">消费记录</span>
+                <span class="bill-block__meta">
+                  {bills.length} 次 · 人均约 ¥{billsAverage}
+                </span>
+                <span class="bill-block__chev" aria-hidden="true">+</span>
+              </summary>
+              <table class="bill-table">
+                <caption class="bill-caption">按人数看分量；把鼠标停在「几荤几素」上看具体点了哪些菜</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">人数</th>
+                    <th scope="col">菜品</th>
+                    <th scope="col">金额</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bills.map((record) => (
+                    <tr>
+                      <td>{record.people} 人</td>
+                      <td>
+                        <span class="bill-dish">
+                          <button type="button" class="bill-dish__button">
+                            {billComposition(record)}
+                          </button>
+                          <span class="bill-dish__popover" role="tooltip">
+                            {record.dishes.join("、")}
+                          </span>
+                        </span>
+                      </td>
+                      <td class="bill-amount">
+                        ¥{record.total}
+                        <span class="bill-amount__per">人均 ¥{billPerPerson(record)}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </details>
           )
         }
 

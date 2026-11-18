@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { withBase } from "../lib/urls";
+import { priceLabel } from "../lib/bills";
 
 type Props = {
   shop: CollectionEntry<"restaurants">;
@@ -9,11 +10,11 @@ type Props = {
 };
 
 const { shop, large = false } = Astro.props;
-const { name, cuisine, priceRange, distance, summary, cover, sample, dining } = shop.data;
+const { name, cuisine, distance, summary, cover, sample, dining } = shop.data;
 
 const diningLabel = { group: "多人聚餐", single: "单人餐", both: "聚餐 / 单人餐" }[dining];
 // 单人餐只列菜单，卡片上就不写人均
-const priceText = priceRange ?? (dining === "single" ? "丰俭由人" : undefined);
+const priceText = priceLabel(shop);
 const meta = [priceText, distance].filter(Boolean);
 ---
 
