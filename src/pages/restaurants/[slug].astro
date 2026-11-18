@@ -6,6 +6,7 @@ import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import { siteConfig } from "../../config/site";
 import { withBase } from "../../lib/urls";
+import { tagsOf } from "../../lib/shops";
 
 export async function getStaticPaths() {
   const shops = await getCollection("restaurants");
@@ -30,12 +31,12 @@ const {
   menu,
   bills,
   order,
-  tags,
   sample,
 } = shop.data;
 const { Content } = await render(shop);
 
 const hasBody = Boolean(shop.body?.trim());
+const shopTags = tagsOf(shop);
 const diningLabel =
   dining === "group" ? "多人聚餐" : dining === "single" ? "单人餐" : "聚餐 / 单人餐";
 
@@ -306,9 +307,9 @@ const structuredData = sample
         }
 
         {
-          tags.length > 0 && (
+          shopTags.length > 0 && (
             <ul class="tag-row" aria-label="标签">
-              {tags.map((tag) => (
+              {shopTags.map((tag) => (
                 <li class="chip chip--muted">{tag}</li>
               ))}
             </ul>

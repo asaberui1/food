@@ -252,7 +252,7 @@ menu:
       - { name: 扬州炒饭, price: ¥16 }
       - { name: 蛋炒饭, price: ¥15 }
       - { name: 酒酿小圆子, price: ¥19 }
-tags: [单人餐, 聚餐, 本帮菜]
+tags: [本帮菜, 家常菜]
 featured: false
 ---
 

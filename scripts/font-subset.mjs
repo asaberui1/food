@@ -68,7 +68,7 @@ let total = 0;
 
 for (let index = 0; index < batches.length; index += 1) {
   const text = batches[index].join("");
-  const url = `https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400&text=${encodeURIComponent(text)}&display=swap`;
+  const url = `https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500&text=${encodeURIComponent(text)}&display=swap`;
   const response = await fetch(url, { headers: { "User-Agent": UA } });
   const body = await response.text();
   const match = body.match(/src:\s*url\((https:[^)]+)\)\s*format\('woff2'\)/);
@@ -84,7 +84,7 @@ for (let index = 0; index < batches.length; index += 1) {
   css += `@font-face {
   font-family: "Noto Serif SC";
   font-style: normal;
-  font-weight: 400;
+  font-weight: 500;
   font-display: swap;
   src: url("./assets/fonts/${file}") format("woff2");
   unicode-range: ${range};

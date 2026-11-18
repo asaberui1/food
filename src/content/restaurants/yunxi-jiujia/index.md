@@ -25,7 +25,7 @@ bills:
     people: 两人
     items: 椒盐排条 + 白斩草鸡 + 酒香草头
     total: ¥93
-tags: [多人聚餐, 本帮菜, 家常菜]
+tags: [本帮菜, 家常菜]
 featured: true
 ---
 

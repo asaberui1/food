@@ -114,7 +114,7 @@ a:hover {
   padding: 0.75rem 1rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  font-size: 0.75rem;
+  font-size: 0.95rem;
 }
 
 .skip-link:focus {
@@ -145,7 +145,7 @@ a:hover {
 .label-eyebrow {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.66rem;
+  font-size: 0.9rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
@@ -153,7 +153,7 @@ a:hover {
 .display,
 .display-italic {
   font-family: var(--font-display);
-  font-weight: 400;
+  font-weight: 500;
 }
 
 .display-italic {
@@ -211,7 +211,7 @@ a:hover {
   justify-content: flex-end;
   align-items: center;
   gap: clamp(1rem, 2vw, 2rem);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .mobile-nav {
@@ -223,7 +223,7 @@ a:hover {
   border: 1px solid rgb(251 240 220 / 0.7);
   color: var(--cream);
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   font-weight: 600;
   letter-spacing: 0.2em;
   list-style: none;
@@ -266,7 +266,7 @@ a:hover {
   padding: 0.9rem 1.25rem;
   text-transform: uppercase;
   letter-spacing: 0.2em;
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   font-weight: 600;
   transition:
     background 180ms ease,
@@ -533,7 +533,7 @@ a:hover {
   grid-column: span 1;
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.95rem;
 }
 
 .course h3 {
@@ -556,7 +556,7 @@ a:hover {
   grid-column: span 2;
   color: var(--ember);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.95rem;
   letter-spacing: 0.18em;
   text-align: right;
   text-transform: uppercase;
@@ -773,7 +773,7 @@ textarea {
   gap: 1rem;
   border-top: 1px solid var(--border);
   color: var(--muted-foreground);
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   letter-spacing: 0.18em;
   margin-top: clamp(1rem, 3vw, 2rem);
   padding-top: 1.5rem;
@@ -932,7 +932,7 @@ textarea {
 
   .concept-section .text-block {
     max-width: none;
-    font-size: 0.98rem;
+    font-size: 1rem;
     line-height: 1.62;
   }
 
@@ -998,7 +998,7 @@ textarea {
 .brand-sub {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.52rem;
+  font-size: 0.9rem;
   font-weight: 400;
   letter-spacing: 0.3em;
 }
@@ -1017,7 +1017,7 @@ textarea {
   color: var(--cream);
   border-bottom: 1px solid rgb(251 240 220 / 0.35);
   padding-bottom: 0.15rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   letter-spacing: 0.02em;
   transition: color 160ms ease, border-color 160ms ease;
 }
@@ -1056,7 +1056,7 @@ textarea {
   border-left: 2px solid var(--ember);
   padding-left: 0.9rem;
   color: var(--muted-foreground);
-  font-size: 0.86rem;
+  font-size: 0.95rem;
   line-height: 1.6;
 }
 
@@ -1122,7 +1122,7 @@ textarea {
   background: rgb(23 19 15 / 0.82);
   color: var(--ember);
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.9rem;
   letter-spacing: 0.22em;
   padding: 0.25rem 0.5rem;
 }
@@ -1136,7 +1136,7 @@ textarea {
   margin: 0.15rem 0 0;
   font-family: var(--font-display);
   font-size: clamp(1.3rem, 1.9vw, 1.65rem);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.35;
   transition: color 160ms ease;
 }
@@ -1148,7 +1148,7 @@ textarea {
 .shop-card__summary {
   margin: 0;
   color: rgb(240 231 216 / 0.72);
-  font-size: 0.92rem;
+  font-size: 1rem;
   line-height: 1.65;
 }
 
@@ -1159,7 +1159,7 @@ textarea {
   margin: 0.25rem 0 0;
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.9rem;
   letter-spacing: 0.14em;
 }
 
@@ -1176,7 +1176,7 @@ textarea {
   border: 1px solid var(--border);
   padding: 0.4rem 0.85rem;
   color: var(--muted-foreground);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   transition: border-color 160ms ease, color 160ms ease;
 }
 
@@ -1191,7 +1191,7 @@ textarea {
 }
 
 .chip--muted {
-  font-size: 0.76rem;
+  font-size: 0.95rem;
   padding: 0.3rem 0.7rem;
 }
 
@@ -1303,7 +1303,7 @@ textarea {
 .shop-meta dd {
   margin: 0;
   color: var(--cream);
-  font-size: 0.98rem;
+  font-size: 1rem;
   line-height: 1.55;
 }
 
@@ -1367,7 +1367,7 @@ textarea {
 .dish__no {
   color: var(--ember);
   font-family: var(--font-mono);
-  font-size: 0.78rem;
+  font-size: 0.95rem;
   letter-spacing: 0.1em;
   padding-top: 0.45rem;
 }
@@ -1380,21 +1380,21 @@ textarea {
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(1.2rem, 2vw, 1.55rem);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.4;
 }
 
 .dish__price {
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.95rem;
   letter-spacing: 0.1em;
 }
 
 .dish__note {
   margin: 0.35rem 0 0;
   color: rgb(240 231 216 / 0.72);
-  font-size: 0.94rem;
+  font-size: 1rem;
   line-height: 1.65;
 }
 
@@ -1430,7 +1430,7 @@ textarea {
 .menu-table td {
   color: var(--cream);
   font-family: var(--font-mono);
-  font-size: 0.84rem;
+  font-size: 0.95rem;
   text-align: right;
   white-space: nowrap;
 }
@@ -1439,13 +1439,13 @@ textarea {
   display: block;
   margin-top: 0.1rem;
   color: var(--muted-foreground);
-  font-size: 0.76rem;
+  font-size: 0.95rem;
 }
 
 .menu-caveat {
   margin: 1.5rem 0 0;
   color: var(--muted-foreground);
-  font-size: 0.8rem;
+  font-size: 0.95rem;
 }
 
 .prose {
@@ -1456,7 +1456,7 @@ textarea {
   margin: 2rem 0 0.7rem;
   font-family: var(--font-display);
   font-size: clamp(1.45rem, 2.6vw, 1.95rem);
-  font-weight: 400;
+  font-weight: 500;
   line-height: 1.35;
 }
 
@@ -1498,7 +1498,7 @@ textarea {
 .prose-aside p {
   margin: 0;
   color: rgb(240 231 216 / 0.75);
-  font-size: 0.92rem;
+  font-size: 1rem;
   line-height: 1.65;
 }
 
@@ -1659,7 +1659,7 @@ textarea {
   margin-right: 0.5rem;
   color: var(--ember);
   font-family: var(--font-mono);
-  font-size: 0.74rem;
+  font-size: 0.95rem;
   letter-spacing: 0.08em;
 }
 
@@ -1699,7 +1699,7 @@ textarea {
 .order-block__copy p {
   margin: 0;
   color: rgb(240 231 216 / 0.78);
-  font-size: 0.94rem;
+  font-size: 1rem;
   line-height: 1.65;
 }
 
@@ -1711,7 +1711,7 @@ textarea {
 
 .order-block__hint {
   color: var(--muted-foreground) !important;
-  font-size: 0.82rem !important;
+  font-size: 0.95rem !important;
 }
 
 .dish {
@@ -1778,6 +1778,7 @@ textarea {
 
 .menu-acc__title {
   font-family: var(--font-display);
+  font-weight: 500;
   font-size: clamp(1.25rem, 2.2vw, 1.6rem);
   color: var(--cream);
   transition: color 160ms ease;
@@ -1791,13 +1792,13 @@ textarea {
 .menu-acc__range {
   color: var(--ember);
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   letter-spacing: 0.06em;
 }
 
 .menu-acc__count {
   color: var(--muted-foreground);
-  font-size: 0.78rem;
+  font-size: 0.95rem;
 }
 
 .menu-acc__chev {
@@ -1808,7 +1809,7 @@ textarea {
   border: 1px solid var(--border);
   border-radius: 999px;
   color: var(--cream);
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1;
   transition:
     transform 250ms ease,
@@ -1829,7 +1830,7 @@ textarea {
 .menu-acc__note {
   margin: 0 0 1rem;
   color: var(--muted-foreground);
-  font-size: 0.86rem;
+  font-size: 0.95rem;
 }
 
 .menu-items {
@@ -1850,7 +1851,7 @@ textarea {
 
 .menu-item__name {
   color: rgb(240 231 216 / 0.88);
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .menu-item__leader {
@@ -1863,7 +1864,7 @@ textarea {
 .menu-item__price {
   color: var(--cream);
   font-family: var(--font-mono);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
 }
 
 @media (min-width: 1600px) {
@@ -1948,7 +1949,7 @@ textarea {
   border: 1px solid var(--border);
   background: rgb(23 19 15 / 0.6);
   color: var(--cream);
-  font-size: 0.98rem;
+  font-size: 1rem;
   padding: 0.8rem 1rem;
   transition: border-color 160ms ease;
 }
@@ -1966,21 +1967,21 @@ textarea {
 .search-hint {
   margin: 0;
   color: var(--muted-foreground);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   line-height: 1.6;
 }
 
 .search-status {
   margin: 0 0 1.25rem;
   color: var(--ember);
-  font-size: 0.86rem;
+  font-size: 0.95rem;
   letter-spacing: 0.02em;
 }
 
 .shop-hit {
   margin: 0.55rem 0 0;
   color: var(--ember);
-  font-size: 0.82rem;
+  font-size: 0.95rem;
   line-height: 1.6;
 }
 
@@ -1994,4 +1995,130 @@ textarea {
 button.chip:focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
+}
+
+/* ---------- 标签筛选与搜索对话框 ---------- */
+
+.filter-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--cream);
+  font-size: 0.95rem;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.search-button:hover {
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+.tag-row--filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.filter-empty {
+  margin: 1.5rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+}
+
+.search-dialog {
+  width: min(40rem, calc(100vw - 2rem));
+  max-height: 82vh;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  padding: 0;
+}
+
+.search-dialog::backdrop {
+  background: rgb(10 8 6 / 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.search-dialog__inner {
+  display: grid;
+  gap: 1rem;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  max-height: 82vh;
+  overflow: auto;
+}
+
+.search-dialog__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.search-dialog__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 500;
+}
+
+.search-dialog__close {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+}
+
+.search-dialog__close:hover {
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+.search-results {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.search-result {
+  display: grid;
+  gap: 0.25rem;
+  border-bottom: 1px solid rgb(117 97 76 / 0.25);
+  padding-bottom: 0.85rem;
+}
+
+.search-result__name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--cream);
+}
+
+.search-result__name:hover {
+  color: var(--ember);
+}
+
+.search-result__dishes {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+  line-height: 1.65;
 }
