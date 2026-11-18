@@ -9,6 +9,7 @@ const VEG = /(菜|豆腐|山药|木耳|茄|土豆|黄瓜|韭|葱|萝卜|藕|笋|
 // 个别菜名按关键字判断会出错，单独指定
 const OVERRIDES: Record<string, "soup" | "meat" | "veg"> = {
   辣酱三丁: "meat",
+  农家一碗香: "meat",
 };
 
 const NUMERALS = ["零", "一", "两", "三", "四", "五", "六", "七", "八", "九", "十"];
