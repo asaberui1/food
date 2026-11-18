@@ -22,6 +22,7 @@ const { title, description, image, structuredData, enableReveal = siteConfig.eff
     <meta name="theme-color" content="#17130f" />
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
     <meta name="site-base" content={import.meta.env.BASE_URL} />
+    <link rel="alternate" type="application/rss+xml" title={siteConfig.name} href={`${import.meta.env.BASE_URL}rss.xml`} />
     {
       enableReveal && (
         <script is:inline>

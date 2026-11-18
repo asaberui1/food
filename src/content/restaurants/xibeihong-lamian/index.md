@@ -1,5 +1,6 @@
 ---
 name: 西北红拉面
+added: "2026-11-18"
 cuisine: 面食
 dining: single
 address: 罗香路 15 号

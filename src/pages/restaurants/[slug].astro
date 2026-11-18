@@ -24,7 +24,7 @@ const {
   name,
   cuisine,
   dining,
-  distance,
+  walkMinutes,
   address,
   hours,
   summary,
@@ -96,7 +96,7 @@ const menuGroups = menu.map((group) => {
 
 const priceText = priceLabel(shop);
 const billsAverage = averagePerPerson(bills);
-const distanceText = distance ?? "待补充";
+const distanceText = walkMinutes ? `步行 ${walkMinutes} 分钟` : "待补充";
 
 const siteUrl = Astro.site ?? new URL("https://asaberui1.github.io");
 const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
@@ -123,7 +123,8 @@ const structuredData = sample
       description: summary,
       url: pageUrl,
       servesCuisine: cuisine,
-      ...(priceText ? { priceRange: priceText } : {}),
+      ...(billsAverage ? { priceRange: `¥${billsAverage}` } : {}),
+      hasMenu: `${pageUrl}#menu-title`,
       address: { "@type": "PostalAddress", streetAddress: address, addressCountry: "CN" },
       ...(hours ? { openingHours: hours } : {}),
     };

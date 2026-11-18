@@ -22,8 +22,8 @@ const restaurants = defineCollection({
       name: z.string(),
       cuisine: z.string(),
       dining: z.enum(["group", "single", "both"]).default("group"),
-      priceRange: z.string().optional(),
-      distance: z.string().optional(),
+      /** 从学院大门步行过去大约几分钟 */
+      walkMinutes: z.number().int().positive().optional(),
       address: z.string(),
       hours: z.string().default(""),
       summary: z.string(),
@@ -54,6 +54,8 @@ const restaurants = defineCollection({
       bills: z
         .array(
           z.object({
+            /** 用餐时间，写成 2026-11 或 2026-11-18 */
+            date: z.string().optional(),
             people: z.number().int().positive(),
             dishes: z.array(z.string()).min(1),
             total: z.number().positive(),
@@ -69,6 +71,8 @@ const restaurants = defineCollection({
           tip: z.string().optional(),
         })
         .optional(),
+      /** 收录日期，用于 RSS 与排序 */
+      added: z.string().optional(),
       tags: z.array(z.string()).default([]),
     }),
 });

@@ -1,5 +1,6 @@
 ---
 name: 牛博士牛肉汤馆
+added: "2026-11-18"
 cuisine: 汤锅
 dining: both
 address: 华发路 297 号

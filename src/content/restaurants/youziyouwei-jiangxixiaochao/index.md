@@ -1,5 +1,6 @@
 ---
 name: 有滋有味·江西小炒
+added: "2026-11-18"
 cuisine: 江西菜
 dining: both
 address: 业祥路 187 号
@@ -30,7 +31,8 @@ dishes:
     note: 烟笋干香，腊肉偏咸，配饭刚好。
     image: ./yansun.webp
 bills:
-  - people: 5
+  - date: "2026-11-18"
+    people: 5
     dishes: [韭香田螺肉, 番茄蛋汤, 香辣猪头肉, 空心菜, 赣味香辣小鱼虾, 烟笋腊肉, 农家一碗香]
     total: 222
 order:

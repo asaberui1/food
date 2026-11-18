@@ -1,5 +1,6 @@
 ---
 name: 苏州藏书羊肉面馆
+added: "2026-11-18"
 cuisine: 汤锅
 dining: both
 address: 华发路 291 号

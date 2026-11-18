@@ -1,5 +1,6 @@
 ---
 name: 一碗勾馄面
+added: "2026-11-17"
 cuisine: 面食
 dining: single
 address: 华发路 31 号，明丰新纪苑底商

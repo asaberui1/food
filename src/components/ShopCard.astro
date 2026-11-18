@@ -10,12 +10,13 @@ type Props = {
 };
 
 const { shop, large = false } = Astro.props;
-const { name, cuisine, distance, summary, cover, sample, dining } = shop.data;
+const { name, cuisine, walkMinutes, summary, cover, sample, dining } = shop.data;
 
 const diningLabel = { group: "多人聚餐", single: "单人餐", both: "聚餐 / 单人餐" }[dining];
 // 单人餐只列菜单，卡片上就不写人均
 const priceText = priceLabel(shop);
-const meta = [priceText, distance].filter(Boolean);
+const walkText = walkMinutes ? `步行 ${walkMinutes} 分钟` : undefined;
+const meta = [priceText, walkText].filter(Boolean);
 ---
 
 <a class:list={["shop-card", { "shop-card--large": large }]} href={withBase(`/restaurants/${shop.id}/`)}>

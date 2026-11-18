@@ -53,6 +53,5 @@ export function averagePerPerson(bills: Bill[]): number | null {
 export function priceLabel(shop: CollectionEntry<"restaurants">): string {
   const average = averagePerPerson(shop.data.bills);
   if (average) return `人均约 ¥${average}`;
-  if (shop.data.priceRange) return shop.data.priceRange;
   return shop.data.dining === "single" ? "丰俭由人" : "待补充";
 }

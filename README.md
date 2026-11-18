@@ -35,8 +35,7 @@ npm run preview
 name: 云西酒家
 cuisine: 本帮菜
 dining: group
-priceRange: 人均约 ¥47
-distance: 步行 10 分钟
+walkMinutes: 10
 address: 建华路 38 号，菜市场后面的弄堂里
 hours: 11:00–14:00，17:00–21:00
 summary: 一句话推荐，会显示在卡片上。
@@ -52,7 +51,8 @@ dishes:
     image: ./paigu.webp
 
 bills:
-  - people: 2
+  - date: 2026-11-18
+    people: 2
     dishes: [椒盐排条, 白斩草鸡, 酒香草头]
     total: 93
 
@@ -86,8 +86,7 @@ order:
 | `name` | 是 | 店名 |
 | `cuisine` | 是 | 品类，首页品类标签和列表锚点都由它生成 |
 | `dining` | 否 | `group`（默认）/ `single` / `both`，决定是否显示人均 |
-| `priceRange` | 否 | 人均，如 `人均约 ¥47`；单人餐不填 |
-| `distance` | 否 | 步行距离，如 `步行 10 分钟`；不填显示「待补充」 |
+| `walkMinutes` | 否 | 从学院步行几分钟（纯数字），如 `10`；不填显示「待补充」 |
 | `address` | 是 | 地址 |
 | `hours` | 否 | 营业时间 |
 | `summary` | 是 | 一句话推荐 |
@@ -95,7 +94,8 @@ order:
 | `gallery` | 否 | 环境照数组，每项 `src` + `alt` |
 | `dishes` | 否 | 推荐菜数组，`name` 必填，`price`、`note`、`image` 可选 |
 | `menu` | 否 | 菜单分组，`title` + `items[]`（`name`、`price` 必填） |
-| `bills` | 否 | 消费记录，可多条：`people`（人数）、`dishes`（菜名）、`total`（总价）；人均由它动态算出 |
+| `bills` | 否 | 消费记录，可多条：`date`（2026-11-18）、`people`（人数）、`dishes`（菜名）、`total`（总价）；人均由它动态算出，不手写 |
+| `added` | 否 | 收录日期，用于 RSS 排序 |
 | `order` | 否 | 扫码点餐：`url`、`qr`（二维码图片）、`note`、`tip`（小提示） |
 | `tags` | 否 | 自定义标签；筛选用的标签 = 品类 + 自定义标签 + 就餐方式 |
 | `featured` | 否 | 是否进首页「最近吃过」（需要至少两家才会出现该区块） |
