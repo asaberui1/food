@@ -143,38 +143,47 @@ const payload = {
       ctx.fillStyle = bottom;
       ctx.fillRect(0, 740, 1080, 700);
 
+      // 品牌标识：渐变底板，避免和店招撞色
+      const plate = ctx.createLinearGradient(64, 64, 64, 182);
+      plate.addColorStop(0, "rgba(13,10,7,0.82)");
+      plate.addColorStop(1, "rgba(13,10,7,0.38)");
+      ctx.beginPath();
+      ctx.roundRect(64, 64, 392, 118, 18);
+      ctx.fillStyle = plate;
+      ctx.fill();
+
       ctx.fillStyle = "#d98a34";
-      ctx.fillRect(88, 96, 10, 10);
-      ctx.fillStyle = "rgba(246,238,226,0.92)";
-      ctx.font = '24px "PingFang SC", sans-serif';
-      ctx.fillText("创智食单", 112, 108);
-      ctx.fillStyle = "rgba(240,231,216,0.6)";
-      ctx.font = '20px "PingFang SC", sans-serif';
-      ctx.fillText("上海创智学院周边", 112, 138);
+      ctx.fillRect(92, 99, 11, 11);
+      ctx.fillStyle = "#f6eee2";
+      ctx.font = '30px "PingFang SC", sans-serif';
+      ctx.fillText("创智食单", 118, 114);
+      ctx.fillStyle = "rgba(240,231,216,0.62)";
+      ctx.font = '22px "PingFang SC", sans-serif';
+      ctx.fillText("上海创智学院周边", 118, 150);
 
       ctx.shadowColor = "rgba(0,0,0,0.6)";
       ctx.shadowBlur = 20;
       ctx.shadowOffsetY = 2;
 
       ctx.fillStyle = "#f9f2e6";
-      ctx.font = '500 66px "Noto Serif SC", serif';
-      ctx.fillText(fitted(data.name, 700), 84, 1092);
+      ctx.font = '500 78px "Noto Serif SC", serif';
+      ctx.fillText(fitted(data.name, 720), 84, 1088);
 
       ctx.fillStyle = "#f0b979";
-      ctx.font = '28px "PingFang SC", sans-serif';
+      ctx.font = '32px "PingFang SC", sans-serif';
       const meta = [data.cuisine, data.price].filter((v) => v && v !== "待补充").join(" · ");
-      ctx.fillText(fitted(meta, 600), 88, 1144);
+      ctx.fillText(fitted(meta, 620), 88, 1150);
 
       ctx.fillStyle = "rgba(240,231,216,0.74)";
-      ctx.font = '26px "PingFang SC", sans-serif';
-      ctx.fillText(fitted(data.address, 600), 88, 1186);
+      ctx.font = '30px "PingFang SC", sans-serif';
+      ctx.fillText(fitted(data.address, 620), 88, 1198);
 
       if (showDishes) {
-        ctx.font = '28px "Noto Serif SC", serif';
+        ctx.font = '32px "Noto Serif SC", serif';
         selected.slice(0, MAX).forEach((dish, index) => {
           const price = findPrice(dish);
-          ctx.fillStyle = "rgba(236,226,206,0.92)";
-          ctx.fillText(fitted(`· ${dish}${price ? "  " + price : ""}`, 600), 88, 1250 + index * 46);
+          ctx.fillStyle = "rgba(236,226,206,0.94)";
+          ctx.fillText(fitted(`· ${dish}${price ? "  " + price : ""}`, 620), 88, 1268 + index * 52);
         });
       }
 
