@@ -1618,13 +1618,31 @@
   transform: rotate(-90deg);
 }
 
+.studio__dpad [data-zoom] {
+  grid-area: 2 / 2;
+  background: rgb(23 19 15 / 0.65);
+}
+
+.studio__dpad button:focus {
+  outline: none;
+}
+
+.studio__dpad button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.studio:focus {
+  outline: none;
+}
+
 .studio__slots {
   position: absolute;
   left: calc(var(--s) * 88px);
-  top: calc(var(--s) * 1222px);
+  top: calc(var(--s) * 1186px);
   width: calc(var(--s) * 620px);
   display: grid;
-  gap: calc(var(--s) * 4px);
+  gap: calc(var(--s) * 6px);
   z-index: 3;
 }
 
@@ -1632,14 +1650,14 @@
   display: flex;
   align-items: center;
   gap: calc(var(--s) * 10px);
-  height: calc(var(--s) * 52px);
+  height: calc(var(--s) * 48px);
   padding: 0 calc(var(--s) * 14px);
   border: 1px solid rgb(251 240 220 / 0.38);
   border-radius: calc(var(--s) * 8px);
   background: rgb(23 19 15 / 0.3);
   backdrop-filter: blur(3px);
   color: var(--cream);
-  font-size: calc(var(--s) * 30px);
+  font-size: calc(var(--s) * 32px);
 }
 
 .studio__slot.is-empty {

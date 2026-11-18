@@ -14,7 +14,7 @@ const QR_OUT = "public/qr";
 const SITE = "https://asaberui1.github.io/food";
 
 const W = 1080;
-const H = 1350;
+const H = 1440;
 
 function parseList(text, key) {
   const m = text.match(new RegExp(`^${key}:\\s*\\[([^\\]]*)\\]`, "m"));
@@ -31,6 +31,7 @@ async function buildCard(dir) {
   const name = parseScalar(md, "name");
   const cuisine = parseScalar(md, "cuisine");
   const cover = parseScalar(md, "cover").replace(/^\.\//, "");
+  const address = parseScalar(md, "address");
 
   // 人均：有消费记录就按记录折算
   const bills = [...md.matchAll(/- people:\s*(\d+)[\s\S]*?total:\s*(\d+)/g)].map((m) => ({
@@ -67,36 +68,29 @@ async function buildCard(dir) {
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
   <defs>
-    <radialGradient id="glow" cx="50%" cy="42%" r="62%">
-      <stop offset="0%" stop-color="#d98a34" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#17130f" stop-opacity="0"/>
-    </radialGradient>
     <linearGradient id="veil" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#0d0a07" stop-opacity="0.55"/>
-      <stop offset="45%" stop-color="#0d0a07" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#0d0a07" stop-opacity="0.98"/>
+      <stop offset="0%" stop-color="#0d0a07" stop-opacity="0"/>
+      <stop offset="38%" stop-color="#0d0a07" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#0b0806" stop-opacity="0.98"/>
     </linearGradient>
   </defs>
-  ${hasCover ? "" : '<rect width="' + W + '" height="' + H + '" fill="url(#glow)"/>'}
-  <rect width="${W}" height="${H}" fill="url(#veil)"/>
-  <rect x="40" y="40" width="${W - 80}" height="${H - 80}" fill="none" stroke="#f0e7d8" stroke-opacity="0.18"/>
+  <rect y="700" width="${W}" height="${H - 700}" fill="url(#veil)"/>
 
-  <text x="88" y="118" font-family="Menlo, monospace" font-size="22" letter-spacing="6" fill="#b2a18d">创智食单 · 上海创智学院周边</text>
-
-  <text x="84" y="${nameY}" font-family="Songti SC, serif" font-size="${hasCover ? 76 : 88}" fill="#f0e7d8">${escapeXml(name)}</text>
-  <text x="88" y="${nameY + 56}" font-family="PingFang SC, sans-serif" font-size="30" fill="#d98a34">${escapeXml(cuisine)}${avg ? ` · 人均约 ¥${avg}` : ""}</text>
+  <text x="84" y="1046" font-family="Songti SC, serif" font-size="84" fill="#f9f2e6">${escapeXml(name)}</text>
+  <text x="88" y="1112" font-family="PingFang SC, sans-serif" font-size="34" fill="#f0b979">${escapeXml(cuisine)}${avg ? ` · 人均约 ¥${avg}` : ""}</text>
+  <text x="88" y="1164" font-family="PingFang SC, sans-serif" font-size="32" fill="rgba(240,231,216,0.76)">${escapeXml(address)}</text>
   ${dishes
     .map(
       (dish, index) =>
-        `<text x="88" y="${nameY + 126 + index * 46}" font-family="Songti SC, serif" font-size="30" fill="#d9cdb8">· ${escapeXml(dish)}</text>`,
+        `<text x="88" y="${1226 + index * 54}" font-family="Songti SC, serif" font-size="34" fill="rgba(236,226,206,0.94)">· ${escapeXml(dish)}</text>`,
     )
     .join("")}
 
-  <text x="88" y="1268" font-family="Menlo, monospace" font-size="20" fill="#b2a18d">asaberui1.github.io/food</text>
+  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="PingFang SC, sans-serif" font-size="22" fill="rgba(240,231,216,0.6)">创智食单</text>
 </svg>`;
 
   const overlay = Buffer.from(svg);
-  const qrSize = 200;
+  const qrSize = 168;
   const qrX = W - 88 - qrSize;
   const qrY = H - 120 - qrSize;
 
