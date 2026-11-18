@@ -4,8 +4,9 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import ShopCard from "../../components/ShopCard.astro";
+import SearchDialog from "../../components/SearchDialog.astro";
 import { siteConfig } from "../../config/site";
-import { tagsOf } from "../../lib/shops";
+import { allTagsOf, tagsOf } from "../../lib/shops";
 
 const shops = (await getCollection("restaurants")).sort(
   (a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.name.localeCompare(b.data.name, "zh"),
@@ -13,20 +14,12 @@ const shops = (await getCollection("restaurants")).sort(
 
 const samples = shops.filter((shop) => shop.data.sample).length;
 const tagged = shops.map((shop) => ({ shop, tags: tagsOf(shop) }));
-
-// 标签并列展示：品类在前，其次是自定义标签，最后是就餐方式
-const cuisines = [...new Set(shops.map((shop) => shop.data.cuisine))];
-const extraTags = [...new Set(shops.flatMap((shop) => shop.data.tags))].filter((tag) => !cuisines.includes(tag));
-const diningTags = ["单人餐", "多人聚餐", "四六分餐馆"].filter((tag) =>
-  shops.some((shop) => tagsOf(shop).includes(tag)),
-);
-const allTags = [...cuisines, ...extraTags, ...diningTags];
+const allTags = allTagsOf(shops);
 
 // 菜名搜索索引：只有录入了菜单的店才有可搜的菜名
 const searchIndex = shops.map((shop) => ({
   id: shop.id,
   name: shop.data.name,
-  cuisine: shop.data.cuisine,
   menu: shop.data.menu.flatMap((group) =>
     group.items.map((item) => ({ name: item.name, price: item.price, group: group.title })),
   ),
@@ -119,49 +112,19 @@ const seen = new Set<string>();
 
   <Footer />
 
-  <dialog class="search-dialog" data-search-dialog data-base={import.meta.env.BASE_URL} aria-labelledby="search-title">
-    <div class="search-dialog__inner">
-      <div class="search-dialog__head">
-        <h2 id="search-title" class="search-dialog__title">搜菜名</h2>
-        <button type="button" class="search-dialog__close" data-search-close aria-label="关闭搜索">关闭</button>
-      </div>
-
-      <label class="search-field">
-        <span class="label-eyebrow">菜名或店名</span>
-        <input
-          type="search"
-          name="dish"
-          data-search
-          placeholder="椒盐排条、牛蛙、盖浇饭…"
-          autocomplete="off"
-          spellcheck="false"
-        />
-      </label>
-      <p class="search-hint">只有录入了菜单的店才会出现在菜名结果里。</p>
-
-      <ul class="search-results" data-results></ul>
-      <p class="search-hint" data-search-empty hidden>没有找到。换个菜名试试，或者直接用上面的标签筛。</p>
-    </div>
-  </dialog>
-
-  <script type="application/json" id="shop-index" set:html={JSON.stringify(searchIndex)} />
+  <SearchDialog index={searchIndex} />
 
   <script is:inline>
     (() => {
       const root = document.querySelector("[data-filters]");
-      const dialog = document.querySelector("[data-search-dialog]");
       const status = document.querySelector("[data-status]");
       const emptyTip = document.querySelector("[data-empty]");
-      const indexNode = document.getElementById("shop-index");
-      if (!root || !dialog || !indexNode) return;
+      if (!root) return;
 
       const cards = Array.from(document.querySelectorAll("[data-shop]"));
-      const shops = JSON.parse(indexNode.textContent);
-      const byId = new Map(shops.map((shop) => [shop.id, shop]));
       const selected = new Set();
 
-      // ---- 标签筛选 ----
-      const renderFilter = () => {
+      const render = () => {
         let visible = 0;
 
         cards.forEach((card) => {
@@ -185,98 +148,18 @@ const seen = new Set<string>();
           else selected.add(tag);
           button.classList.toggle("is-active", selected.has(tag));
           button.setAttribute("aria-pressed", String(selected.has(tag)));
-          renderFilter();
+          render();
         });
       });
 
-      // ---- 菜名搜索（对话框）----
-      const base = dialog.dataset.base || "/";
-      const input = dialog.querySelector("[data-search]");
-      const results = dialog.querySelector("[data-results]");
-      const noResult = dialog.querySelector("[data-search-empty]");
-      const normalize = (value) => (value || "").toLowerCase().replace(/\s+/g, "");
-
-      // 先按子串命中；再把查询当成按顺序出现的字，允许中间隔字
-      const matches = (text, query) => {
-        const target = normalize(text);
-        if (!query) return false;
-        if (target.includes(query)) return true;
-        let cursor = 0;
-        for (const char of target) {
-          if (char === query[cursor]) cursor += 1;
-          if (cursor === query.length) return true;
-        }
-        return false;
-      };
-
-      const renderSearch = () => {
-        const query = normalize(input.value);
-        results.replaceChildren();
-        noResult.hidden = true;
-        if (!query) return;
-
-        let count = 0;
-        shops.forEach((shop) => {
-          const hits = shop.menu.filter((item) => matches(`${item.name}${item.group}`, query));
-          const nameHit = matches(shop.name, query);
-          if (!hits.length && !nameHit) return;
-          count += 1;
-
-          const li = document.createElement("li");
-          li.className = "search-result";
-
-          const link = document.createElement("a");
-          link.href = `${base}restaurants/${shop.id}/`;
-          link.className = "search-result__name";
-          link.textContent = shop.name;
-          li.append(link);
-
-          const unique = [...new Set(hits.map((item) => `${item.name} ${item.price}`))].slice(0, 6);
-          if (unique.length) {
-            const detail = document.createElement("p");
-            detail.className = "search-result__dishes";
-            detail.textContent = unique.join("、") + (hits.length > 6 ? " 等" : "");
-            li.append(detail);
-          }
-
-          results.append(li);
-        });
-
-        noResult.hidden = count > 0;
-      };
-
-      const openSearch = () => {
-        if (typeof dialog.showModal === "function") dialog.showModal();
-        else dialog.setAttribute("open", "");
-        input.value = "";
-        results.replaceChildren();
-        noResult.hidden = true;
-        window.setTimeout(() => input.focus(), 30);
-      };
-
-      const closeSearch = () => {
-        if (typeof dialog.close === "function") dialog.close();
-        else dialog.removeAttribute("open");
-      };
-
-      const openButton = root.querySelector("[data-search-open]");
-      if (openButton) openButton.addEventListener("click", openSearch);
-      dialog.querySelector("[data-search-close]").addEventListener("click", closeSearch);
-      dialog.addEventListener("click", (event) => {
-        if (event.target === dialog) closeSearch();
-      });
-      input.addEventListener("input", renderSearch);
-
-      // 首页的「搜菜名」按钮 / 标签链接落到这里
-      const params = new URLSearchParams(window.location.search);
-      const initialTag = params.get("tag");
+      // 首页标签链接落到这里：/restaurants/?tag=xxx
+      const initialTag = new URLSearchParams(window.location.search).get("tag");
       if (initialTag) {
         const button = Array.from(root.querySelectorAll("[data-tag]")).find(
           (element) => element.dataset.tag === initialTag,
         );
         if (button) button.click();
       }
-      if (params.get("search") === "1") openSearch();
     })();
   </script>
 </BaseLayout>

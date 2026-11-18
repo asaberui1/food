@@ -17,7 +17,7 @@ menu:
       - { name: 麻辣锅, price: ¥38 }
       - { name: 鸳鸯锅, price: ¥38 }
       - { name: 清汤锅, price: ¥28 }
-  - title: 汤粉（面）类
+  - title: 单人餐
     items:
       - { name: 牛肉拌面, price: ¥18/23 }
       - { name: 牛杂拌面, price: ¥22/27 }
@@ -30,6 +30,8 @@ menu:
       - { name: 红烧牛杂盖浇饭, price: ¥25 }
       - { name: 牛肉清汤, price: ¥5 }
       - { name: 拌面, price: ¥10 }
+      - { name: 白米饭, price: ¥3 }
+      - { name: 面条（生）, price: ¥6 }
   - title: 素菜类
     items:
       - { name: 大白菜, price: ¥6 }
@@ -93,10 +95,6 @@ menu:
       - { name: 熟牛蝎子, price: ¥48 }
       - { name: 熟牛杂, price: ¥48 }
       - { name: 熟牛排, price: ¥68 }
-  - title: 点心
-    items:
-      - { name: 白米饭, price: ¥3 }
-      - { name: 面条（生）, price: ¥6 }
 tags: [盖浇饭]
 featured: false
 ---

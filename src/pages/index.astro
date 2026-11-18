@@ -5,6 +5,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import ShopCard from "../components/ShopCard.astro";
+import SearchDialog from "../components/SearchDialog.astro";
 import { siteConfig } from "../config/site";
 import { withBase } from "../lib/urls";
 import { allTagsOf } from "../lib/shops";
@@ -21,6 +22,15 @@ const samples = shops.filter((shop) => shop.data.sample).length;
 
 // 跑马灯直接用站内标签，点一下就能跳到对应的筛选结果
 const marqueeItems = allTagsOf(shops);
+
+// 首页也能直接搜菜名，不用先跳转
+const searchIndex = shops.map((shop) => ({
+  id: shop.id,
+  name: shop.data.name,
+  menu: shop.data.menu.flatMap((group) =>
+    group.items.map((item) => ({ name: item.name, price: item.price, group: group.title })),
+  ),
+}));
 
 // 区块编号按实际渲染的区块算，跳过哪个都不会跳号
 const steps = [
@@ -135,7 +145,7 @@ const structuredData = {
                   还没想好吃什么？
                 </h2>
                 <p class="section-note reveal">
-                  下面这三家是随机挑的，刷新一次换一批；想按口味找，去全部餐馆慢慢逛。
+                  下面这三家是随机挑的，点「换一批」或者刷新页面都会重新抽；想按口味找，去全部餐馆慢慢逛。
                 </p>
               </header>
 
@@ -143,9 +153,12 @@ const structuredData = {
                 <a class="button-link" href={withBase("/restaurants/")}>
                   查看全部 {shops.length} 家 <span aria-hidden="true">-&gt;</span>
                 </a>
-                <a class="search-link" href={`${withBase("/restaurants/")}?search=1`}>
+                <button type="button" class="button-link" data-search-open>
                   只想吃某道菜？搜菜名
-                </a>
+                </button>
+                <button type="button" class="reshuffle" data-reshuffle>
+                  换一批 <span aria-hidden="true">↻</span>
+                </button>
               </div>
 
               <div class="shop-grid" data-random-picks>
@@ -221,18 +234,30 @@ const structuredData = {
 
   <Footer />
 
+  <SearchDialog index={searchIndex} />
+
   <script is:inline>
     (() => {
       const grid = document.querySelector("[data-random-picks]");
       if (!grid) return;
+
       const items = Array.from(grid.children);
       if (items.length <= 3) return;
 
-      const picked = new Set();
-      while (picked.size < 3) picked.add(Math.floor(Math.random() * items.length));
-      items.forEach((item, index) => {
-        item.hidden = !picked.has(index);
-      });
+      const pick = () => {
+        items.forEach((item) => {
+          item.hidden = false;
+        });
+
+        const picked = new Set();
+        while (picked.size < 3) picked.add(Math.floor(Math.random() * items.length));
+        items.forEach((item, index) => {
+          item.hidden = !picked.has(index);
+        });
+      };
+
+      pick();
+      document.querySelector("[data-reshuffle]")?.addEventListener("click", pick);
     })();
   </script>
 </BaseLayout>

@@ -23,6 +23,8 @@
   --muted: #51463b;
   --muted-foreground: #b2a18d;
   --border: rgb(117 97 76 / 0.48);
+  --button-bg: #e6d5b6;
+  --button-fg: #1f150d;
   --ember: #d98a34;
   --ember-foreground: #1c130b;
   --focus: #f2b15d;
@@ -109,8 +111,8 @@ a:hover {
   top: 1rem;
   z-index: 100;
   transform: translateY(-150%);
-  background: var(--cream);
-  color: var(--background);
+  background: var(--button-bg);
+  color: var(--button-fg);
   padding: 0.75rem 1rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -260,8 +262,8 @@ a:hover {
   align-items: center;
   gap: 0.75rem;
   border: 1px solid transparent;
-  background: var(--cream);
-  color: var(--background);
+  background: var(--button-bg);
+  color: var(--button-fg);
   cursor: pointer;
   padding: 0.9rem 1.25rem;
   text-transform: uppercase;
@@ -288,8 +290,8 @@ a:hover {
 }
 
 .button-link--outline:hover {
-  background: var(--cream);
-  color: var(--background);
+  background: var(--button-bg);
+  color: var(--button-fg);
 }
 
 .ember-dot {
@@ -2139,6 +2141,23 @@ button.chip:focus-visible {
   align-items: center;
   gap: 0.75rem 1.25rem;
   margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.reshuffle {
+  border: 0;
+  border-bottom: 1px solid rgb(251 240 220 / 0.35);
+  background: transparent;
+  color: var(--cream);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.35rem 0;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+
+.reshuffle:hover {
+  color: var(--ember);
+  border-color: var(--ember);
 }
 
 .search-link {

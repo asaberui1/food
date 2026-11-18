@@ -50,7 +50,16 @@ const steps = [
 const step = (label: string) => String(steps.indexOf(label) + 1).padStart(2, "0");
 
 // 价格可能是「¥98–208」或「¥18/小份」这类写法，取区间两端
-const priceNumbers = (price: string) => (price.match(/\d+(?:\.\d+)?/g) ?? []).map(Number);
+// 价格按「/」分段，跳过 500克 这类单位，只留真正的价格
+const priceNumbers = (price: string) =>
+  price
+    .split("/")
+    .map((part) => {
+      if (/(克|kg|ml|升)/i.test(part)) return Number.NaN;
+      const match = part.match(/\d+(?:\.\d+)?/);
+      return match ? Number(match[0]) : Number.NaN;
+    })
+    .filter((value) => Number.isFinite(value) && value > 0);
 const menuGroups = menu.map((group) => {
   const firsts: number[] = [];
   const lasts: number[] = [];

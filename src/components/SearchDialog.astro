@@ -1,0 +1,129 @@
+---
+type MenuItem = { name: string; price: string; group: string };
+type ShopIndex = { id: string; name: string; menu: MenuItem[] };
+
+type Props = { index: ShopIndex[] };
+
+const { index } = Astro.props;
+---
+
+<dialog class="search-dialog" data-search-dialog data-base={import.meta.env.BASE_URL} aria-labelledby="search-title">
+  <div class="search-dialog__inner">
+    <div class="search-dialog__head">
+      <h2 id="search-title" class="search-dialog__title">搜菜名</h2>
+      <button type="button" class="search-dialog__close" data-search-close aria-label="关闭搜索">关闭</button>
+    </div>
+
+    <label class="search-field">
+      <span class="label-eyebrow">菜名或店名</span>
+      <input
+        type="search"
+        name="dish"
+        data-search
+        placeholder="椒盐排条、牛蛙、盖浇饭…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </label>
+    <p class="search-hint">只有录入了菜单的店才会出现在菜名结果里。</p>
+
+    <ul class="search-results" data-results></ul>
+    <p class="search-hint" data-search-empty hidden>没有找到。换个菜名试试，或者用标签筛。</p>
+  </div>
+</dialog>
+
+<script type="application/json" class="search-index" set:html={JSON.stringify(index)} />
+
+<script is:inline>
+  (() => {
+    const dialog = document.querySelector("[data-search-dialog]");
+    const indexNode = document.querySelector(".search-index");
+    if (!dialog || !indexNode) return;
+
+    const base = dialog.dataset.base || "/";
+    const shops = JSON.parse(indexNode.textContent);
+    const input = dialog.querySelector("[data-search]");
+    const results = dialog.querySelector("[data-results]");
+    const noResult = dialog.querySelector("[data-search-empty]");
+
+    const normalize = (value) => (value || "").toLowerCase().replace(/\s+/g, "");
+
+    // 先按子串命中；再把查询当成按顺序出现的字，允许中间隔字
+    const matches = (text, query) => {
+      const target = normalize(text);
+      if (!query) return false;
+      if (target.includes(query)) return true;
+      let cursor = 0;
+      for (const char of target) {
+        if (char === query[cursor]) cursor += 1;
+        if (cursor === query.length) return true;
+      }
+      return false;
+    };
+
+    const render = () => {
+      const query = normalize(input.value);
+      results.replaceChildren();
+      noResult.hidden = true;
+      if (!query) return;
+
+      let count = 0;
+      shops.forEach((shop) => {
+        const hits = shop.menu.filter((item) => matches(`${item.name}${item.group}`, query));
+        const nameHit = matches(shop.name, query);
+        if (!hits.length && !nameHit) return;
+        count += 1;
+
+        const li = document.createElement("li");
+        li.className = "search-result";
+
+        const link = document.createElement("a");
+        link.href = `${base}restaurants/${shop.id}/`;
+        link.className = "search-result__name";
+        link.textContent = shop.name;
+        li.append(link);
+
+        const unique = [...new Set(hits.map((item) => `${item.name} ${item.price}`))].slice(0, 6);
+        if (unique.length) {
+          const detail = document.createElement("p");
+          detail.className = "search-result__dishes";
+          detail.textContent = unique.join("、") + (hits.length > 6 ? " 等" : "");
+          li.append(detail);
+        }
+
+        results.append(li);
+      });
+
+      noResult.hidden = count > 0;
+    };
+
+    const open = () => {
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else dialog.setAttribute("open", "");
+      input.value = "";
+      results.replaceChildren();
+      noResult.hidden = true;
+      window.setTimeout(() => input.focus(), 30);
+    };
+
+    const close = () => {
+      if (typeof dialog.close === "function") dialog.close();
+      else dialog.removeAttribute("open");
+    };
+
+    document.querySelectorAll("[data-search-open]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        open();
+      });
+    });
+
+    dialog.querySelector("[data-search-close]").addEventListener("click", close);
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) close();
+    });
+    input.addEventListener("input", render);
+
+    if (new URLSearchParams(window.location.search).get("search") === "1") open();
+  })();
+</script>
