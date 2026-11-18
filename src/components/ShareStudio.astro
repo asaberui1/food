@@ -1,0 +1,352 @@
+---
+import { getImage } from "astro:assets";
+import Icon from "./Icon.astro";
+import { priceLabel } from "../lib/bills";
+
+type MenuGroup = { title: string; items: { name: string; price: string }[] };
+
+type Props = {
+  shop: any;
+  menu: MenuGroup[];
+  qr: string;
+};
+
+const { shop, menu, qr } = Astro.props;
+const { name, cuisine, address, cover, dishes } = shop.data;
+
+const coverUrl = cover ? (await getImage({ src: cover, width: 1400, quality: 88, format: "webp" })).src : null;
+const defaultDishes = (dishes ?? []).slice(0, 3).map((dish: any) => dish.name);
+
+const payload = {
+  name,
+  cuisine,
+  address,
+  price: priceLabel(shop),
+  cover: coverUrl,
+  qr,
+  dishes: defaultDishes,
+  menu,
+};
+---
+
+<button type="button" class="button-link" data-studio-open>
+  <Icon name="share" size={15} /> 自定义分享卡
+</button>
+
+<dialog class="studio" data-studio>
+  <div class="studio__card">
+    <canvas class="studio__canvas" width="1080" height="1440" data-studio-canvas></canvas>
+
+    <div class="studio__dpad" aria-label="调整底图位置">
+      <button type="button" data-dir="up" aria-label="向上"><Icon name="chevron" size={16} /></button>
+      <button type="button" data-dir="left" aria-label="向左"><Icon name="chevron" size={16} /></button>
+      <button type="button" data-dir="right" aria-label="向右"><Icon name="chevron" size={16} /></button>
+      <button type="button" data-dir="down" aria-label="向下"><Icon name="chevron" size={16} /></button>
+    </div>
+
+    <div class="studio__slots" data-studio-slots></div>
+
+    <div class="studio__result" data-studio-result hidden>
+      <img data-studio-result-img alt="分享卡成品" />
+    </div>
+  </div>
+
+  <div class="studio__bar">
+    <button type="button" class="button-link" data-studio-generate>生成分享卡</button>
+    <a class="button-link" data-studio-download download hidden>下载</a>
+    <button type="button" class="button-link button-link--outline" data-studio-edit hidden>重新调整</button>
+    <span class="studio__hint" data-studio-hint>方向键挪底图，铅笔换菜</span>
+    <button type="button" class="studio__close" data-studio-close>关闭</button>
+  </div>
+
+  <div class="studio__picker" data-studio-picker hidden>
+    <div class="studio__picker-head">
+      <p class="label-eyebrow">换一道菜（最多 3 道）</p>
+      <button type="button" class="studio__picker-close" data-picker-close>完成</button>
+    </div>
+    <div class="studio__picker-body" data-picker-body></div>
+  </div>
+</dialog>
+
+<script type="application/json" id="studio-data" set:html={JSON.stringify(payload)} />
+
+<script is:inline>
+  (() => {
+    const dialog = document.querySelector("[data-studio]");
+    const indexNode = document.getElementById("studio-data");
+    if (!dialog || !indexNode) return;
+
+    const data = JSON.parse(indexNode.textContent);
+    const canvas = dialog.querySelector("[data-studio-canvas]");
+    const ctx = canvas.getContext("2d");
+    const card = dialog.querySelector(".studio__card");
+    const slotsRoot = dialog.querySelector("[data-studio-slots]");
+    const picker = dialog.querySelector("[data-studio-picker]");
+    const pickerBody = dialog.querySelector("[data-picker-body]");
+    const result = dialog.querySelector("[data-studio-result]");
+    const resultImg = dialog.querySelector("[data-studio-result-img]");
+    const download = dialog.querySelector("[data-studio-download]");
+    const MAX = 3;
+
+    let offsetX = 0.5;
+    let offsetY = 0.45;
+    let selected = [...data.dishes];
+    let showDishes = false;
+
+    const cover = new Image();
+    let coverReady = false;
+    const qr = new Image();
+    let qrReady = false;
+    if (data.cover) {
+      cover.onload = () => {
+        coverReady = true;
+        draw();
+      };
+      cover.src = data.cover;
+    }
+    qr.onload = () => {
+      qrReady = true;
+      draw();
+    };
+    qr.src = data.qr;
+
+    const fitted = (text, maxWidth) => {
+      if (ctx.measureText(text).width <= maxWidth) return text;
+      let out = text;
+      while (out.length > 1 && ctx.measureText(`${out}…`).width > maxWidth) out = out.slice(0, -1);
+      return `${out}…`;
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, 1080, 1440);
+
+      if (coverReady) {
+        const scale = Math.max(1080 / cover.width, 1440 / cover.height);
+        const w = cover.width * scale;
+        const h = cover.height * scale;
+        ctx.drawImage(cover, -(w - 1080) * offsetX, -(h - 1440) * offsetY, w, h);
+      } else {
+        ctx.fillStyle = "#1d1813";
+        ctx.fillRect(0, 0, 1080, 1440);
+      }
+
+      const top = ctx.createLinearGradient(0, 0, 0, 280);
+      top.addColorStop(0, "rgba(13,10,7,0.86)");
+      top.addColorStop(1, "rgba(13,10,7,0)");
+      ctx.fillStyle = top;
+      ctx.fillRect(0, 0, 1080, 280);
+
+      const bottom = ctx.createLinearGradient(0, 740, 0, 1440);
+      bottom.addColorStop(0, "rgba(13,10,7,0)");
+      bottom.addColorStop(0.42, "rgba(13,10,7,0.68)");
+      bottom.addColorStop(1, "rgba(11,8,6,0.98)");
+      ctx.fillStyle = bottom;
+      ctx.fillRect(0, 740, 1080, 700);
+
+      ctx.fillStyle = "#d98a34";
+      ctx.fillRect(88, 96, 10, 10);
+      ctx.fillStyle = "rgba(246,238,226,0.92)";
+      ctx.font = '24px "PingFang SC", sans-serif';
+      ctx.fillText("创智食单", 112, 108);
+      ctx.fillStyle = "rgba(240,231,216,0.6)";
+      ctx.font = '20px "PingFang SC", sans-serif';
+      ctx.fillText("上海创智学院周边", 112, 138);
+
+      ctx.shadowColor = "rgba(0,0,0,0.6)";
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetY = 2;
+
+      ctx.fillStyle = "#f9f2e6";
+      ctx.font = '500 66px "Noto Serif SC", serif';
+      ctx.fillText(fitted(data.name, 700), 84, 1092);
+
+      ctx.fillStyle = "#f0b979";
+      ctx.font = '28px "PingFang SC", sans-serif';
+      const meta = [data.cuisine, data.price].filter((v) => v && v !== "待补充").join(" · ");
+      ctx.fillText(fitted(meta, 600), 88, 1144);
+
+      ctx.fillStyle = "rgba(240,231,216,0.74)";
+      ctx.font = '26px "PingFang SC", sans-serif';
+      ctx.fillText(fitted(data.address, 600), 88, 1186);
+
+      if (showDishes) {
+        ctx.font = '28px "Noto Serif SC", serif';
+        selected.slice(0, MAX).forEach((dish, index) => {
+          const price = findPrice(dish);
+          ctx.fillStyle = "rgba(236,226,206,0.92)";
+          ctx.fillText(fitted(`· ${dish}${price ? "  " + price : ""}`, 600), 88, 1250 + index * 46);
+        });
+      }
+
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetY = 0;
+
+      if (qrReady) {
+        const size = 168;
+        const pad = 12;
+        const x = 1080 - 88 - size;
+        const y = 1440 - 92 - size;
+        ctx.fillStyle = "#fbf0dc";
+        ctx.beginPath();
+        ctx.roundRect(x - pad, y - pad, size + pad * 2, size + pad * 2, 14);
+        ctx.fill();
+        ctx.drawImage(qr, x, y, size, size);
+      }
+    };
+
+    const findPrice = (name) => {
+      for (const group of data.menu || []) {
+        const hit = group.items.find((item) => item.name === name);
+        if (hit) return hit.price;
+      }
+      const dish = (data.dishes || []).find((d) => d === name);
+      return "";
+    };
+
+    // 卡片内的浮层按卡片实际宽度换算
+    const syncScale = () => {
+      const width = card.clientWidth;
+      card.style.setProperty("--s", `${width / 1080}`);
+    };
+
+    const renderSlots = () => {
+      slotsRoot.replaceChildren();
+      for (let index = 0; index < MAX; index += 1) {
+        const name = selected[index];
+        const slot = document.createElement("div");
+        slot.className = "studio__slot";
+
+        const label = document.createElement("span");
+        label.className = "studio__slot-name";
+        label.textContent = name || "选一道菜";
+        slot.append(label);
+
+        const tool = document.createElement("button");
+        tool.type = "button";
+        tool.className = "studio__slot-tool";
+        tool.setAttribute("aria-label", name ? "更换这道菜" : "选择一道菜");
+        tool.innerHTML = '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m13.2 3.6 3.2 3.2L7.2 16 3 17l1-4.2z"/><path d="m11.7 5.1 3.2 3.2"/></svg>';
+        tool.addEventListener("click", () => openPicker(index));
+        slot.append(tool);
+
+        if (!name) slot.classList.add("is-empty");
+        slotsRoot.append(slot);
+      }
+    };
+
+    const openPicker = (slotIndex) => {
+      picker.hidden = false;
+      picker.dataset.slot = String(slotIndex);
+      pickerBody.replaceChildren();
+
+      if (!data.menu || !data.menu.length) {
+        const empty = document.createElement("p");
+        empty.className = "studio__empty";
+        empty.textContent = "这家店还没有录入菜单，暂时没得换。";
+        pickerBody.append(empty);
+        return;
+      }
+
+      data.menu.forEach((group) => {
+        const title = document.createElement("p");
+        title.className = "label-eyebrow studio__group";
+        title.textContent = group.title;
+        pickerBody.append(title);
+
+        group.items.forEach((item) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "studio__pick";
+          if (selected.includes(item.name)) button.classList.add("is-on");
+          button.innerHTML = `<span>${item.name}</span><span class="studio__pick-price">${item.price}</span>`;
+          button.addEventListener("click", () => {
+            const existing = selected.indexOf(item.name);
+            if (existing >= 0) {
+              selected.splice(existing, 1);
+              button.classList.remove("is-on");
+              renderSlots();
+              draw();
+              return;
+            }
+            if (selected.length >= MAX) return;
+            selected[slotIndex] = item.name;
+            selected = selected.filter(Boolean).slice(0, MAX);
+            closePicker();
+            renderSlots();
+            draw();
+          });
+          pickerBody.append(button);
+        });
+      });
+    };
+
+    const closePicker = () => {
+      picker.hidden = true;
+    };
+
+    // 方向键
+    dialog.querySelectorAll("[data-dir]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const step = 0.06;
+        const dir = button.dataset.dir;
+        if (dir === "up") offsetY = Math.max(0, offsetY - step);
+        if (dir === "down") offsetY = Math.min(1, offsetY + step);
+        if (dir === "left") offsetX = Math.max(0, offsetX - step);
+        if (dir === "right") offsetX = Math.min(1, offsetX + step);
+        draw();
+      });
+    });
+
+    // 生成
+    const generate = dialog.querySelector("[data-studio-generate]");
+    const edit = dialog.querySelector("[data-studio-edit]");
+    const hint = dialog.querySelector("[data-studio-hint]");
+
+    generate.addEventListener("click", () => {
+      showDishes = true;
+      draw();
+      const url = canvas.toDataURL("image/jpeg", 0.92);
+      resultImg.src = url;
+      download.href = url;
+      result.hidden = false;
+      card.classList.add("is-result");
+      generate.hidden = true;
+      edit.hidden = false;
+      download.hidden = false;
+      if (hint) hint.hidden = true;
+      showDishes = false;
+    });
+
+    edit.addEventListener("click", () => {
+      result.hidden = true;
+      card.classList.remove("is-result");
+      generate.hidden = false;
+      edit.hidden = true;
+      download.hidden = true;
+      if (hint) hint.hidden = false;
+      draw();
+    });
+
+    dialog.querySelector("[data-picker-close]").addEventListener("click", closePicker);
+    dialog.querySelector("[data-studio-close]").addEventListener("click", () => dialog.close());
+
+    const open = () => {
+      renderSlots();
+      dialog.showModal();
+      syncScale();
+      draw();
+    };
+
+    document.querySelectorAll("[data-studio-open]").forEach((button) => {
+      button.addEventListener("click", open);
+    });
+
+    window.addEventListener("resize", () => {
+      if (dialog.open) syncScale();
+    });
+
+    document.fonts.ready.then(() => {
+      if (dialog.open) draw();
+    });
+  })();
+</script>

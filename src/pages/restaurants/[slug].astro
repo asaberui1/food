@@ -10,6 +10,7 @@ import { tagsOf } from "../../lib/shops";
 import { averagePerPerson, billComposition, billPerPerson, priceLabel } from "../../lib/bills";
 import Icon from "../../components/Icon.astro";
 import Lightbox from "../../components/Lightbox.astro";
+import ShareStudio from "../../components/ShareStudio.astro";
 
 export async function getStaticPaths() {
   const shops = await getCollection("restaurants");
@@ -393,27 +394,31 @@ const structuredData = sample
             <img
               class="share-card__image"
               src={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
-              alt={`${name} 的分享卡，右下角有二维码`}
+              alt={`${name} 的默认分享卡`}
               width="1080"
               height="1350"
               loading="lazy"
               data-lightbox
             />
             <div class="share-card__copy">
-              <p>手机上长按图片保存；电脑上右键「图片另存为」或「复制图片」。</p>
+              <p>默认卡是现成的，直接存；想换成自己点的菜，点下面自己拼一张。</p>
               <div class="share-card__actions">
-                <a class="button-link" href={withBase(`/restaurants/${shop.id}/share/`)}>
-                  挑几道菜再做一张 <Icon name="arrow-right" />
-                </a>
+                <ShareStudio
+                  shop={shop}
+                  menu={menu.map((group) => ({
+                    title: group.title,
+                    items: group.items.map((item) => ({ name: item.name, price: item.price })),
+                  }))}
+                  qr={`${import.meta.env.BASE_URL}qr/${shop.id}.png`}
+                />
                 <a
                   class="button-link button-link--outline"
                   href={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
                   download={`${name}-创智食单.jpg`}
                 >
-                  直接下载默认卡
+                  下载默认卡
                 </a>
               </div>
-              <p class="search-hint">卡片右下角是这家店的二维码，扫开就是这个页面。</p>
             </div>
           </div>
         </section>
