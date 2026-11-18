@@ -209,10 +209,14 @@ const structuredData = sample
                     <tr>
                       <td>{record.people} 人</td>
                       <td>
-                        <details class="bill-dish">
-                          <summary class="bill-dish__summary">{billComposition(record)}</summary>
-                          <p class="bill-dish__list">{record.dishes.join("、")}</p>
-                        </details>
+                        <span class="bill-dish">
+                          <button type="button" class="bill-dish__button" aria-expanded="false">
+                            {billComposition(record)}
+                          </button>
+                          <span class="bill-dish__popover" role="tooltip" hidden>
+                            {record.dishes.join("、")}
+                          </span>
+                        </span>
                       </td>
                       <td class="bill-amount">
                         ¥{record.total}
@@ -443,4 +447,75 @@ const structuredData = sample
   <Footer />
 
   <Lightbox />
+
+  <script is:inline>
+    (() => {
+      const cells = Array.from(document.querySelectorAll(".bill-dish"));
+      if (!cells.length) return;
+      const margin = 12;
+      const canHover = window.matchMedia("(hover: hover)").matches;
+
+      const place = (button, popover) => {
+        popover.hidden = false;
+        const rect = button.getBoundingClientRect();
+        const box = popover.getBoundingClientRect();
+
+        let left = rect.left;
+        if (left + box.width > window.innerWidth - margin) left = window.innerWidth - margin - box.width;
+        if (left < margin) left = margin;
+
+        let top = rect.bottom + 8;
+        if (top + box.height > window.innerHeight - margin) top = rect.top - 8 - box.height;
+        if (top < margin) top = margin;
+
+        popover.style.left = `${left}px`;
+        popover.style.top = `${top}px`;
+      };
+
+      cells.forEach((cell) => {
+        const button = cell.querySelector(".bill-dish__button");
+        const popover = cell.querySelector(".bill-dish__popover");
+        if (!button || !popover) return;
+
+        const open = () => {
+          place(button, popover);
+          button.setAttribute("aria-expanded", "true");
+        };
+        const close = () => {
+          popover.hidden = true;
+          button.setAttribute("aria-expanded", "false");
+        };
+
+        if (canHover) {
+          button.addEventListener("mouseenter", open);
+          button.addEventListener("mouseleave", close);
+          button.addEventListener("focus", open);
+          button.addEventListener("blur", close);
+        }
+
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          if (popover.hidden) open();
+          else close();
+        });
+      });
+
+      document.addEventListener("click", (event) => {
+        if (event.target.closest(".bill-dish")) return;
+        cells.forEach((cell) => {
+          const popover = cell.querySelector(".bill-dish__popover");
+          const button = cell.querySelector(".bill-dish__button");
+          if (popover) popover.hidden = true;
+          if (button) button.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        cells.forEach((cell) => {
+          const popover = cell.querySelector(".bill-dish__popover");
+          if (popover && !popover.hidden) place(cell.querySelector(".bill-dish__button"), popover);
+        });
+      });
+    })();
+  </script>
 </BaseLayout>
