@@ -1504,3 +1504,32 @@
   color: var(--muted-foreground);
   font-size: 0.95rem;
 }
+
+.lightbox__status {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  margin: 0;
+  border: 1px solid var(--border);
+  background: rgb(23 19 15 / 0.9);
+  color: var(--cream);
+  font-size: 0.95rem;
+  padding: 0.55rem 1rem;
+  pointer-events: none;
+}
+
+.lightbox__status::before {
+  content: "";
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.55rem;
+  border-radius: 999px;
+  background: var(--ember);
+  animation: ember-pulse 1.2s ease-in-out infinite;
+}
+
+.lightbox img {
+  transition: opacity 220ms ease;
+}

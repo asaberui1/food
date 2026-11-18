@@ -5,6 +5,7 @@
 <dialog class="lightbox" data-lightbox-dialog>
   <button type="button" class="lightbox__close" data-lightbox-close aria-label="关闭大图">关闭</button>
   <img data-lightbox-img alt="" />
+  <p class="lightbox__status" data-lightbox-status hidden>正在加载大图…</p>
 </dialog>
 
 <script is:inline>
@@ -30,14 +31,44 @@
       return entries[0]?.url || img.src;
     };
 
+    const status = dialog.querySelector("[data-lightbox-status]");
+
+    const openDialog = () => {
+      if (typeof dialog.showModal === "function") dialog.showModal();
+      else dialog.setAttribute("open", "");
+    };
+
     document.querySelectorAll("[data-lightbox]").forEach((img) => {
       img.addEventListener("click", () => {
-        image.src = img.dataset.full || largestSource(img);
+        const thumb = img.currentSrc || img.src;
+        const full = img.dataset.full || largestSource(img);
+
+        // 先用缩略图顶上，避免黑屏；大图在后台加载完再替换
+        image.src = thumb;
         image.alt = img.alt || "";
-        if (typeof dialog.showModal === "function") dialog.showModal();
-        else dialog.setAttribute("open", "");
+        image.classList.add("is-loading");
+        openDialog();
+
+        if (full && full !== thumb) {
+          status.hidden = false;
+          status.textContent = "正在加载大图…";
+          const preload = new Image();
+          preload.onload = () => {
+            image.src = full;
+            status.hidden = true;
+          };
+          preload.onerror = () => {
+            status.textContent = "大图加载失败，先看这张";
+            window.setTimeout(() => {
+              status.hidden = true;
+            }, 2400);
+          };
+          preload.src = full;
+        }
       });
     });
+
+    image.addEventListener("load", () => image.classList.remove("is-loading"));
 
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) close();
