@@ -417,15 +417,10 @@ a:hover {
   color: rgb(251 240 220 / 0.86);
 }
 
-.marquee b {
-  display: inline-grid;
-  place-items: center;
-  width: clamp(3.2rem, 7vw, 5.75rem);
+.marquee__dot {
+  flex: none;
+  margin-inline: clamp(1.4rem, 3.2vw, 2.6rem);
   color: var(--ember);
-  font-family: var(--font-sans);
-  font-size: 0.58em;
-  font-weight: 400;
-  line-height: 1;
 }
 
 .section-kicker {
@@ -2217,9 +2212,9 @@ button.chip:focus-visible {
   color: var(--ember);
 }
 
-.marquee:hover .marquee-track,
-.marquee:focus-within .marquee-track {
-  animation-play-state: paused;
+.marquee-track {
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .bill-block {

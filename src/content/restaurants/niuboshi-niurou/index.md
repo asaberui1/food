@@ -1,6 +1,6 @@
 ---
 name: 牛博士牛肉汤馆
-cuisine: 牛肉汤锅
+cuisine: 汤锅
 dining: both
 address: 华发路 297 号
 summary: 牛肉按锅卖，一个人也能吃碗拌面；冰鲜的阿根廷牛肉，性价比相对高。

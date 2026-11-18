@@ -34,12 +34,7 @@ const searchIndex = shops.map((shop) => ({
 }));
 
 // 区块编号按实际渲染的区块算，跳过哪个都不会跳号
-const steps = [
-  showFeatured && "recent",
-  shops.length > 0 && "all",
-  "method",
-  "submit",
-].filter(Boolean) as string[];
+const steps = [showFeatured && "recent", shops.length > 0 && "all", "submit"].filter(Boolean) as string[];
 const no = (key: string) => String(steps.indexOf(key) + 1).padStart(2, "0");
 
 const structuredData = {
@@ -99,7 +94,9 @@ const structuredData = {
           [...marqueeItems, ...marqueeItems].map((item) => (
             <a class="marquee__item" href={`${withBase("/restaurants/")}?tag=${encodeURIComponent(item)}`}>
               {item}
-              <b aria-hidden="true">*</b>
+              <svg class="marquee__dot" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true">
+                <circle cx="4" cy="4" r="3.2" fill="currentColor"></circle>
+              </svg>
             </a>
           ))
         }
@@ -175,32 +172,6 @@ const structuredData = {
       )
     }
 
-    <section class="section" aria-labelledby="method-title">
-      <div class="container">
-        <header class="section-head">
-          <p class="label-eyebrow reveal">{no("method")} — 怎么写的</p>
-          <h2 id="method-title" class="section-title display reveal">
-            吃过的，<span style="color: var(--ember);">才写</span>。
-          </h2>
-        </header>
-
-        <div class="feature-grid">
-          <section class="reveal">
-            <p class="label-eyebrow">亲自吃过</p>
-            <p>每一家都至少去过两次，一次吃招牌，一次点别的。</p>
-          </section>
-          <section class="reveal reveal-delay-1">
-            <p class="label-eyebrow">价格对得上小票</p>
-            <p>多人聚餐记实际结账的金额；单人餐只列菜单，丰俭由人。</p>
-          </section>
-          <section class="reveal reveal-delay-2">
-            <p class="label-eyebrow">照片不修图</p>
-            <p>手机原图，室内偏暗就是偏暗，不补光。</p>
-          </section>
-        </div>
-      </div>
-    </section>
-
     <section class="section reservation" aria-labelledby="submit-title">
       <div class="container section-grid">
         <div class="reservation-copy">
@@ -259,6 +230,22 @@ const structuredData = {
 
       pick();
       document.querySelector("[data-reshuffle]")?.addEventListener("click", pick);
+
+      // 跑马灯：悬停时用 Web Animations API 暂停，避免 CSS 暂停在部分浏览器里跳帧
+      const marquee = document.querySelector(".marquee");
+      const track = document.querySelector(".marquee-track");
+      if (marquee && track && typeof track.getAnimations === "function") {
+        const setPaused = (paused) => {
+          track.getAnimations().forEach((animation) => {
+            if (paused) animation.pause();
+            else animation.play();
+          });
+        };
+        marquee.addEventListener("mouseenter", () => setPaused(true));
+        marquee.addEventListener("mouseleave", () => setPaused(false));
+        marquee.addEventListener("focusin", () => setPaused(true));
+        marquee.addEventListener("focusout", () => setPaused(false));
+      }
     })();
   </script>
 </BaseLayout>

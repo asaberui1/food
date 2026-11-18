@@ -4,7 +4,7 @@ import type { CollectionEntry } from "astro:content";
 const DINING_TAGS: Record<string, string[]> = {
   group: ["多人聚餐"],
   single: ["单人餐"],
-  both: ["单人餐", "多人聚餐", "四六分餐馆"],
+  both: ["单人餐", "四六分餐馆"],
 };
 
 /** 卡片上显示的就餐方式 */

@@ -1,6 +1,6 @@
 ---
 name: 西北红拉面
-cuisine: 拉面
+cuisine: 面食
 dining: single
 address: 罗香路 15 号
 hours: 24 小时营业

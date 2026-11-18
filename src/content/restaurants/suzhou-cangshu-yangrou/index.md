@@ -1,6 +1,6 @@
 ---
 name: 苏州藏书羊肉面馆
-cuisine: 藏书羊肉
+cuisine: 汤锅
 dining: both
 address: 华发路 291 号
 summary: 羊肉按两起卖，一碗汤面 29 元起，锅仔适合几个人分；单人和聚餐都能吃。
