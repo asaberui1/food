@@ -35,6 +35,7 @@ bills:
     total: 222
 menu:
   - title: 特色小炒
+    note: 墙上写「小鱼虾」，二维码点餐里叫「赣味香辣小鱼虾」，是同一道。
     items:
       - { name: 麻婆豆腐, price: ¥20 }
       - { name: 土豆丝（辣椒/酸辣）, price: ¥18 }
