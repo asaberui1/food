@@ -1928,3 +1928,70 @@ textarea {
     grid-template-columns: minmax(0, 1fr) 5.5rem 1.8rem;
   }
 }
+
+/* ---------- 列表页筛选与菜名搜索 ---------- */
+
+.filter-bar {
+  display: grid;
+  gap: 0.9rem;
+  margin-bottom: clamp(1.75rem, 3vw, 2.5rem);
+}
+
+.search-field {
+  display: grid;
+  gap: 0.5rem;
+  max-width: 34rem;
+}
+
+.search-field input {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: rgb(23 19 15 / 0.6);
+  color: var(--cream);
+  font-size: 0.98rem;
+  padding: 0.8rem 1rem;
+  transition: border-color 160ms ease;
+}
+
+.search-field input::placeholder {
+  color: var(--muted);
+}
+
+.search-field input:focus {
+  border-color: var(--ember);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.search-hint {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.search-status {
+  margin: 0 0 1.25rem;
+  color: var(--ember);
+  font-size: 0.86rem;
+  letter-spacing: 0.02em;
+}
+
+.shop-hit {
+  margin: 0.55rem 0 0;
+  color: var(--ember);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.chip {
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1.3;
+}
+
+button.chip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}

@@ -13,7 +13,25 @@ const shops = (await getCollection("restaurants")).sort(
 const cuisines = [...new Set(shops.map((shop) => shop.data.cuisine))];
 const samples = shops.filter((shop) => shop.data.sample).length;
 
-// 每个品类只给第一张卡片挂锚点，供顶部品类导航跳转
+// 就餐方式：单人餐 / 多人聚餐 / 四六分餐馆（两种都行）
+const diningFilters = [
+  { value: "single", label: "单人餐" },
+  { value: "group", label: "多人聚餐" },
+  { value: "both", label: "四六分餐馆" },
+].filter((item) => shops.some((shop) => shop.data.dining === item.value));
+
+// 菜名搜索索引：只有录入了菜单的店才有可搜的菜名
+const searchIndex = shops.map((shop) => ({
+  id: shop.id,
+  name: shop.data.name,
+  cuisine: shop.data.cuisine,
+  dining: shop.data.dining,
+  menu: shop.data.menu.flatMap((group) =>
+    group.items.map((item) => ({ name: item.name, price: item.price, group: group.title })),
+  ),
+}));
+
+// 每个品类只给第一张卡片挂锚点，供首页的品类链接跳转
 const seen = new Set<string>();
 ---
 
@@ -45,14 +63,45 @@ const seen = new Set<string>();
             </div>
           ) : (
             <>
-              <nav class="cuisine-nav cuisine-nav--page" aria-label="按品类筛选" data-filter>
-                <a class="chip is-active" href="#all" data-filter-value="">全部</a>
-                {cuisines.map((cuisine) => (
-                  <a class="chip" href={`#${cuisine}`} data-filter-value={cuisine}>
-                    {cuisine}
-                  </a>
-                ))}
-              </nav>
+              <div class="filter-bar" data-filters>
+                <label class="search-field">
+                  <span class="label-eyebrow">搜菜名</span>
+                  <input
+                    type="search"
+                    name="dish"
+                    data-search
+                    placeholder="椒盐排条、牛蛙、盖浇饭…"
+                    autocomplete="off"
+                    spellcheck="false"
+                  />
+                </label>
+                <p class="search-hint">只有录入了菜单的店才能按菜名搜到；也可以直接搜店名或品类。</p>
+
+                <nav class="cuisine-nav" aria-label="按品类筛选" data-filter-group="cuisine">
+                  <button type="button" class="chip is-active" data-value="">全部品类</button>
+                  {cuisines.map((cuisine) => (
+                    <button type="button" class="chip" data-value={cuisine}>
+                      {cuisine}
+                    </button>
+                  ))}
+                </nav>
+
+                <nav class="cuisine-nav" aria-label="按就餐方式筛选" data-filter-group="dining">
+                  <button type="button" class="chip is-active" data-value="">全部方式</button>
+                  {diningFilters.map((item) => (
+                    <button type="button" class="chip" data-value={item.value}>
+                      {item.label}
+                    </button>
+                  ))}
+                </nav>
+
+                <p class="search-hint">
+                  「四六分餐馆」：一个人来能吃，四五个人点一桌炒菜也行。
+                </p>
+              </div>
+
+              <p class="search-status" data-status hidden></p>
+
               <div class="shop-grid shop-grid--list">
                 {shops.map((shop) => {
                   const isFirst = !seen.has(shop.data.cuisine);
@@ -61,9 +110,13 @@ const seen = new Set<string>();
                     <div
                       id={isFirst ? shop.data.cuisine : undefined}
                       class="anchor-target"
+                      data-shop
+                      data-id={shop.id}
                       data-cuisine={shop.data.cuisine}
+                      data-dining={shop.data.dining}
                     >
                       <ShopCard shop={shop} />
+                      <p class="shop-hit" data-hit hidden></p>
                     </div>
                   );
                 })}
@@ -77,25 +130,111 @@ const seen = new Set<string>();
 
   <Footer />
 
+  <script type="application/json" id="shop-index" set:html={JSON.stringify(searchIndex)} />
+
   <script is:inline>
     (() => {
-      const nav = document.querySelector("[data-filter]");
-      if (!nav) return;
+      const root = document.querySelector("[data-filters]");
+      const status = document.querySelector("[data-status]");
+      const indexNode = document.getElementById("shop-index");
+      if (!root || !status || !indexNode) return;
 
-      const cards = Array.from(document.querySelectorAll("[data-cuisine]"));
-      const links = Array.from(nav.querySelectorAll("a[data-filter-value]"));
+      const cards = Array.from(document.querySelectorAll("[data-shop]"));
+      const shops = JSON.parse(indexNode.textContent);
+      const byId = new Map(shops.map((shop) => [shop.id, shop]));
+      const search = root.querySelector("[data-search]");
+      const state = { cuisine: "", dining: "", query: "" };
 
-      nav.addEventListener("click", (event) => {
-        const link = event.target.closest("a[data-filter-value]");
-        if (!link) return;
+      const normalize = (value) => value.toLowerCase().replace(/\s+/g, "");
 
-        const value = link.dataset.filterValue;
-        links.forEach((item) => item.classList.toggle("is-active", item === link));
+      // 先按子串命中；再把查询当成按顺序出现的字，允许中间隔字
+      const matches = (text, query) => {
+        const target = normalize(text ?? "");
+        if (!query) return true;
+        if (target.includes(query)) return true;
+        let cursor = 0;
+        for (const char of target) {
+          if (char === query[cursor]) cursor += 1;
+          if (cursor === query.length) return true;
+        }
+        return false;
+      };
+
+      const render = () => {
+        const query = normalize(state.query);
+        let visible = 0;
 
         cards.forEach((card) => {
-          card.hidden = Boolean(value) && card.dataset.cuisine !== value;
+          const shop = byId.get(card.dataset.id);
+          if (!shop) return;
+
+          let ok =
+            (!state.cuisine || shop.cuisine === state.cuisine) &&
+            (!state.dining || shop.dining === state.dining);
+          let hits = [];
+
+          if (ok && query) {
+            hits = shop.menu
+              .filter((item) => matches(`${item.name}${item.group}`, query))
+              .map((item) => item.name);
+            if (!hits.length && !matches(`${shop.name}${shop.cuisine}`, query)) ok = false;
+          }
+
+          card.hidden = !ok;
+          if (!ok) return;
+          visible += 1;
+
+          const note = card.querySelector("[data-hit]");
+          if (note) {
+            const unique = [...new Set(hits)].slice(0, 4);
+            note.textContent = unique.length
+              ? `含：${unique.join("、")}${hits.length > 4 ? " 等" : ""}`
+              : "";
+            note.hidden = unique.length === 0;
+          }
+        });
+
+        if (!query) {
+          status.hidden = true;
+          return;
+        }
+
+        status.hidden = false;
+        status.textContent = visible > 0 ? `找到 ${visible} 家` : "没有找到匹配的店，换个菜名或店名试试。";
+      };
+
+      root.querySelectorAll("[data-filter-group]").forEach((group) => {
+        group.addEventListener("click", (event) => {
+          const button = event.target.closest("button[data-value]");
+          if (!button) return;
+          const key = group.dataset.filterGroup;
+          state[key] = button.dataset.value;
+          group.querySelectorAll("button[data-value]").forEach((item) => {
+            item.classList.toggle("is-active", item === button);
+          });
+          render();
         });
       });
+
+      if (search) {
+        search.addEventListener("input", () => {
+          state.query = search.value;
+          render();
+
+          const url = new URL(window.location.href);
+          if (state.query) url.searchParams.set("q", state.query);
+          else url.searchParams.delete("q");
+          window.history.replaceState(null, "", url);
+        });
+
+        // 支持 ?q=菜名 直接打开搜索结果
+        const initial = new URLSearchParams(window.location.search).get("q");
+        if (initial) {
+          search.value = initial;
+          state.query = initial;
+          render();
+        }
+      }
     })();
   </script>
 </BaseLayout>
