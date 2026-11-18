@@ -10,6 +10,7 @@ import QRCode from "qrcode";
 
 const CONTENT = "src/content/restaurants";
 const OUT = "public/share";
+const QR_OUT = "public/qr";
 const SITE = "https://asaberui1.github.io/food";
 
 const W = 1080;
@@ -48,6 +49,8 @@ async function buildCard(dir) {
 
   const url = `${SITE}/restaurants/${dir}/`;
   const qr = await QRCode.toBuffer(url, { width: 420, margin: 1, color: { dark: "#17130fff", light: "#fbf0dcff" } });
+  await mkdir(QR_OUT, { recursive: true });
+  await writeFile(join(QR_OUT, `${dir}.png`), await QRCode.toBuffer(url, { width: 600, margin: 1, color: { dark: "#17130fff", light: "#fbf0dcff" } }));
 
   let background = sharp({ create: { width: W, height: H, channels: 3, background: "#17130f" } });
   let hasCover = true;

@@ -382,13 +382,18 @@ const structuredData = sample
             />
             <div class="share-card__copy">
               <p>手机上长按图片保存；电脑上右键「图片另存为」或「复制图片」。</p>
-              <a
-                class="button-link"
-                href={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
-                download={`${name}-创智食单.jpg`}
-              >
-                下载分享卡
-              </a>
+              <div class="share-card__actions">
+                <a class="button-link" href={withBase(`/restaurants/${shop.id}/share/`)}>
+                  挑几道菜再做一张 <Icon name="arrow-right" />
+                </a>
+                <a
+                  class="button-link button-link--outline"
+                  href={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
+                  download={`${name}-创智食单.jpg`}
+                >
+                  直接下载默认卡
+                </a>
+              </div>
               <p class="search-hint">卡片右下角是这家店的二维码，扫开就是这个页面。</p>
             </div>
           </div>

@@ -1,0 +1,255 @@
+---
+import { getImage } from "astro:assets";
+import { getCollection, render } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Nav from "../../../components/Nav.astro";
+import Footer from "../../../components/Footer.astro";
+import Icon from "../../../components/Icon.astro";
+import { withBase } from "../../../lib/urls";
+import { priceLabel } from "../../../lib/bills";
+
+export async function getStaticPaths() {
+  const shops = await getCollection("restaurants");
+  return shops.map((shop) => ({ params: { slug: shop.id }, props: { shop } }));
+}
+
+const { shop } = Astro.props;
+const { name, cuisine, address, cover, menu, dining } = shop.data;
+
+// 分享卡要用一张足够大的底图
+const coverUrl = cover ? (await getImage({ src: cover, width: 1200, format: "webp" })).src : null;
+
+const priceText = priceLabel(shop);
+const dishGroups = menu
+  .map((group) => ({
+    title: group.title,
+    items: group.items.map((item) => ({ name: item.name, price: item.price })),
+  }))
+  .filter((group) => group.items.length > 0);
+
+const payload = {
+  name,
+  cuisine,
+  address,
+  price: priceText,
+  dining,
+  cover: coverUrl,
+  qr: `${import.meta.env.BASE_URL}qr/${shop.id}.png`,
+};
+---
+
+<BaseLayout title={`分享「${name}」`} description={`把${name}做成一分享卡，挑几道菜就发出去。`}>
+  <Nav />
+
+  <main id="main">
+    <section class="page-head">
+      <div class="container page-head__inner">
+        <p class="label-eyebrow">Share</p>
+        <h1 class="page-title display">做一张分享卡</h1>
+        <p class="page-lead">
+          勾几道想推荐的菜，卡片会实时更新。手机上长按图片保存，电脑上右键保存或点下面的按钮下载。
+        </p>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container share-layout">
+        <div class="share-preview">
+          <img data-share-preview alt={`${name} 的分享卡预览`} width="1080" height="1440" />
+          <a class="button-link" data-share-download download={`${name}-创智食单.jpg`}>
+            下载分享卡 <Icon name="arrow-right" />
+          </a>
+        </div>
+
+        <div class="share-panel">
+          <div class="share-panel__meta">
+            <p class="label-eyebrow">{cuisine} · {priceText}</p>
+            <p class="share-panel__address">{address}</p>
+          </div>
+
+          {
+            dishGroups.length > 0 ? (
+              <>
+                <p class="label-eyebrow">勾选要放进卡片的菜（最多 4 道）</p>
+                <div class="share-dishes">
+                  {dishGroups.map((group) => (
+                    <details class="share-dish-group" open>
+                      <summary>
+                        {group.title}
+                        <span class="share-dish-group__count">{group.items.length}</span>
+                      </summary>
+                      <div class="share-dish-list">
+                        {group.items.map((item) => (
+                          <label class="share-dish">
+                            <input type="checkbox" value={item.name} data-price={item.price} />
+                            <span class="share-dish__name">{item.name}</span>
+                            <span class="share-dish__price">{item.price}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p class="search-hint">这家店还没有录入菜单，卡片会带上店名、地址和人均。</p>
+            )
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+
+  <script type="application/json" id="share-data" set:html={JSON.stringify(payload)} />
+  <script is:inline>
+    (() => {
+      const data = JSON.parse(document.getElementById("share-data").textContent);
+      const canvas = document.createElement("canvas");
+      canvas.width = 1080;
+      canvas.height = 1440;
+      const ctx = canvas.getContext("2d");
+      const preview = document.querySelector("[data-share-preview]");
+      const download = document.querySelector("[data-share-download]");
+      const checkboxes = Array.from(document.querySelectorAll(".share-dish input[type=checkbox]"));
+      const MAX = 4;
+
+      const cover = new Image();
+      const qr = new Image();
+      let coverReady = false;
+      let qrReady = false;
+      if (data.cover) {
+        cover.onload = () => {
+          coverReady = true;
+          draw();
+        };
+        cover.src = data.cover;
+      }
+      qr.onload = () => {
+        qrReady = true;
+        draw();
+      };
+      qr.src = data.qr;
+
+      const fitted = (ctx, text, maxWidth) => {
+        if (ctx.measureText(text).width <= maxWidth) return text;
+        let out = text;
+        while (out.length > 1 && ctx.measureText(`${out}…`).width > maxWidth) out = out.slice(0, -1);
+        return `${out}…`;
+      };
+
+      const draw = () => {
+        ctx.clearRect(0, 0, 1080, 1440);
+
+        // 底图
+        if (coverReady) {
+          const scale = Math.max(1080 / cover.width, 1440 / cover.height);
+          const w = cover.width * scale;
+          const h = cover.height * scale;
+          ctx.drawImage(cover, (1080 - w) / 2, (1440 - h) / 2, w, h);
+        } else {
+          ctx.fillStyle = "#17130f";
+          ctx.fillRect(0, 0, 1080, 1440);
+          const glow = ctx.createRadialGradient(540, 600, 60, 540, 600, 700);
+          glow.addColorStop(0, "rgba(217,138,52,0.18)");
+          glow.addColorStop(1, "rgba(23,19,15,0)");
+          ctx.fillStyle = glow;
+          ctx.fillRect(0, 0, 1080, 1440);
+        }
+
+        // 压暗：上浅下深，保证文字压得住照片
+        const veil = ctx.createLinearGradient(0, 0, 0, 1440);
+        veil.addColorStop(0, "rgba(13,10,7,0.5)");
+        veil.addColorStop(0.35, "rgba(13,10,7,0.22)");
+        veil.addColorStop(0.62, "rgba(13,10,7,0.62)");
+        veil.addColorStop(1, "rgba(13,10,7,0.97)");
+        ctx.fillStyle = veil;
+        ctx.fillRect(0, 0, 1080, 1440);
+
+        // 内框
+        ctx.strokeStyle = "rgba(240,231,216,0.18)";
+        ctx.lineWidth = 1;
+        ctx.strokeRect(40, 40, 1000, 1360);
+
+        // 顶部标识
+        ctx.fillStyle = "rgba(240,231,216,0.75)";
+        ctx.font = '22px "Source Sans 3", sans-serif';
+        ctx.fillText("创 智 食 单 · 上 海 创 智 学 院 周 边", 88, 118);
+
+        // 文本统一加一点投影，压亮部照片
+        ctx.shadowColor = "rgba(0,0,0,0.55)";
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 2;
+
+        // 名字上方的小短线
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#d98a34";
+        ctx.fillRect(88, 944, 64, 3);
+        ctx.shadowBlur = 18;
+
+        // 店名
+        ctx.fillStyle = "#f7efe2";
+        ctx.font = '500 74px "Noto Serif SC", serif';
+        ctx.fillText(fitted(ctx, data.name, 760), 84, 1012);
+
+        // 品类 + 人均
+        ctx.fillStyle = "#f0b979";
+        ctx.font = '30px "PingFang SC", sans-serif';
+        const meta = [data.cuisine, data.price].filter((v) => v && v !== "待补充").join(" · ");
+        ctx.fillText(fitted(ctx, meta, 700), 88, 1066);
+
+        // 地址
+        ctx.fillStyle = "rgba(240,231,216,0.74)";
+        ctx.font = '28px "PingFang SC", sans-serif';
+        ctx.fillText(fitted(ctx, data.address, 620), 88, 1112);
+
+        // 选中的菜
+        const picked = checkboxes
+          .filter((box) => box.checked)
+          .map((box) => ({ name: box.value, price: box.dataset.price || "" }));
+        ctx.font = '30px "Noto Serif SC", serif';
+        picked.slice(0, MAX).forEach((dish, index) => {
+          ctx.fillStyle = "rgba(236,226,206,0.94)";
+          ctx.fillText(fitted(ctx, `· ${dish.name}${dish.price ? "  " + dish.price : ""}`, 640), 88, 1174 + index * 48);
+        });
+
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+
+        // 二维码：奶白圆角底
+        if (qrReady) {
+          const size = 186;
+          const pad = 14;
+          const x = 1080 - 88 - size;
+          const y = 1440 - 118 - size;
+          ctx.fillStyle = "#fbf0dc";
+          ctx.beginPath();
+          ctx.roundRect(x - pad, y - pad, size + pad * 2, size + pad * 2, 18);
+          ctx.fill();
+          ctx.drawImage(qr, x, y, size, size);
+        }
+
+        const url = canvas.toDataURL("image/jpeg", 0.9);
+        preview.src = url;
+        download.href = url;
+      };
+
+      checkboxes.forEach((box) => {
+        box.addEventListener("change", () => {
+          const chosen = checkboxes.filter((item) => item.checked);
+          if (chosen.length > MAX) {
+            box.checked = false;
+            return;
+          }
+          checkboxes.forEach((item) => {
+            item.disabled = !item.checked && chosen.length >= MAX;
+          });
+          draw();
+        });
+      });
+
+      document.fonts.ready.then(draw);
+    })();
+  </script>
+</BaseLayout>
