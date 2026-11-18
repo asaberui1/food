@@ -21,6 +21,7 @@ const { title, description, image, structuredData, enableReveal = siteConfig.eff
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#17130f" />
     <link rel="icon" href={`${import.meta.env.BASE_URL}favicon.svg`} type="image/svg+xml" />
+    <meta name="site-base" content={import.meta.env.BASE_URL} />
     {
       enableReveal && (
         <script is:inline>
@@ -82,5 +83,13 @@ const { title, description, image, structuredData, enableReveal = siteConfig.eff
         </script>
       )
     }
+    <script is:inline>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          const base = document.querySelector('meta[name="site-base"]')?.content || "/";
+          navigator.serviceWorker.register(`${base}sw.js`, { scope: base }).catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>

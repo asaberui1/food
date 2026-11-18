@@ -4,6 +4,7 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import { siteConfig } from "../config/site";
 import { withBase } from "../lib/urls";
+import Icon from "../components/Icon.astro";
 ---
 
 <BaseLayout
@@ -91,7 +92,7 @@ import { withBase } from "../lib/urls";
           <p><a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a></p>
           <div class="hairline"></div>
           <a class="button-link" href={withBase("/restaurants/")}>
-            去看看有哪些店 <span aria-hidden="true">-&gt;</span>
+            去看看有哪些店 <Icon name="arrow-right" />
           </a>
         </aside>
       </div>

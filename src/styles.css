@@ -135,13 +135,18 @@ a:hover {
 }
 
 .section {
-  padding-block: clamp(6rem, 12vw, 10rem);
+  padding-block: clamp(3.5rem, 6.5vw, 5.5rem);
 }
 
 .section-grid {
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: clamp(2.5rem, 6vw, 5.5rem) clamp(1.25rem, 3vw, 1.5rem);
+}
+
+.icon {
+  flex: none;
+  vertical-align: -0.12em;
 }
 
 .label-eyebrow {
@@ -301,6 +306,16 @@ a:hover {
   border-radius: 999px;
   background: var(--ember);
   animation: ember-pulse 2.6s ease-in-out infinite;
+}
+
+.hero::after,
+.shop-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(15 11 8 / 0.66) 0%, rgb(15 11 8 / 0) 24%);
 }
 
 .hero {
@@ -763,9 +778,20 @@ textarea {
 }
 
 .footer-col ul {
+  display: grid;
+  gap: 0.55rem;
   margin: 1rem 0 0;
   padding: 0;
   list-style: none;
+}
+
+.footer-col li {
+  line-height: 1.75;
+  letter-spacing: 0.02em;
+}
+
+.footer-bottom .ember-dot {
+  margin-right: 0.5rem;
 }
 
 .footer-bottom {
@@ -1030,7 +1056,7 @@ textarea {
 }
 
 .page-head {
-  padding: clamp(8rem, 16vw, 11rem) 0 clamp(1rem, 2vw, 1.5rem);
+  padding: clamp(7rem, 11vw, 8.5rem) 0 clamp(1rem, 2vw, 1.5rem);
 }
 
 .page-head__inner {
@@ -1063,7 +1089,7 @@ textarea {
 }
 
 .section--tight {
-  padding-block: clamp(3rem, 6vw, 4.5rem);
+  padding-block: clamp(2rem, 3.5vw, 3rem);
 }
 
 .shop-grid {
@@ -1259,7 +1285,7 @@ textarea {
   position: relative;
   display: flex;
   align-items: flex-end;
-  min-height: 68svh;
+  min-height: 58svh;
   overflow: hidden;
   padding: clamp(7rem, 12vw, 9rem) var(--gutter) clamp(2.5rem, 5vw, 4rem);
 }
@@ -1310,7 +1336,7 @@ textarea {
 }
 
 .shop-section {
-  padding-block: clamp(3rem, 6vw, 4.5rem);
+  padding-block: clamp(2.25rem, 3.6vw, 3rem);
   border-bottom: 1px solid var(--border);
 }
 
@@ -1820,7 +1846,7 @@ textarea {
 }
 
 .menu-acc[open] .menu-acc__chev {
-  transform: rotate(45deg);
+  transform: rotate(180deg);
   border-color: var(--ember);
   color: var(--ember);
 }
@@ -2233,7 +2259,7 @@ button.chip:focus-visible {
 }
 
 .bill-block[open] .bill-block__chev {
-  transform: rotate(45deg);
+  transform: rotate(180deg);
   border-color: var(--ember);
   color: var(--ember);
 }
