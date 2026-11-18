@@ -28,6 +28,7 @@ const meta = [priceText, distance].filter(Boolean);
           widths={large ? [640, 960, 1440] : [400, 640, 900]}
           sizes={large ? "(min-width: 900px) 60vw, 100vw" : "(min-width: 900px) 33vw, 100vw"}
           loading="lazy"
+          decoding="async"
         />
       ) : (
         <span class="shop-card__blank">

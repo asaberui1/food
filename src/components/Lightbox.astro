@@ -32,7 +32,7 @@
 
     document.querySelectorAll("[data-lightbox]").forEach((img) => {
       img.addEventListener("click", () => {
-        image.src = largestSource(img);
+        image.src = img.dataset.full || largestSource(img);
         image.alt = img.alt || "";
         if (typeof dialog.showModal === "function") dialog.showModal();
         else dialog.setAttribute("open", "");
