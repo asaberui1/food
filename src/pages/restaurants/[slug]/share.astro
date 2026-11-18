@@ -67,6 +67,12 @@ const payload = {
             <p class="share-panel__address">{address}</p>
           </div>
 
+          <label class="share-pos">
+            <span class="label-eyebrow">店招位置</span>
+            <input type="range" min="0" max="100" value="50" data-share-pos />
+            <span class="share-pos__hint">卡片用这张店招铺底，上下拖动可以调整露出哪一段</span>
+          </label>
+
           {
             dishGroups.length > 0 ? (
               <>
@@ -132,105 +138,113 @@ const payload = {
       };
       qr.src = data.qr;
 
-      const fitted = (ctx, text, maxWidth) => {
+      const fitted = (text, maxWidth) => {
         if (ctx.measureText(text).width <= maxWidth) return text;
         let out = text;
         while (out.length > 1 && ctx.measureText(`${out}…`).width > maxWidth) out = out.slice(0, -1);
         return `${out}…`;
       };
 
+      let posY = 0.5;
+
       const draw = () => {
         ctx.clearRect(0, 0, 1080, 1440);
 
-        // 底图
+        // 店招铺满整张卡，纵向位置可调
         if (coverReady) {
           const scale = Math.max(1080 / cover.width, 1440 / cover.height);
           const w = cover.width * scale;
           const h = cover.height * scale;
-          ctx.drawImage(cover, (1080 - w) / 2, (1440 - h) / 2, w, h);
+          const offsetY = (1440 - h) * posY;
+          ctx.drawImage(cover, (1080 - w) / 2, offsetY, w, h);
         } else {
-          ctx.fillStyle = "#17130f";
+          ctx.fillStyle = "#1d1813";
           ctx.fillRect(0, 0, 1080, 1440);
-          const glow = ctx.createRadialGradient(540, 600, 60, 540, 600, 700);
-          glow.addColorStop(0, "rgba(217,138,52,0.18)");
+          const glow = ctx.createRadialGradient(540, 640, 40, 540, 640, 760);
+          glow.addColorStop(0, "rgba(217,138,52,0.22)");
           glow.addColorStop(1, "rgba(23,19,15,0)");
           ctx.fillStyle = glow;
           ctx.fillRect(0, 0, 1080, 1440);
         }
 
-        // 压暗：上浅下深，保证文字压得住照片
-        const veil = ctx.createLinearGradient(0, 0, 0, 1440);
-        veil.addColorStop(0, "rgba(13,10,7,0.5)");
-        veil.addColorStop(0.35, "rgba(13,10,7,0.22)");
-        veil.addColorStop(0.62, "rgba(13,10,7,0.62)");
-        veil.addColorStop(1, "rgba(13,10,7,0.97)");
-        ctx.fillStyle = veil;
-        ctx.fillRect(0, 0, 1080, 1440);
+        // 顶部压暗（标识）与底部压暗（文字）
+        const top = ctx.createLinearGradient(0, 0, 0, 280);
+        top.addColorStop(0, "rgba(13,10,7,0.88)");
+        top.addColorStop(1, "rgba(13,10,7,0)");
+        ctx.fillStyle = top;
+        ctx.fillRect(0, 0, 1080, 280);
 
-        // 内框
-        ctx.strokeStyle = "rgba(240,231,216,0.18)";
-        ctx.lineWidth = 1;
-        ctx.strokeRect(40, 40, 1000, 1360);
+        const bottom = ctx.createLinearGradient(0, 760, 0, 1440);
+        bottom.addColorStop(0, "rgba(13,10,7,0)");
+        bottom.addColorStop(0.45, "rgba(13,10,7,0.66)");
+        bottom.addColorStop(1, "rgba(11,8,6,0.98)");
+        ctx.fillStyle = bottom;
+        ctx.fillRect(0, 760, 1080, 680);
 
         // 顶部标识
-        ctx.fillStyle = "rgba(240,231,216,0.75)";
-        ctx.font = '22px "Source Sans 3", sans-serif';
-        ctx.fillText("创 智 食 单 · 上 海 创 智 学 院 周 边", 88, 118);
+        ctx.fillStyle = "#d98a34";
+        ctx.fillRect(88, 96, 10, 10);
+        ctx.fillStyle = "rgba(246,238,226,0.92)";
+        ctx.font = '24px "PingFang SC", sans-serif';
+        ctx.fillText("创智食单", 112, 108);
+        ctx.fillStyle = "rgba(240,231,216,0.6)";
+        ctx.font = '20px "PingFang SC", sans-serif';
+        ctx.fillText("上海创智学院周边", 112, 138);
 
-        // 文本统一加一点投影，压亮部照片
-        ctx.shadowColor = "rgba(0,0,0,0.55)";
-        ctx.shadowBlur = 18;
+        // 文字投影
+        ctx.shadowColor = "rgba(0,0,0,0.6)";
+        ctx.shadowBlur = 20;
         ctx.shadowOffsetY = 2;
 
-        // 名字上方的小短线
-        ctx.shadowBlur = 0;
-        ctx.fillStyle = "#d98a34";
-        ctx.fillRect(88, 944, 64, 3);
-        ctx.shadowBlur = 18;
-
         // 店名
-        ctx.fillStyle = "#f7efe2";
-        ctx.font = '500 74px "Noto Serif SC", serif';
-        ctx.fillText(fitted(ctx, data.name, 760), 84, 1012);
+        ctx.fillStyle = "#f9f2e6";
+        ctx.font = '500 66px "Noto Serif SC", serif';
+        ctx.fillText(fitted(data.name, 700), 84, 1092);
 
         // 品类 + 人均
         ctx.fillStyle = "#f0b979";
-        ctx.font = '30px "PingFang SC", sans-serif';
+        ctx.font = '28px "PingFang SC", sans-serif';
         const meta = [data.cuisine, data.price].filter((v) => v && v !== "待补充").join(" · ");
-        ctx.fillText(fitted(ctx, meta, 700), 88, 1066);
+        ctx.fillText(fitted(meta, 600), 88, 1144);
 
         // 地址
         ctx.fillStyle = "rgba(240,231,216,0.74)";
-        ctx.font = '28px "PingFang SC", sans-serif';
-        ctx.fillText(fitted(ctx, data.address, 620), 88, 1112);
+        ctx.font = '26px "PingFang SC", sans-serif';
+        ctx.fillText(fitted(data.address, 600), 88, 1186);
 
         // 选中的菜
         const picked = checkboxes
           .filter((box) => box.checked)
           .map((box) => ({ name: box.value, price: box.dataset.price || "" }));
-        ctx.font = '30px "Noto Serif SC", serif';
+        ctx.font = '28px "Noto Serif SC", serif';
         picked.slice(0, MAX).forEach((dish, index) => {
-          ctx.fillStyle = "rgba(236,226,206,0.94)";
-          ctx.fillText(fitted(ctx, `· ${dish.name}${dish.price ? "  " + dish.price : ""}`, 640), 88, 1174 + index * 48);
+          ctx.fillStyle = "rgba(236,226,206,0.92)";
+          ctx.fillText(fitted(`· ${dish.name}${dish.price ? "  " + dish.price : ""}`, 620), 88, 1250 + index * 44);
         });
+
+        if (!picked.length) {
+          ctx.fillStyle = "rgba(240,231,216,0.42)";
+          ctx.font = '26px "PingFang SC", sans-serif';
+          ctx.fillText("还没有选菜", 88, 1250);
+        }
 
         ctx.shadowBlur = 0;
         ctx.shadowOffsetY = 0;
 
-        // 二维码：奶白圆角底
+        // 二维码
         if (qrReady) {
-          const size = 186;
-          const pad = 14;
+          const size = 168;
+          const pad = 12;
           const x = 1080 - 88 - size;
-          const y = 1440 - 118 - size;
+          const y = 1440 - 92 - size;
           ctx.fillStyle = "#fbf0dc";
           ctx.beginPath();
-          ctx.roundRect(x - pad, y - pad, size + pad * 2, size + pad * 2, 18);
+          ctx.roundRect(x - pad, y - pad, size + pad * 2, size + pad * 2, 14);
           ctx.fill();
           ctx.drawImage(qr, x, y, size, size);
         }
 
-        const url = canvas.toDataURL("image/jpeg", 0.9);
+        const url = canvas.toDataURL("image/jpeg", 0.92);
         preview.src = url;
         download.href = url;
       };
@@ -248,6 +262,15 @@ const payload = {
           draw();
         });
       });
+
+      const pos = document.querySelector("[data-share-pos]");
+      if (pos) {
+        posY = Number(pos.value) / 100;
+        pos.addEventListener("input", () => {
+          posY = Number(pos.value) / 100;
+          draw();
+        });
+      }
 
       document.fonts.ready.then(draw);
     })();

@@ -16,8 +16,11 @@ export const siteConfig = {
     short: "创智学院",
     note: "以学院为圆心，步行二十分钟、骑车八分钟以内。",
   },
+  // 投稿与纠错走 GitHub issue，邮箱暂时下线
   contact: {
-    email: "253107060019@sii.edu.cn",
+    repo: "https://github.com/asaberui1/food",
+    issue: "https://github.com/asaberui1/food/issues/new?template=restaurant.yml",
+    issues: "https://github.com/asaberui1/food/issues",
   },
   // 统计：填 GoatCounter 的站点代码（如 "chuangzhi-shidan"）即可启用，留空不加载
   analytics: {

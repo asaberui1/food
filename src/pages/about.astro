@@ -72,9 +72,9 @@ import Icon from "../components/Icon.astro";
 
           <h2>投稿与纠错</h2>
           <p>
-            想推荐一家店，或者发现某家已经关门、涨价、换老板，直接发邮件到
-            <a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a>。
-            附上店名、大致位置、几张照片就够，剩下的我来整理。
+            想推荐一家店，或者发现某家已经关门、涨价、换老板，直接在 GitHub 上
+            <a href={siteConfig.contact.issue} target="_blank" rel="noreferrer">提一个 issue</a>
+            （有模板，照着填就行）。附上店名、大致位置、几张照片就够，剩下的我来整理。
           </p>
 
           <h2>免责声明</h2>
@@ -88,8 +88,8 @@ import Icon from "../components/Icon.astro";
           <p class="label-eyebrow">范围</p>
           <p>{siteConfig.school.note}</p>
           <div class="hairline"></div>
-          <p class="label-eyebrow">联系</p>
-          <p><a href={`mailto:${siteConfig.contact.email}`}>{siteConfig.contact.email}</a></p>
+          <p class="label-eyebrow">投稿</p>
+          <p><a href={siteConfig.contact.issue} target="_blank" rel="noreferrer">GitHub issue</a></p>
           <div class="hairline"></div>
           <a class="button-link" href={withBase("/restaurants/")}>
             去看看有哪些店 <Icon name="arrow-right" />

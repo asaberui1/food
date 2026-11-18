@@ -18,9 +18,21 @@
       else dialog.removeAttribute("open");
     };
 
+    // 取 srcset 里最大的一张，避免点开还是缩略图
+    const largestSource = (img) => {
+      const srcset = img.getAttribute("srcset");
+      if (!srcset) return img.currentSrc || img.src;
+      const entries = srcset
+        .split(",")
+        .map((part) => part.trim().split(/\s+/))
+        .map(([url, width]) => ({ url, width: Number.parseInt(width, 10) || 0 }))
+        .sort((a, b) => b.width - a.width);
+      return entries[0]?.url || img.src;
+    };
+
     document.querySelectorAll("[data-lightbox]").forEach((img) => {
       img.addEventListener("click", () => {
-        image.src = img.currentSrc || img.src;
+        image.src = largestSource(img);
         image.alt = img.alt || "";
         if (typeof dialog.showModal === "function") dialog.showModal();
         else dialog.setAttribute("open", "");

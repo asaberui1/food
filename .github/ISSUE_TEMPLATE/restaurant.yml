@@ -1,0 +1,61 @@
+name: 推荐一家店
+description: 推荐或补充一家上海创智学院周边的餐馆
+title: "餐馆投稿："
+labels: ["投稿"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        谢谢投稿。填得越细，收录越快；照片可以直接拖进下面的输入框。
+
+  - type: input
+    id: name
+    attributes:
+      label: 店名
+      placeholder: 西北红拉面
+    validations:
+      required: true
+
+  - type: input
+    id: address
+    attributes:
+      label: 地址（写到门牌号）
+      placeholder: 罗香路 15 号
+    validations:
+      required: true
+
+  - type: dropdown
+    id: dining
+    attributes:
+      label: 适合怎么吃
+      options:
+        - 一个人吃（单人餐）
+        - 一群人点菜（多人聚餐）
+        - 都可以（四六分餐馆）
+    validations:
+      required: true
+
+  - type: input
+    id: price
+    attributes:
+      label: 人均 / 消费记录
+      placeholder: 人均约 ¥40；或者「4 人 171 元，点了川香牛肚、椒盐排条」
+
+  - type: textarea
+    id: dishes
+    attributes:
+      label: 推荐菜
+      placeholder: 一行一道，有价格更好
+
+  - type: textarea
+    id: photos
+    attributes:
+      label: 照片
+      description: 门头、环境、菜单、菜品都可以，直接拖进来
+      placeholder: 把照片拖到这里
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: 其他想说的
+      placeholder: 营业时间、排队情况、哪道菜别点……
