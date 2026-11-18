@@ -11,16 +11,16 @@ gallery:
 dishes:
   - name: 赣味香辣小鱼虾
     price: ¥36
-    note: 墙上菜单写的是「小鱼虾」，二维码点餐里叫「赣味香辣小鱼虾」，是同一道。
+    note: 墙上叫「小鱼虾」，二维码里叫这个名，是同一道。
     image: ./xiaoyuxia.webp
+  - name: 农家一碗香
+    price: ¥36
+    note: 默认放三个鸡蛋，可以让厨师再加一个，不加钱。
+    image: ./yiwanxiang.webp
   - name: 韭香田螺肉
     price: ¥32
     note: 韭菜配田螺肉，辣度中等。
     image: ./tianluo.webp
-  - name: 农家一碗香
-    price: ¥36
-    note: 蛋、肉、辣椒一起炒，很下饭。
-    image: ./yiwanxiang.webp
   - name: 香辣猪头肉
     price: ¥36
     note: 猪头肉切薄片，辣椒和蒜苗给得足。
@@ -33,9 +33,30 @@ bills:
   - people: 5
     dishes: [韭香田螺肉, 番茄蛋汤, 香辣猪头肉, 空心菜, 赣味香辣小鱼虾, 烟笋腊肉, 农家一碗香]
     total: 222
+order:
+  url: https://api.mobile.meituan.com/qrcode/saasRebate/code/35503886756828
+  qr: ./order-qr.png
+  note: 仅用于查看实时菜单和菜价。
+  tip: 这个码和桌号绑定，不建议提前下单。
+menuNote: 菜名里带「/」的，前面是墙上价目表的写法，后面是二维码点单里的写法，指的是同一道菜。
 menu:
+  - title: 特色推荐
+    items:
+      - { name: 奉新勺子肉, price: ¥38 }
+      - { name: 老南昌油浸鱼, price: ¥68 }
+      - { name: 黄豆烧鸡爪, price: ¥46 }
+      - { name: 黄豆烧猪脚, price: ¥48 }
+      - { name: 红烧海杂鱼, price: ¥58 }
+      - { name: 莲花血鸭, price: ¥52 }
+      - { name: 庐山茶油炒土鸡, price: ¥56 }
+      - { name: 酸菜肥肠, price: ¥58 }
+      - { name: 手抓扇子骨, price: ¥68 }
+      - { name: 南昌甲鱼仔, price: ¥78 }
+      - { name: 特色牛三鲜, price: ¥108 }
+      - { name: 姜丝土匪鸭, price: ¥88 }
+      - { name: 土豆烧牛腩, price: ¥58 }
+      - { name: 高压锅鱼头, price: ¥68 }
   - title: 特色小炒
-    note: 墙上写「小鱼虾」，二维码点餐里叫「赣味香辣小鱼虾」，是同一道。
     items:
       - { name: 麻婆豆腐, price: ¥20 }
       - { name: 土豆丝（辣椒/酸辣）, price: ¥18 }
@@ -60,7 +81,7 @@ menu:
       - { name: 萍乡小炒肉, price: ¥32 }
       - { name: 农家小炒肉, price: ¥30 }
       - { name: 农家锅巴, price: ¥28 }
-      - { name: 小酥肉, price: ¥30 }
+      - { name: 小酥肉, price: ¥32 }
       - { name: 糖醋里脊, price: ¥36 }
       - { name: 外婆菜回锅肉, price: ¥30 }
       - { name: 韭香田螺肉, price: ¥32 }
@@ -68,7 +89,7 @@ menu:
       - { name: 香辣猪头肉, price: ¥36 }
       - { name: 酸辣鸡杂, price: ¥36 }
       - { name: 蒜叶腊肉, price: ¥36 }
-      - { name: 小鱼虾, price: ¥36 }
+      - { name: 小鱼虾 / 赣味香辣小鱼虾, price: ¥36 }
       - { name: 爆炒腰花, price: ¥36 }
       - { name: 肝腰合炒, price: ¥38 }
       - { name: 烟笋腊肉, price: ¥38 }
@@ -78,6 +99,8 @@ menu:
       - { name: 啤酒鸭, price: ¥42 }
       - { name: 土豆烧鸡, price: ¥32 }
       - { name: 辣子鸡, price: ¥46 }
+      - { name: 红烧鸡块, price: ¥46 }
+      - { name: 莴笋炒肉, price: ¥28 }
       - { name: 小炒黄牛肉, price: ¥46 }
       - { name: 川味毛血旺, price: ¥48 }
       - { name: 水煮肉片, price: ¥48 }
@@ -87,7 +110,7 @@ menu:
     items:
       - { name: 辣炒螺蛳, price: ¥30 }
       - { name: 红烧鲫鱼, price: ¥32 }
-      - { name: 红烧鱼块, price: ¥38 }
+      - { name: 红烧鱼块 / 红烧草鱼块, price: ¥38 }
       - { name: 红烧小黄鱼, price: ¥52 }
       - { name: 水煮鱼, price: ¥48 }
       - { name: 酸菜鱼, price: ¥48 }
@@ -107,21 +130,9 @@ menu:
       - { name: 干锅牛蛙, price: ¥58 }
       - { name: 干锅鱼籽鱼泡, price: ¥52 }
       - { name: 干锅基围虾, price: ¥58 }
-  - title: 特色推荐
-    items:
-      - { name: 奉新勺子肉, price: ¥38 }
-      - { name: 老南昌油浸鱼, price: ¥68 }
-      - { name: 江西藜蒿炒腊肉, price: ¥46 }
-      - { name: 黄豆烧鸡爪, price: ¥46 }
-      - { name: 黄豆烧猪脚, price: ¥48 }
-      - { name: 红烧海杂鱼, price: ¥58 }
-      - { name: 莲花血鸭, price: ¥52 }
-      - { name: 干煸鸭头, price: ¥52 }
-      - { name: 庐山茶油炒土鸡, price: ¥56 }
-      - { name: 酸菜肥肠, price: ¥68 }
-      - { name: 手抓扇子骨, price: ¥78 }
-      - { name: 南昌甲鱼仔, price: ¥78 }
-      - { name: 特色牛三鲜, price: ¥108 }
+      - { name: 干锅萝卜片, price: ¥28 }
+      - { name: 干锅鱿鱼须, price: ¥52 }
+      - { name: 干锅千叶豆腐, price: ¥30 }
   - title: 田园时蔬
     items:
       - { name: 酸辣大白菜, price: ¥18 }
@@ -129,6 +140,7 @@ menu:
       - { name: 生菜, price: ¥18 }
       - { name: 油麦菜, price: ¥18 }
       - { name: 空心菜, price: ¥18 }
+      - { name: 清炒莴笋, price: ¥20 }
   - title: 汤类
     items:
       - { name: 番茄蛋汤, price: ¥16 }
@@ -136,15 +148,15 @@ menu:
       - { name: 三鲜汤, price: ¥18 }
       - { name: 酸辣汤, price: ¥18 }
   - title: 瓦罐汤
-    note: 标价 12 元，但常年「半价」卖 6 元——这是促销话术，别当成真打折。
+    note: 墙上写 12 元，常年按 6 元卖——这是促销话术，别当成真打折。
     items:
-      - { name: 皮蛋肉饼汤, price: ¥12 }
-      - { name: 鸡蛋肉饼汤, price: ¥12 }
-      - { name: 萝卜排骨汤, price: ¥12 }
-      - { name: 香菇排骨汤, price: ¥12 }
-      - { name: 海带排骨汤, price: ¥12 }
-      - { name: 玉米排骨汤, price: ¥12 }
-      - { name: 茶树菇排骨汤, price: ¥12 }
+      - { name: 皮蛋肉饼汤, price: ¥6 }
+      - { name: 鸡蛋肉饼汤, price: ¥6 }
+      - { name: 萝卜排骨汤, price: ¥6 }
+      - { name: 香菇排骨汤, price: ¥6 }
+      - { name: 海带排骨汤, price: ¥6 }
+      - { name: 玉米排骨汤, price: ¥6 }
+      - { name: 茶树菇排骨汤, price: ¥6 }
   - title: 炒饭类
     items:
       - { name: 蛋炒饭, price: ¥12 }
@@ -185,6 +197,8 @@ tags: [盖浇饭]
 
 老板是江西宜春人，菜是现炒的，够辣够下饭；不吃辣要提前说。
 
-**瓦罐汤的「半价」是话术**：价目表上写 12 元，常年按 6 元卖，看着像打折，其实是定价本来就按 6 元算——别因为「半价」多点几罐。消费满 138 元送一瓶大瓶饮料。
+**瓦罐汤的「半价」是话术**：价目表上写 12 元，常年按 6 元卖，看着像打折，其实定价本来就按 6 元算。
 
-门口的点餐码是美团的「碰一碰」，跟桌号绑定，**只建议用来查看实时菜价，不建议提前下单**；网页端读不出里面的菜单，所以价目表按墙上的照片整理。墙上和二维码有一处叫法不同：「小鱼虾」在二维码里叫「赣味香辣小鱼虾」，是同一道菜。
+消费满 138 元送一瓶大瓶饮料。
+
+门口的美团点餐码只用来查看实时菜价，**码和桌号绑定，不建议提前下单**。墙上和二维码有几处价格对不上（酸菜肥肠 68/58、手抓扇子骨 78/68、小酥肉 30/32），菜单按二维码的价写。

@@ -39,6 +39,8 @@ const restaurants = defineCollection({
           }),
         )
         .default([]),
+      /** 菜单总说明，显示在所有分类之前 */
+      menuNote: z.string().optional(),
       menu: z
         .array(
           z.object({

@@ -1802,3 +1802,78 @@
     width: min(92vw, 62vh);
   }
 }
+
+/* 菜单总说明 */
+.menu-acc__intro {
+  margin: 0 0 1rem;
+  padding: 0.8rem 1rem;
+  border-left: 2px solid var(--ember);
+  background: rgb(32 26 21 / 0.55);
+  color: rgb(240 231 216 / 0.86);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+/* 消费记录展开：行内展开，避免微信里被裁切 */
+.bill-dish__summary {
+  display: inline-block;
+  color: var(--ember);
+  border-bottom: 1px dashed rgb(217 138 52 / 0.55);
+  cursor: pointer;
+  list-style: none;
+  font-size: 1rem;
+}
+
+.bill-dish__summary::-webkit-details-marker {
+  display: none;
+}
+
+.bill-dish[open] .bill-dish__summary {
+  color: var(--cream);
+}
+
+.bill-dish__list {
+  margin: 0.5rem 0 0;
+  color: rgb(240 231 216 / 0.86);
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+/* 消费记录：窄屏改成竖排，避免表格挤成一条 */
+@media (max-width: 640px) {
+  .bill-table thead {
+    display: none;
+  }
+
+  .bill-table,
+  .bill-table tbody,
+  .bill-table tr,
+  .bill-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .bill-table tr {
+    border-top: 1px solid rgb(117 97 76 / 0.25);
+    padding: 0.85rem 0;
+  }
+
+  .bill-table td {
+    border: 0;
+    padding: 0.15rem 0;
+  }
+
+  .bill-table td:first-child {
+    color: var(--muted-foreground);
+    font-size: 0.95rem;
+  }
+
+  .bill-amount {
+    margin-top: 0.35rem;
+  }
+
+  .bill-amount__per {
+    display: inline;
+    margin-left: 0.5rem;
+  }
+}
