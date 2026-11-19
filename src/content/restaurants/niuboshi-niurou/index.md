@@ -5,6 +5,7 @@ cuisine: 汤锅
 dining: both
 address: 华发路 297 号
 summary: 牛肉按锅卖，一个人也能吃碗拌面；冰鲜的阿根廷牛肉，性价比相对高。
+cover: ./door.webp
 menu:
   - title: 锅类
     note: 价格按小份 / 中份 / 大份；餐具 2 元/位，自助调料 3 元/位。

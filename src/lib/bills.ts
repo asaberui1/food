@@ -2,12 +2,13 @@ import type { CollectionEntry } from "astro:content";
 
 export type Bill = CollectionEntry<"restaurants">["data"]["bills"][number];
 
+const POT = /锅仔/;
 const SOUP = /(汤|羹)/;
 const MEAT = /(肉|鸡|鸭|鹅|牛|羊|猪|鱼|虾|蟹|肚|肠|排|丸|蛙|螺|肝|腰|肫|鳝|蹄|骨|筋|舌|血|翅|鳝)/;
 const VEG = /(菜|豆腐|山药|木耳|茄|土豆|黄瓜|韭|葱|萝卜|藕|笋|菌|菇|玉米|花菜|白菜|菠菜|豆芽|干丝|面筋|皮蛋|花生)/;
 
 // 个别菜名按关键字判断会出错，单独指定
-const OVERRIDES: Record<string, "soup" | "meat" | "veg"> = {
+const OVERRIDES: Record<string, "pot" | "soup" | "meat" | "veg"> = {
   辣酱三丁: "meat",
   农家一碗香: "meat",
 };
@@ -18,20 +19,22 @@ function numeral(count: number): string {
   return NUMERALS[count] ?? String(count);
 }
 
-function kindOf(dish: string): "soup" | "meat" | "veg" {
+function kindOf(dish: string): "pot" | "soup" | "meat" | "veg" {
   if (OVERRIDES[dish]) return OVERRIDES[dish];
+  if (POT.test(dish)) return "pot";
   if (SOUP.test(dish)) return "soup";
   if (MEAT.test(dish)) return "meat";
   if (VEG.test(dish)) return "veg";
   return "veg";
 }
 
-/** 把一次消费的菜名归成「几荤几素几汤」 */
+/** 把一次消费的菜名归成「几锅几荤几素几汤」 */
 export function billComposition(bill: Bill): string {
-  const counts = { meat: 0, veg: 0, soup: 0 };
+  const counts = { pot: 0, meat: 0, veg: 0, soup: 0 };
   for (const dish of bill.dishes) counts[kindOf(dish)] += 1;
 
   const parts: string[] = [];
+  if (counts.pot) parts.push(`${numeral(counts.pot)}锅`);
   if (counts.meat) parts.push(`${numeral(counts.meat)}荤`);
   if (counts.veg) parts.push(`${numeral(counts.veg)}素`);
   if (counts.soup) parts.push(`${numeral(counts.soup)}汤`);
