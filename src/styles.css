@@ -959,6 +959,7 @@
   border-color: var(--ember);
   color: var(--ember);
 }.menu-acc__body{
+  padding-top: 1rem;
   padding-bottom: 1.75rem;
 }.menu-acc__note{
   margin: 0 0 1rem;
@@ -1166,7 +1167,12 @@
   line-height: 1.65;
 }/* ---------- 首页按钮、跑马灯标签、消费记录表 ---------- */
 
-.section-note{
+.section-note a{
+  color: var(--cream);
+  text-decoration: underline;
+  text-decoration-color: var(--ember);
+  text-underline-offset: 0.25em;
+}.section-note{
   margin: 0;
   max-width: 42rem;
   color: rgb(240 231 216 / 0.74);
