@@ -133,6 +133,7 @@ These instructions apply to all Astro theme work. Prioritize clean, reusable, ac
 * Validate required frontmatter fields.
 * Provide sensible defaults for optional metadata.
 * Avoid requiring users to duplicate the same SEO fields in many places when defaults can be generated safely.
+* Keep each restaurant's `summary` in sync with its notes: the summary only says what the place is and how people eat there — no prices or verdicts that may be edited out of the body later.
 * Support draft or unpublished content only when the theme explicitly needs it.
 * Make dates, authors, categories, tags, and excerpts consistent.
 * Make sure generated archive, tag, category, author, and pagination pages have useful metadata.

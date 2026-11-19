@@ -4,7 +4,7 @@ added: "2026-11-19"
 cuisine: 面食
 dining: both
 address: 业祥路 46 号
-summary: 上海黄汤底的牛肉面，兼做家常小炒；清汤面 9 元起、牛肉面 12 元起，赶时间一碗面就能走。
+summary: 上海黄汤底的牛肉面，兼做家常小炒；一个人一碗面，几个人也能凑一桌。
 dishes:
   - name: 孜然羊肉
     price: ¥58
