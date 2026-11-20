@@ -4,6 +4,7 @@
  * 需要本地有中文字体（macOS 自带宋体）。
  */
 import { readdir, readFile, mkdir, writeFile } from "node:fs/promises";
+import { execSync } from "node:child_process";
 import { join } from "node:path";
 import sharp from "sharp";
 import QRCode from "qrcode";
@@ -24,6 +25,16 @@ function parseList(text, key) {
 function parseScalar(text, key) {
   const m = text.match(new RegExp(`^${key}:\\s*(.+)$`, "m"));
   return m ? m[1].trim().replace(/^["']|["']$/g, "") : "";
+}
+
+/** 没有中文字体时，librsvg 会用 last-resort 字体把汉字画成「53 4E」这种码位方块 */
+function hasCjkFont() {
+  try {
+    const out = execSync("fc-list :lang=zh", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    return out.trim().length > 0;
+  } catch {
+    return true; // macOS 一般没有 fc-list，系统自带宋体/苹方
+  }
 }
 
 async function buildCard(dir) {
@@ -76,17 +87,17 @@ async function buildCard(dir) {
   </defs>
   <rect y="700" width="${W}" height="${H - 700}" fill="url(#veil)"/>
 
-  <text x="84" y="1046" font-family="Songti SC, serif" font-size="84" fill="#f9f2e6">${escapeXml(name)}</text>
-  <text x="88" y="1112" font-family="PingFang SC, sans-serif" font-size="34" fill="#f0b979">${escapeXml(cuisine)}${avg ? ` · 人均约 ¥${avg}` : ""}</text>
-  <text x="88" y="1164" font-family="PingFang SC, sans-serif" font-size="32" fill="rgba(240,231,216,0.76)">${escapeXml(address)}</text>
+  <text x="84" y="1046" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="84" fill="#f9f2e6">${escapeXml(name)}</text>
+  <text x="88" y="1112" font-family="Noto Sans CJK SC, PingFang SC, Noto Sans SC, sans-serif" font-size="34" fill="#f0b979">${escapeXml(cuisine)}${avg ? ` · 人均约 ¥${avg}` : ""}</text>
+  <text x="88" y="1164" font-family="Noto Sans CJK SC, PingFang SC, Noto Sans SC, sans-serif" font-size="32" fill="rgba(240,231,216,0.76)">${escapeXml(address)}</text>
   ${dishes
     .map(
       (dish, index) =>
-        `<text x="88" y="${1226 + index * 54}" font-family="Songti SC, serif" font-size="34" fill="rgba(236,226,206,0.94)">· ${escapeXml(dish)}</text>`,
+        `<text x="88" y="${1226 + index * 54}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="34" fill="rgba(236,226,206,0.94)">· ${escapeXml(dish)}</text>`,
     )
     .join("")}
 
-  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="PingFang SC, sans-serif" font-size="22" fill="rgba(240,231,216,0.6)">创智食单</text>
+  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="Noto Sans CJK SC, PingFang SC, Noto Sans SC, sans-serif" font-size="22" fill="rgba(240,231,216,0.6)">创智食单</text>
 </svg>`;
 
   const overlay = Buffer.from(svg);
@@ -107,6 +118,10 @@ async function buildCard(dir) {
 
 function escapeXml(value) {
   return String(value).replace(/[<>&'"]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" })[c]);
+}
+
+if (!hasCjkFont()) {
+  throw new Error("没找到中文字体，分享卡会变成码位方块：先装 fonts-noto-cjk 再生成");
 }
 
 await mkdir(OUT, { recursive: true });
