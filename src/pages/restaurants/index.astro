@@ -51,7 +51,7 @@ const seen = new Set<string>();
             <>
               <div class="filter-bar" data-filters>
                 <div class="filter-head">
-                  <p class="label-eyebrow">点标签筛选，可多选</p>
+                  <p class="label-eyebrow">点按钮筛选</p>
                   <div class="filter-actions">
                     <button type="button" class="search-button" data-search-open>
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -69,7 +69,7 @@ const seen = new Set<string>();
                   </div>
                 </div>
 
-                <div class="tag-row tag-row--filter" role="group" aria-label="按标签筛选">
+                <div class="tag-row tag-row--filter" role="group" aria-label="按类别筛选">
                   {allTags.map((tag) => (
                     <button type="button" class="chip" data-tag={tag} aria-pressed="false">
                       {tag}
@@ -151,10 +151,15 @@ const seen = new Set<string>();
       root.querySelectorAll("[data-tag]").forEach((button) => {
         button.addEventListener("click", () => {
           const tag = button.dataset.tag;
-          if (selected.has(tag)) selected.delete(tag);
-          else selected.add(tag);
-          button.classList.toggle("is-active", selected.has(tag));
-          button.setAttribute("aria-pressed", String(selected.has(tag)));
+          const wasActive = selected.has(tag);
+          // 单选：换一个类别就整体换掉，不再叠加
+          selected.clear();
+          if (!wasActive) selected.add(tag);
+          root.querySelectorAll("[data-tag]").forEach((chip) => {
+            const on = selected.has(chip.dataset.tag);
+            chip.classList.toggle("is-active", on);
+            chip.setAttribute("aria-pressed", String(on));
+          });
           render();
         });
       });
