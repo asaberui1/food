@@ -128,7 +128,7 @@ menu:
       - { name: 水蒸蛋, price: ¥18 }
       - { name: 肉糜炖蛋, price: ¥20 }
       - { name: 苦瓜炒蛋, price: ¥20 }
-  - title: 肉类·菜类
+  - title: 肉类 · 菜类
     items:
       - { name: 孜然肉片, price: ¥32 }
       - { name: 宫爆肉丁, price: ¥30 }
