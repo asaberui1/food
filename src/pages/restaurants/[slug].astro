@@ -11,6 +11,7 @@ import { averagePerPerson, billComposition, billPerPerson, priceLabel } from "..
 import Icon from "../../components/Icon.astro";
 import Lightbox from "../../components/Lightbox.astro";
 import ShareStudio from "../../components/ShareStudio.astro";
+import ShopToc from "../../components/ShopToc.astro";
 
 export async function getStaticPaths() {
   const shops = await getCollection("restaurants");
@@ -59,14 +60,15 @@ const shopTags = tagsOf(shop);
 const diningLabel =
   dining === "group" ? "多人聚餐" : dining === "single" ? "单人餐" : "聚餐 / 单人餐";
 
-// 区块编号按实际渲染的区块算，缺哪个都不会跳号
-const steps = [
-  gallery.length > 0 && "环境",
-  dishes.length > 0 && "推荐菜",
-  (menu.length > 0 || order) && "菜单",
-  hasBody && "备注",
-].filter(Boolean) as string[];
-const step = (label: string) => String(steps.indexOf(label) + 1).padStart(2, "0");
+// 区块编号按实际渲染的区块算，缺哪个都不会跳号；同一份列表也给浮动目录用
+const sections = [
+  gallery.length > 0 && { id: "gallery-title", label: "环境" },
+  dishes.length > 0 && { id: "dishes-title", label: "推荐菜" },
+  (menu.length > 0 || order) && { id: "menu-title", label: "菜单" },
+  hasBody && { id: "notes-title", label: "备注" },
+].filter(Boolean) as { id: string; label: string }[];
+const step = (label: string) =>
+  String(sections.findIndex((section) => section.label === label) + 1).padStart(2, "0");
 
 // 价格可能是「¥98–208」或「¥18/小份」这类写法，取区间两端
 // 价格按「/」分段，跳过 500克 这类单位，只留真正的价格
@@ -139,6 +141,8 @@ const structuredData = sample
   <Nav />
 
   <main id="main">
+    <ShopToc sections={sections} />
+
     <article class="shop">
       <header class:list={["shop-hero", { "shop-hero--plain": !cover }]}>
         {

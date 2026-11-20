@@ -1,0 +1,111 @@
+---
+import Icon from "./Icon.astro";
+
+/**
+ * 店铺详情页的浮动目录。
+ * 页面很长（推荐菜、菜单、备注），底部容易被忽略，这里始终给出「还有哪几节」。
+ * 默认折叠成一个胶囊按钮，点开是完整目录；无 JS 时链接照样能跳。
+ */
+type Section = { id: string; label: string };
+
+type Props = { sections: Section[] };
+
+const { sections } = Astro.props;
+---
+
+{
+  sections.length > 1 && (
+    <details class="shop-toc" data-shop-toc>
+      <summary class="shop-toc__toggle">
+        <Icon name="list" size={15} />
+        <span class="shop-toc__word">目录</span>
+        <span class="shop-toc__now" data-toc-now aria-hidden="true" />
+        <span class="shop-toc__chev" aria-hidden="true">
+          <Icon name="chevron" size={12} />
+        </span>
+      </summary>
+      <nav class="shop-toc__panel" aria-label="本页目录">
+        <ol>
+          {sections.map((section, index) => (
+            <li>
+              <a href={`#${section.id}`} data-toc-link data-label={section.label}>
+                <span class="shop-toc__num">{String(index + 1).padStart(2, "0")}</span>
+                <span>{section.label}</span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    </details>
+  )
+}
+
+<script>
+  const toc = document.querySelector<HTMLDetailsElement>("[data-shop-toc]");
+  if (toc) {
+    const links = Array.from(toc.querySelectorAll<HTMLAnchorElement>("[data-toc-link]"));
+    const entries = links
+      .map((link) => {
+        const id = (link.getAttribute("href") ?? "").slice(1);
+        const target = id ? document.getElementById(id) : null;
+        return target ? { link, target, label: link.dataset.label ?? "" } : null;
+      })
+      .filter((entry) => entry !== null);
+
+    const now = toc.querySelector<HTMLElement>("[data-toc-now]");
+    let current: (typeof entries)[number] | null = null;
+    let frame = 0;
+
+    const setActive = (entry: (typeof entries)[number]) => {
+      if (entry === current) return;
+      current = entry;
+      entries.forEach((item) => item.link.classList.toggle("is-active", item === entry));
+      if (now) now.textContent = entry.label;
+    };
+
+    const update = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.34;
+      let active = entries[0];
+      for (const entry of entries) {
+        if (entry.target.getBoundingClientRect().top <= line) active = entry;
+      }
+      if (active) setActive(active);
+    };
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        toc.open = false;
+      });
+    });
+
+    // 翻到页面最后的分享区就收起，免得挡住按钮
+    const end = document.querySelector(".share-section");
+    if (end) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          const parked = entry.isIntersecting;
+          toc.classList.toggle("is-parked", parked);
+          if (parked) toc.open = false;
+        },
+        { threshold: 0.15 },
+      );
+      observer.observe(end);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && toc.open) {
+        toc.open = false;
+        toc.querySelector("summary")?.focus();
+      }
+    });
+  }
+</script>

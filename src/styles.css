@@ -898,7 +898,95 @@
     width: 150px;
     height: 150px;
   }
-}/* ---------- 菜单折叠面板 ---------- */
+}/* ---------- 店铺页浮动目录 ---------- */
+
+.shop-section{
+  scroll-margin-top: 5.5rem;
+}.shop-toc{
+  position: fixed;
+  right: clamp(0.9rem, 2.2vw, 1.75rem);
+  bottom: clamp(0.9rem, 2.2vw, 1.75rem);
+  z-index: 40;
+  transition:
+    opacity 220ms ease,
+    transform 220ms ease;
+}.shop-toc.is-parked{
+  opacity: 0;
+  transform: translateY(0.5rem);
+  pointer-events: none;
+}.shop-toc__toggle{
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 2.75rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--border);
+  background: rgb(23 19 15 / 0.94);
+  backdrop-filter: blur(12px);
+  color: var(--cream);
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  transition:
+    border-color 180ms ease,
+    color 180ms ease;
+}.shop-toc__toggle::-webkit-details-marker{
+  display: none;
+}.shop-toc__toggle:hover, .shop-toc[open] .shop-toc__toggle{
+  border-color: var(--ember);
+}.shop-toc__word{
+  color: rgb(240 231 216 / 0.68);
+}.shop-toc__now:not(:empty)::before{
+  content: "·";
+  margin-right: 0.45rem;
+  color: rgb(240 231 216 / 0.36);
+}.shop-toc__chev{
+  display: grid;
+  place-items: center;
+  color: rgb(240 231 216 / 0.6);
+  transition: transform 200ms ease;
+}.shop-toc[open] .shop-toc__chev{
+  transform: rotate(180deg);
+}.shop-toc__panel{
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.5rem);
+  min-width: 11rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  background: rgb(23 19 15 / 0.97);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+}.shop-toc__panel ol{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}.shop-toc__panel a{
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.5rem 0.65rem;
+  color: rgb(240 231 216 / 0.78);
+  font-size: 0.95rem;
+  transition:
+    color 160ms ease,
+    background 160ms ease;
+}.shop-toc__panel a:hover, .shop-toc__panel a.is-active{
+  color: var(--cream);
+  background: rgb(217 138 52 / 0.14);
+}.shop-toc__num{
+  color: var(--ember);
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+@media print {.shop-toc{
+    display: none;
+  }
+}
+
+/* ---------- 菜单折叠面板 ---------- */
 
 .menu-acc-list{
   border-top: 1px solid var(--border);
