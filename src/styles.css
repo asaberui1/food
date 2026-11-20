@@ -1138,12 +1138,12 @@ body:has(.shop-toc) .site-footer{
   border-color: var(--ember);
   outline: 2px solid var(--focus);
   outline-offset: 2px;
-}.chip--clear{
+}.chip.chip--clear{
   background: var(--button-bg);
   border-color: transparent;
   color: var(--button-fg);
   font-weight: 600;
-}.chip--clear:hover{
+}.chip.chip--clear:hover{
   background: var(--cream);
   color: var(--button-fg);
 }.search-hint{

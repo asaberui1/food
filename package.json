@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "dev": "astro dev",
-    "build": "node scripts/font-subset.mjs && astro build",
+    "build": "node scripts/font-subset.mjs && node scripts/share-cards.mjs && astro build",
     "preview": "astro preview",
     "check": "astro check",
     "og": "node scripts/og.mjs",
