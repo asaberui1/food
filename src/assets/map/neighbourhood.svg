@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1031" role="group" aria-label="学院周边餐馆位置图" class="map-svg">
 <rect width="1200" height="1031" fill="#14100c"/>
-<defs><radialGradient id="map-vignette" cx="50%" cy="50%" r="72%"><stop offset="55%" stop-color="#14100c" stop-opacity="0"/><stop offset="100%" stop-color="#14100c" stop-opacity="0.85"/></radialGradient></defs>
+<defs><radialGradient id="map-vignette" cx="50%" cy="50%" r="72%"><stop offset="52%" stop-color="#14100c" stop-opacity="0"/><stop offset="100%" stop-color="#14100c" stop-opacity="0.9"/></radialGradient><radialGradient id="campus-glow"><stop offset="0%" stop-color="#f2c14e" stop-opacity="0.3"/><stop offset="70%" stop-color="#f2c14e" stop-opacity="0.08"/><stop offset="100%" stop-color="#f2c14e" stop-opacity="0"/></radialGradient></defs>
 <g class="map-greens">
 <path d="M885 838L885 838Z" fill="#1c2619"/>
 <path d="M319 -196L319 -196Z" fill="#1c2619"/>
@@ -101,82 +101,120 @@
 <path d="M210 862L176 868M685 786L611 797M974 759L1252 739L1325 729L1392 716M1447 690L1371 709L1275 726L907 754M469 831L584 813M435 826L222 860M696 784L685 786M907 754L826 763L707 782M737 788L839 773M687 796L698 794M1392 716L1450 699M908 764L974 759M584 813L630 805M630 805L648 802M437 837L469 831M212 873L437 837M472 820L435 826M698 794L708 793M660 801L687 796M597 800L472 820M707 782L696 784M222 860L210 862M189 877L212 873M46 900L68 896M138 874L45 889M68 896L172 879M172 879L189 877M648 802L660 801M611 797L597 800M839 773L908 764M708 793L737 788M176 868L138 874" stroke="#52402b" stroke-width="12"/>
 </g>
 <g class="map-roadnames" font-family="PingFang SC, Noto Sans SC, sans-serif">
-<text x="1047" y="163" font-size="13.5" fill="#8a7864" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.9 1047 163)" letter-spacing="2.5" opacity="0.85">龙吴路</text>
-<text x="706" y="599" font-size="13.5" fill="#8a7864" text-anchor="middle" dominant-baseline="middle" transform="rotate(-2.8 706 599)" letter-spacing="2.5" opacity="0.85">华发路</text>
-<text x="1098" y="750" font-size="13.5" fill="#8a7864" text-anchor="middle" dominant-baseline="middle" transform="rotate(-3.8 1098 750)" letter-spacing="2.5" opacity="0.85">外环高速</text>
-<text x="884" y="159" font-size="13.5" fill="#8a7864" text-anchor="middle" dominant-baseline="middle" transform="rotate(-18.3 884 159)" letter-spacing="2.5" opacity="0.85">罗秀路</text>
-<text x="962" y="776" font-size="13.5" fill="#8a7864" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.5 962 776)" letter-spacing="2.5" opacity="0.85">徐梅路</text>
-<text x="791" y="864" font-size="13.5" fill="#8a7864" text-anchor="middle" dominant-baseline="middle" transform="rotate(67.0 791 864)" letter-spacing="2.5" opacity="0.85">长华路</text>
-<text x="222" y="836" font-size="13.5" fill="#8a7864" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.1 222 836)" letter-spacing="2.5" opacity="0.85">朱梅路</text>
-<text x="225" y="401" font-size="13.5" fill="#8a7864" text-anchor="middle" dominant-baseline="middle" transform="rotate(77.9 225 401)" letter-spacing="2.5" opacity="0.85">老沪闵路</text>
+<text x="319" y="821" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.6 319 821)" letter-spacing="2.5" opacity="0.85">朱梅路</text>
+<text x="150" y="199" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-47.8 150 199)" letter-spacing="2.5" opacity="0.85">罗香路</text>
+<text x="397" y="816" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.3 397 816)" letter-spacing="2.5" opacity="0.85">徐梅路</text>
+<text x="278" y="665" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-14.5 278 665)" letter-spacing="2.5" opacity="0.85">业祥路</text>
+<text x="596" y="437" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.3 596 437)" letter-spacing="2.5" opacity="0.85">长华路</text>
+<text x="1083" y="305" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.4 1083 305)" letter-spacing="2.5" opacity="0.85">龙吴路</text>
+<text x="514" y="622" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-10.2 514 622)" letter-spacing="2.5" opacity="0.85">华发路</text>
+<text x="127" y="343" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-7.9 127 343)" letter-spacing="2.5" opacity="0.85">罗秀路</text>
+<text x="767" y="872" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-17.1 767 872)" letter-spacing="2.5" opacity="0.85">建华路</text>
+<text x="343" y="852" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.2 343 852)" letter-spacing="2.5" opacity="0.85">外环高速</text>
+<text x="225" y="401" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(77.9 225 401)" letter-spacing="2.5" opacity="0.85">老沪闵路</text>
 </g>
 <rect width="1200" height="1031" fill="url(#map-vignette)" pointer-events="none"/>
-<g class="map-shopnames" font-family="PingFang SC, Noto Sans SC, sans-serif">
+<g class="map-pins" font-family="PingFang SC, Noto Sans SC, sans-serif">
 <a href="{{base}}restaurants/yunxi-jiujia/" class="map-pin" data-map-slug="yunxi-jiujia">
 <title>云西酒家</title>
-<circle cx="722" cy="857" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="707" y="857" font-size="13.5" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">云西酒家</text>
+<ellipse cx="722" cy="858" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M722 857V832" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="722" cy="830" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/huajing-jiachangcai/" class="map-pin" data-map-slug="huajing-jiachangcai">
 <title>华泾家常菜</title>
-<circle cx="617" cy="909" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="602" y="909" font-size="13.5" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">华泾家常菜</text>
+<ellipse cx="620" cy="931" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M620 930V905" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="620" cy="903" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/nanjing-tangbaodian/" class="map-pin" data-map-slug="nanjing-tangbaodian">
 <title>南京汤包店</title>
-<circle cx="650" cy="902" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="665" y="902" font-size="13.5" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">南京汤包店</text>
+<ellipse cx="652" cy="921" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M652 920V895" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="652" cy="893" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/huji-guotie/" class="map-pin" data-map-slug="huji-guotie">
 <title>胡记锅贴</title>
-<circle cx="882" cy="592" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="897" y="592" font-size="13.5" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">胡记锅贴</text>
+<ellipse cx="882" cy="603" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M882 602V577" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="882" cy="575" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/suzhou-cangshu-yangrou/" class="map-pin" data-map-slug="suzhou-cangshu-yangrou">
 <title>藏书羊肉</title>
-<path d="M867 591L880 566" stroke="#6b5947" stroke-width="1.1" opacity="0.8"/>
-<circle cx="867" cy="591" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="884" y="566" font-size="13.5" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">藏书羊肉</text>
+<ellipse cx="867" cy="604" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M867 603V578" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="867" cy="576" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/niuboshi-niurou/" class="map-pin" data-map-slug="niuboshi-niurou">
 <title>牛博士</title>
-<circle cx="862" cy="591" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="847" y="591" font-size="13.5" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">牛博士</text>
+<ellipse cx="862" cy="604" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M862 603V578" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="862" cy="576" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/longmianwang-hangzhou-xiaochi/" class="map-pin" data-map-slug="longmianwang-hangzhou-xiaochi">
 <title>笼面王</title>
-<circle cx="789" cy="596" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="774" y="596" font-size="13.5" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">笼面王</text>
+<ellipse cx="789" cy="608" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M789 607V582" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="789" cy="580" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/yigou-hundunmian/" class="map-pin" data-map-slug="yigou-hundunmian">
 <title>一碗勾馄面</title>
-<circle cx="1067" cy="588" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="1082" y="588" font-size="13.5" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">一碗勾馄面</text>
+<ellipse cx="1067" cy="594" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M1067 593V568" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="1067" cy="566" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/niumaixiang-niuroumian/" class="map-pin" data-map-slug="niumaixiang-niuroumian">
 <title>牛麦香</title>
-<circle cx="190" cy="666" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="205" y="666" font-size="13.5" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">牛麦香</text>
+<ellipse cx="190" cy="667" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M190 666V641" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="190" cy="639" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/youziyouwei-jiangxixiaochao/" class="map-pin" data-map-slug="youziyouwei-jiangxixiaochao">
 <title>有滋有味</title>
-<circle cx="131" cy="712" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="146" y="712" font-size="13.5" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">有滋有味</text>
+<ellipse cx="131" cy="726" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M131 725V700" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="131" cy="698" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 <a href="{{base}}restaurants/xibeihong-lamian/" class="map-pin" data-map-slug="xibeihong-lamian">
 <title>西北红拉面</title>
-<circle cx="503" cy="90" r="7" fill="#d34731" stroke="#14100c" stroke-width="2"/>
-<text x="518" y="90" font-size="13.5" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.4" paint-order="stroke" stroke-linejoin="round">西北红拉面</text>
+<ellipse cx="504" cy="104" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>
+<path d="M504 103V78" stroke="#9b938a" stroke-width="2.2" stroke-linecap="round"/>
+<circle cx="504" cy="76" r="11.0" fill="#d34731" stroke="#fbf0dc" stroke-width="2.2"/>
 </a>
 </g>
-<g class="map-campus">
-<circle cx="479" cy="693" r="26" fill="none" stroke="#f2c14e" stroke-width="1.2" opacity="0.35"/>
-<polygon points="478.6,676.1 482.8,687.3 494.8,687.8 485.4,695.3 488.6,706.8 478.6,700.2 468.6,706.8 471.8,695.3 462.4,687.8 474.4,687.3" fill="#f2c14e" stroke="#14100c" stroke-width="2.4"/>
-<text x="479" y="664" font-size="15" font-weight="600" fill="#f2c14e" text-anchor="middle" stroke="#14100c" stroke-width="4" paint-order="stroke" stroke-linejoin="round" font-family="PingFang SC, Noto Sans SC, sans-serif" letter-spacing="1">上海创智学院</text>
+<g class="map-shopnames" font-family="PingFang SC, Noto Sans SC, sans-serif">
+<path d="M722 830L738 840" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="744" y="840" font-size="15.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">云西酒家</text>
+<path d="M620 903L603 913" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="597" y="913" font-size="15.0" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">华泾家常菜</text>
+<path d="M652 893L668 903" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="674" y="903" font-size="15.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">南京汤包店</text>
+<path d="M882 575L898 586" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="904" y="586" font-size="15.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">胡记锅贴</text>
+<path d="M867 576L903 557" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="909" y="557" font-size="15.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">藏书羊肉</text>
+<path d="M862 576L844 543" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="838" y="543" font-size="15.0" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">牛博士</text>
+<path d="M789 580L772 590" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="766" y="590" font-size="15.0" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">笼面王</text>
+<path d="M1067 566L1083 577" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="1089" y="577" font-size="15.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">一碗勾馄面</text>
+<path d="M190 639L174 650" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="168" y="650" font-size="15.0" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">牛麦香</text>
+<path d="M131 698L148 708" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="154" y="708" font-size="15.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">有滋有味</text>
+<path d="M504 76L520 86" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<text x="526" y="86" font-size="15.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">西北红拉面</text>
+</g>
+<g class="map-campus" font-family="PingFang SC, Noto Sans SC, sans-serif">
+<circle cx="479" cy="693" r="40" fill="url(#campus-glow)"/>
+<circle cx="479" cy="693" r="24" fill="#fbeecb" stroke="#14100c" stroke-width="2.4"/>
+<polygon points="478.6,678.1 482.3,687.9 492.8,688.4 484.7,695.0 487.4,705.2 478.6,699.5 469.8,705.2 472.5,695.0 464.3,688.4 474.8,687.9" fill="#d98a34"/>
+<text x="479" y="734" font-size="16" font-weight="600" fill="#f7e6bf" text-anchor="middle" stroke="#14100c" stroke-width="4" paint-order="stroke" stroke-linejoin="round" letter-spacing="1">上海创智学院</text>
 </g>
 <g class="map-scale" font-family="PingFang SC, Noto Sans SC, sans-serif">
 <path d="M34 990.6569175661193h248" stroke="#5f5145" stroke-width="3"/>
 <path d="M34 985.6569175661193v10M282 985.6569175661193v10" stroke="#5f5145" stroke-width="3"/>
-<text x="158" y="979" font-size="12.5" fill="#8a7864" text-anchor="middle" letter-spacing="1">500 米</text>
+<text x="158" y="979" font-size="13.5" fill="#8a7864" text-anchor="middle" letter-spacing="1">500 米</text>
 </g>
 </svg>

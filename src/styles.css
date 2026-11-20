@@ -2400,146 +2400,235 @@ body:has(.shop-toc) .site-footer{
 
 
 
-/* ---------- 餐馆地图 ---------- */
-.section--map {
-  padding-bottom: 0;
-}
 
-.map-head {
+/* ---------- 餐馆地图（弹窗） ---------- */
+.filter-actions {
   display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 1rem;
-  margin-bottom: 1.1rem;
+  align-items: center;
+  gap: 0.6rem;
 }
 
-.map-title {
-  margin: 0;
-  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
-}
-
-.map-lead {
-  margin: 0;
-  color: var(--muted-foreground);
+.map-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--button-bg);
+  background: var(--button-bg);
+  color: var(--button-fg);
+  font-family: inherit;
   font-size: 0.95rem;
+  line-height: inherit;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
 }
 
-.shop-map {
-  --map-red: #d34731;
-  --map-star: #f2c14e;
-  margin: 0;
+.map-button:hover {
+  border-color: var(--ember);
+  background: #f0e2c8;
 }
 
-.shop-map__frame {
-  border: 1px solid rgb(117 97 76 / 0.4);
+.map-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.map-button__pin {
+  color: #c0452f;
+}
+
+.map-dialog {
+  width: min(94vw, 940px);
+  max-width: none;
+  max-height: 92dvh;
+  margin: auto;
+  padding: 0;
+  border: 1px solid rgb(117 97 76 / 0.5);
   border-radius: 14px;
   background: #14100c;
+  color: var(--foreground);
+  overflow: hidden;
+  box-shadow: 0 32px 80px -24px rgb(0 0 0 / 0.85);
+}
+
+.map-dialog::backdrop {
+  background: rgb(10 7 5 / 0.78);
+  backdrop-filter: blur(2px);
+}
+
+body:has(.map-dialog[open]) {
   overflow: hidden;
 }
 
-.shop-map__scroll {
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
+.map-dialog__panel:focus {
+  outline: none;
 }
 
-.map-svg {
+.map-dialog__panel {
+  display: flex;
+  flex-direction: column;
+  height: min(86dvh, 760px);
+}
+
+.map-dialog__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid rgb(117 97 76 / 0.32);
+}
+
+.map-dialog__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.map-dialog__hint {
+  margin: 0.2rem 0 0;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+
+.map-dialog__tools {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.map-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--cream);
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}
+
+.map-tool:hover {
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+.map-tool:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.map-tool--close {
+  margin-left: 0.35rem;
+}
+
+.map-dialog__viewport {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #14100c;
+  cursor: grab;
+  touch-action: none;
+  overscroll-behavior: contain;
+}
+
+.map-dialog__viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.map-dialog__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.map-dialog__canvas svg {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.shop-map__caption {
+.map-dialog__foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.4rem 1.25rem;
-  margin-top: 0.8rem;
+  gap: 0.4rem 1.2rem;
+  padding: 0.7rem 1.1rem;
+  border-top: 1px solid rgb(117 97 76 / 0.32);
   color: var(--muted-foreground);
   font-size: 0.9rem;
 }
 
-.shop-map__key {
+.map-key {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
 }
 
-.shop-map__key-star {
-  width: 0.9rem;
-  height: 0.9rem;
-  background: var(--map-star);
-  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-}
-
-.shop-map__key-dot {
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: var(--map-red);
-}
-
-.shop-map__hint {
-  display: none;
-}
-
-.shop-map__credit {
+.map-dialog__credit {
   margin-left: auto;
 }
 
-.shop-map__credit a {
+.map-dialog__credit a {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
-/* 图上的红点是链接：悬停和键盘聚焦时变成学院那种黄 */
+/* 图钉是链接：悬停和键盘聚焦时描边变成学院那种黄 */
 .map-pin {
   cursor: pointer;
 }
 
-.map-pin circle,
-.map-pin text {
-  transition: fill 140ms ease;
+.map-pin circle {
+  transition: stroke 140ms ease, stroke-width 140ms ease;
 }
 
 .map-pin:hover circle,
 .map-pin:focus-visible circle {
-  fill: var(--map-star);
-  stroke: #14100c;
-}
-
-.map-pin:hover text,
-.map-pin:focus-visible text {
-  fill: var(--map-star);
+  stroke: var(--focus);
+  stroke-width: 3;
 }
 
 .map-pin:focus-visible {
   outline: none;
 }
 
-.map-pin:focus-visible circle {
-  stroke: var(--cream);
-  stroke-width: 3;
-}
-
 @media (max-width: 700px) {
-  /* 手机上整张图缩到屏宽会把标注压成 4px，干脆放大到 860px 横向滑动 */
-  .map-svg {
-    min-width: 860px;
+  .filter-actions {
+    width: 100%;
+    justify-content: space-between;
   }
 
-  .shop-map__hint {
-    display: inline;
+  .map-dialog {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: 0;
+    border-radius: 0;
   }
 
-  .shop-map__credit {
+  .map-dialog__panel {
+    height: 100dvh;
+  }
+
+  .map-dialog__credit {
     margin-left: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .map-pin circle,
-  .map-pin text {
+  .map-button,
+  .map-tool,
+  .map-pin circle {
     transition: none;
   }
 }

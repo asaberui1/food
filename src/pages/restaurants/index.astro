@@ -4,7 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import ShopCard from "../../components/ShopCard.astro";
-import ShopMap from "../../components/ShopMap.astro";
+import ShopMapModal from "../../components/ShopMapModal.astro";
 import SearchDialog from "../../components/SearchDialog.astro";
 import { siteConfig } from "../../config/site";
 import { allTagsOf, tagsOf } from "../../lib/shops";
@@ -39,18 +39,6 @@ const seen = new Set<string>();
       </div>
     </section>
 
-    <section class="section section--tight section--map" aria-labelledby="map-title">
-      <div class="container">
-        <div class="map-head">
-          <h2 id="map-title" class="map-title display">按位置看</h2>
-          <p class="map-lead">
-            黄星是学院大门，红点是收录的店；点红点直接进店。
-          </p>
-        </div>
-        <ShopMap />
-      </div>
-    </section>
-
     <section class="section section--tight">
       <div class="container">
         {
@@ -64,13 +52,21 @@ const seen = new Set<string>();
               <div class="filter-bar" data-filters>
                 <div class="filter-head">
                   <p class="label-eyebrow">点标签筛选，可多选</p>
-                  <button type="button" class="search-button" data-search-open>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                      <circle cx="11" cy="11" r="7"></circle>
-                      <path d="M16.5 16.5L21 21"></path>
-                    </svg>
-                    搜菜名
-                  </button>
+                  <div class="filter-actions">
+                    <button type="button" class="search-button" data-search-open>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="7"></circle>
+                        <path d="M16.5 16.5L21 21"></path>
+                      </svg>
+                      搜菜名
+                    </button>
+                    <button type="button" class="map-button" data-map-open>
+                      <svg class="map-button__pin" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2a7.2 7.2 0 0 0-7.2 7.2c0 5.1 5.7 11.2 6.6 12.2a.8.8 0 0 0 1.2 0c.9-1 6.6-7.1 6.6-12.2A7.2 7.2 0 0 0 12 2zm0 9.9a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"></path>
+                      </svg>
+                      看地图
+                    </button>
+                  </div>
                 </div>
 
                 <div class="tag-row tag-row--filter" role="group" aria-label="按标签筛选">
@@ -120,6 +116,7 @@ const seen = new Set<string>();
   <Footer />
 
   <SearchDialog />
+  <ShopMapModal />
 
   <script is:inline>
     (() => {

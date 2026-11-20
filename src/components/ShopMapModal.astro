@@ -1,0 +1,314 @@
+---
+/**
+ * 学院周边餐馆地图（弹窗版）。
+ *
+ * 底图是 scripts/map-render.py 从 OSM 数据离线渲染的矢量图
+ * （src/assets/map/neighbourhood.svg），不请求任何瓦片服务，
+ * 配色和站点一致；图上的图钉本身就是各店详情页的链接。
+ *
+ * 交互：滚轮 / 双击 / +− 按钮缩放，按住拖动平移，Esc 或右上角关闭。
+ * 新增门店后要重跑脚本补图钉，否则这家店不会出现在图上——构建时会打印警告。
+ */
+import { getCollection } from "astro:content";
+import rawMap from "../assets/map/neighbourhood.svg?raw";
+import { withBase } from "../lib/urls";
+
+// 脚本里用 {{base}} 占位，部署到 /food/ 下时才替换成真实前缀
+const svg = rawMap.replaceAll("{{base}}", withBase("/"));
+
+const pinned = new Set([...rawMap.matchAll(/data-map-slug="([^"]+)"/g)].map((match) => match[1]));
+const missing = (await getCollection("restaurants"))
+  .filter((shop) => !pinned.has(shop.id))
+  .map((shop) => shop.data.name);
+
+if (missing.length > 0) {
+  console.warn(
+    `[ShopMap] 这些店还没标在地图上：${missing.join("、")}。补好坐标后重跑 python3 scripts/map-render.py`,
+  );
+}
+---
+
+<dialog class="map-dialog" id="map-dialog" aria-labelledby="map-dialog-title">
+  <div class="map-dialog__panel" tabindex="-1" data-map-panel>
+    <header class="map-dialog__bar">
+      <div class="map-dialog__headline">
+        <h2 class="map-dialog__title display" id="map-dialog-title">学院周边</h2>
+        <p class="map-dialog__hint">拖动平移 · 缩放 · 点图钉进店</p>
+      </div>
+      <div class="map-dialog__tools">
+        <button type="button" class="map-tool" data-map-zoom="out" aria-label="缩小地图">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <button type="button" class="map-tool" data-map-zoom="in" aria-label="放大地图">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
+        <button type="button" class="map-tool map-tool--close" data-map-close aria-label="关闭地图">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="map-dialog__viewport" data-map-viewport>
+      <div class="map-dialog__canvas" data-map-canvas>
+        <Fragment set:html={svg} />
+      </div>
+    </div>
+
+    <footer class="map-dialog__foot">
+      <span class="map-key">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <circle cx="12" cy="12" r="11" fill="#fbeecb"></circle>
+          <path d="M12 4.6l2.2 5.2 5.6.5-4.2 3.8 1.2 5.5L12 16.8l-4.8 2.8 1.2-5.5-4.2-3.8 5.6-.5z" fill="#d98a34"></path>
+        </svg>
+        上海创智学院
+      </span>
+      <span class="map-key">
+        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+          <path d="M12 22.5V11.6" stroke="#2a1c16" stroke-width="2.4" stroke-linecap="round"></path>
+          <circle cx="12" cy="7.6" r="5.6" fill="#d34731" stroke="#fbf0dc" stroke-width="1.6"></circle>
+        </svg>
+        收录的餐馆，点图钉进店
+      </span>
+      <span class="map-dialog__credit">
+        底图 © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> 贡献者
+      </span>
+    </footer>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.getElementById("map-dialog") as HTMLDialogElement | null;
+
+  if (dialog) {
+    const viewport = dialog.querySelector<HTMLElement>("[data-map-viewport]");
+    const canvas = dialog.querySelector<HTMLElement>("[data-map-canvas]");
+    const svg = canvas?.querySelector("svg");
+    let baseW = 0;
+    let baseH = 0;
+    let scale = 1;
+    let minScale = 1;
+    let maxScale = 4;
+    let tx = 0;
+    let ty = 0;
+
+    const apply = () => {
+      if (!canvas) return;
+      canvas.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+    };
+
+    const clamp = () => {
+      if (!viewport) return;
+      const w = baseW * scale;
+      const h = baseH * scale;
+      const vw = viewport.clientWidth;
+      const vh = viewport.clientHeight;
+      tx = w <= vw ? (vw - w) / 2 : Math.min(0, Math.max(vw - w, tx));
+      ty = h <= vh ? (vh - h) / 2 : Math.min(0, Math.max(vh - h, ty));
+    };
+
+    const measure = () => {
+      if (!viewport || !canvas) return;
+      canvas.style.transform = "none";
+      baseW = canvas.offsetWidth;
+      baseH = canvas.offsetHeight;
+      if (!baseW || !baseH) return;
+      // 整张图刚好装进视口
+      minScale = Math.min(1, viewport.clientWidth / baseW, viewport.clientHeight / baseH);
+      maxScale = minScale * 10;
+    };
+
+    /** 把某个 SVG 坐标点移到视口正中 */
+    const centerOn = (fx: number, fy: number) => {
+      if (!viewport) return;
+      tx = viewport.clientWidth / 2 - fx * baseW * scale;
+      ty = viewport.clientHeight / 2 - fy * baseH * scale;
+      clamp();
+      apply();
+    };
+
+    const shopAnchor = () => {
+      const svgEl = dialog?.querySelector<SVGSVGElement>(".map-svg");
+      const pins = [...(dialog?.querySelectorAll(".map-pin circle") ?? [])];
+      if (!svgEl || pins.length === 0) return null;
+      const vb = svgEl.viewBox.baseVal;
+      if (!vb || !vb.width) return null;
+      const sum = pins.reduce(
+        (acc, pin) => [acc[0] + Number(pin.getAttribute("cx")), acc[1] + Number(pin.getAttribute("cy"))],
+        [0, 0],
+      );
+      return [(sum[0] / pins.length) / vb.width, (sum[1] / pins.length) / vb.height] as const;
+    };
+
+    const fit = () => {
+      measure();
+      // 手机上整图缩小后字号只剩 4px，直接放大到看得清的倍数并对准学院
+      const narrow = (viewport?.clientWidth ?? 999) < 700;
+      scale = narrow ? Math.min(maxScale, Math.max(minScale, 980 / baseW)) : minScale;
+      tx = 0;
+      ty = 0;
+      clamp();
+      apply();
+      const anchor = narrow ? shopAnchor() : null;
+      if (anchor) centerOn(anchor[0], anchor[1]);
+    };
+
+    const zoomTo = (next: number, cx?: number, cy?: number) => {
+      if (!viewport) return;
+      const target = Math.min(maxScale, Math.max(minScale, next));
+      const px = cx ?? viewport.clientWidth / 2;
+      const py = cy ?? viewport.clientHeight / 2;
+      const k = target / scale;
+      tx = px - (px - tx) * k;
+      ty = py - (py - ty) * k;
+      scale = target;
+      clamp();
+      apply();
+    };
+
+    // 打开 / 关闭
+    document.querySelectorAll("[data-map-open]").forEach((button) => {
+      button.addEventListener("click", () => {
+        dialog.showModal();
+        // 弹窗 display 之后才有尺寸
+        requestAnimationFrame(() => {
+          fit();
+          dialog.querySelector<HTMLElement>("[data-map-panel]")?.focus();
+        });
+      });
+    });
+
+    dialog.querySelector("[data-map-close]")?.addEventListener("click", () => dialog.close());
+
+    // 点遮罩关闭
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    dialog.querySelectorAll<HTMLElement>("[data-map-zoom]").forEach((button) => {
+      button.addEventListener("click", () => {
+        zoomTo(button.dataset.mapZoom === "in" ? scale * 1.5 : scale / 1.5);
+      });
+    });
+
+    // 滚轮缩放（以指针为中心）
+    viewport?.addEventListener(
+      "wheel",
+      (event) => {
+        if (!event.ctrlKey && Math.abs(event.deltaY) < 1) return;
+        event.preventDefault();
+        const rect = viewport.getBoundingClientRect();
+        zoomTo(scale * Math.exp(-event.deltaY * 0.0016), event.clientX - rect.left, event.clientY - rect.top);
+      },
+      { passive: false },
+    );
+
+    // 双击放大
+    viewport?.addEventListener("dblclick", (event) => {
+      const rect = viewport.getBoundingClientRect();
+      zoomTo(scale * 1.8, event.clientX - rect.left, event.clientY - rect.top);
+    });
+
+    // 拖动平移 + 双指缩放
+    const pointers = new Map<number, { x: number; y: number }>();
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let moved = false;
+    let pinchDist = 0;
+
+    viewport?.addEventListener("pointerdown", (event) => {
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      viewport.setPointerCapture(event.pointerId);
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+        dragging = false;
+        return;
+      }
+      if (event.button !== 0) return;
+      dragging = true;
+      moved = false;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      viewport.classList.add("is-dragging");
+    });
+
+    viewport?.addEventListener("pointermove", (event) => {
+      if (!pointers.has(event.pointerId)) return;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinchDist > 0 && dist > 0) {
+          const rect = viewport.getBoundingClientRect();
+          zoomTo(scale * (dist / pinchDist), (a.x + b.x) / 2 - rect.left, (a.y + b.y) / 2 - rect.top);
+          moved = true;
+        }
+        pinchDist = dist;
+        return;
+      }
+
+      if (!dragging) return;
+      const dx = event.clientX - lastX;
+      const dy = event.clientY - lastY;
+      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      tx += dx;
+      ty += dy;
+      clamp();
+      apply();
+    });
+
+    const endDrag = (event: PointerEvent) => {
+      pointers.delete(event.pointerId);
+      if (pointers.size < 2) pinchDist = 0;
+      if (!dragging) return;
+      dragging = false;
+      viewport?.classList.remove("is-dragging");
+      if (viewport?.hasPointerCapture(event.pointerId)) viewport.releasePointerCapture(event.pointerId);
+    };
+    viewport?.addEventListener("pointerup", endDrag);
+    viewport?.addEventListener("pointercancel", endDrag);
+
+    // 拖完松手时别顺手触发图钉链接
+    viewport?.addEventListener(
+      "click",
+      (event) => {
+        if (moved) {
+          event.preventDefault();
+          event.stopPropagation();
+          moved = false;
+        }
+      },
+      true,
+    );
+
+    // 键盘：Esc 关闭是 dialog 自带的，这里补上下左右平移
+    dialog.addEventListener("keydown", (event) => {
+      const step = 60;
+      if (event.key === "ArrowLeft") tx += step;
+      else if (event.key === "ArrowRight") tx -= step;
+      else if (event.key === "ArrowUp") ty += step;
+      else if (event.key === "ArrowDown") ty -= step;
+      else return;
+      event.preventDefault();
+      clamp();
+      apply();
+    });
+
+    // 视口尺寸变化（转屏、改窗口）后重新贴合
+    window.addEventListener("resize", () => {
+      if (dialog.open) fit();
+    });
+
+    if (svg) svg.setAttribute("aria-hidden", "false");
+  }
+</script>
