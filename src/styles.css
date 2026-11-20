@@ -240,7 +240,7 @@
   display: flex;
   min-height: 100%;
   align-items: end;
-  padding: 8rem var(--gutter) clamp(4rem, 8vw, 5rem);
+  padding: 8rem var(--gutter) clamp(5.25rem, 9vw, 6.5rem);
 }.hero-grid{
   display: grid;
   width: 100%;
@@ -2870,6 +2870,30 @@ body:has(.map-dialog[open]) {
   border-left-width: 0;
 }
 
+.map-pop__frame {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #241d16;
+}
+
+.map-pop__loading {
+  position: absolute;
+  inset: 0;
+  display: none;
+  place-items: center;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+.map-pop__frame[data-loading="true"] .map-pop__loading {
+  display: grid;
+}
+
+.map-pop__frame[data-loading="true"] img {
+  visibility: hidden;
+}
+
 .map-pop__shot {
   display: block;
   width: 100%;
@@ -2883,6 +2907,7 @@ body:has(.map-dialog[open]) {
 
 .map-pop__enter {
   position: absolute;
+  z-index: 2;
   top: 14px;
   right: 14px;
   padding: 0.22rem 0.55rem;
@@ -2908,10 +2933,20 @@ body:has(.map-dialog[open]) {
 @media (max-width: 640px) {
   /* 手机上首屏内容更挤，给底部提示留出位置，别压在按钮上 */
   .hero-content {
-    padding-bottom: 3.25rem;
+    padding-bottom: 5.25rem;
+  }
+
+  .hero-actions {
+    margin-top: 0.5rem;
   }
 
   .hero-scroll {
-    bottom: 0.9rem;
+    bottom: 0.75rem;
+  }
+}
+
+@media (max-height: 820px) {
+  .hero-content {
+    padding-bottom: 5.5rem;
   }
 }

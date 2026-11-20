@@ -68,7 +68,10 @@ const cards = shops
 
       <div class="map-pop" data-map-pop hidden>
         <a class="map-pop__enter" data-map-pop-enter href="#">进店</a>
-        <img class="map-pop__shot" data-map-pop-img alt="" width="320" height="200" loading="lazy" decoding="async" />
+        <div class="map-pop__frame">
+          <img class="map-pop__shot" data-map-pop-img alt="" width="320" height="200" loading="eager" decoding="async" />
+          <span class="map-pop__loading" data-map-pop-loading>加载中…</span>
+        </div>
       </div>
 
       <div class="map-scale" data-map-scale aria-hidden="true">
@@ -111,6 +114,7 @@ const cards = shops
     const pop = dialog.querySelector<HTMLElement>("[data-map-pop]");
     const popImg = dialog.querySelector<HTMLImageElement>("[data-map-pop-img]");
     const popEnter = dialog.querySelector<HTMLAnchorElement>("[data-map-pop-enter]");
+    const popFrame = dialog.querySelector<HTMLElement>(".map-pop__frame");
     const scaleBar = dialog.querySelector<HTMLElement>("[data-map-scale-bar]");
     const scaleLabel = dialog.querySelector<HTMLElement>("[data-map-scale-label]");
 
@@ -221,6 +225,12 @@ const cards = shops
       apply();
     };
 
+    const clearLoading = () => {
+      if (popFrame) delete popFrame.dataset.loading;
+    };
+    popImg?.addEventListener("load", clearLoading);
+    popImg?.addEventListener("error", clearLoading);
+
     const hidePop = () => {
       if (pop) pop.hidden = true;
       activeSlug = "";
@@ -233,9 +243,11 @@ const cards = shops
       if (!card || !pin || !pop || !viewport) return;
 
       activeSlug = slug;
-      if (popImg) {
-        popImg.src = card.cover;
+      if (popImg && popFrame) {
+        popFrame.dataset.loading = "true";
+        popImg.removeAttribute("src");
         popImg.alt = `${card.name} 的店招`;
+        if (card.cover) popImg.src = card.cover;
       }
       if (popEnter) popEnter.href = card.href;
 
@@ -365,9 +377,12 @@ const cards = shops
     let moved = false;
     let pinchDist = 0;
 
+    let captured = false;
+    let startX = 0;
+    let startY = 0;
+
     viewport?.addEventListener("pointerdown", (event) => {
       pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-      viewport.setPointerCapture(event.pointerId);
       if (pointers.size === 2) {
         const [a, b] = [...pointers.values()];
         pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
@@ -377,6 +392,9 @@ const cards = shops
       if (event.button !== 0) return;
       dragging = true;
       moved = false;
+      captured = false;
+      startX = event.clientX;
+      startY = event.clientY;
       lastX = event.clientX;
       lastY = event.clientY;
       viewport.classList.add("is-dragging");
@@ -399,9 +417,18 @@ const cards = shops
       }
 
       if (!dragging) return;
+      // 只有真的拖动起来才捕获指针：一按下就捕获会让 Safari 把 click 派给 viewport，图钉就点不动了
+      if (!captured && Math.hypot(event.clientX - startX, event.clientY - startY) > 8) {
+        captured = true;
+        moved = true;
+        try {
+          viewport.setPointerCapture(event.pointerId);
+        } catch {
+          /* 有些浏览器不支持，忽略 */
+        }
+      }
       const dx = event.clientX - lastX;
       const dy = event.clientY - lastY;
-      if (Math.abs(dx) + Math.abs(dy) > 8) moved = true;
       lastX = event.clientX;
       lastY = event.clientY;
       tx += dx;
