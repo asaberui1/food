@@ -9,9 +9,20 @@ type Props = {
   shop: any;
   menu: MenuGroup[];
   qr: string;
+  /** 触发按钮的样式与文字，默认是页面上的主按钮 */
+  triggerClass?: string;
+  triggerLabel?: string;
+  triggerIcon?: "share" | "gear";
 };
 
-const { shop, menu, qr } = Astro.props;
+const {
+  shop,
+  menu,
+  qr,
+  triggerClass = "button-link",
+  triggerLabel = "自定义分享卡",
+  triggerIcon = "share",
+} = Astro.props;
 const { name, cuisine, address, cover, dishes } = shop.data;
 
 const coverUrl = cover ? (await getImage({ src: cover, width: 1400, quality: 88, format: "webp" })).src : null;
@@ -29,8 +40,8 @@ const payload = {
 };
 ---
 
-<button type="button" class="button-link" data-studio-open>
-  <Icon name="share" size={15} /> 自定义分享卡
+<button type="button" class={triggerClass} data-studio-open>
+  <Icon name={triggerIcon} size={15} /> {triggerLabel}
 </button>
 
 <dialog class="studio" data-studio tabindex="-1">

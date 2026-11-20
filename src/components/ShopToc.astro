@@ -87,20 +87,6 @@ const { sections } = Astro.props;
       });
     });
 
-    // 翻到页面最后的分享区就收起，免得挡住按钮
-    const end = document.querySelector(".share-section");
-    if (end) {
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          const parked = entry.isIntersecting;
-          toc.classList.toggle("is-parked", parked);
-          if (parked) toc.open = false;
-        },
-        { threshold: 0.15 },
-      );
-      observer.observe(end);
-    }
-
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && toc.open) {
         toc.open = false;

@@ -1,5 +1,5 @@
 ---
-type IconName = "arrow-right" | "arrow-left" | "refresh" | "chevron" | "search" | "plus" | "star" | "share" | "list";
+type IconName = "arrow-right" | "arrow-left" | "refresh" | "chevron" | "search" | "plus" | "star" | "share" | "list" | "gear" | "download";
 
 type Props = {
   name: IconName;
@@ -19,6 +19,8 @@ const paths: Record<IconName, string> = {
   plus: '<path d="M10 4.6v10.8M4.6 10h10.8"/>',
   star: '<path d="m10 3.3 2.1 4.2 4.6.7-3.3 3.3.8 4.6-4.2-2.2-4.2 2.2.8-4.6L3.3 8.2l4.6-.7z"/>',
   list: '<path d="M4 6h12M4 10h12M4 14h8"/>',
+  gear: '<circle cx="10" cy="10" r="2.6"/><path d="M10 3.4v1.5M10 15.1v1.5M16.6 10h-1.5M4.9 10H3.4M14.7 5.3l-1.1 1.1M6.4 13.6l-1.1 1.1M14.7 14.7l-1.1-1.1M6.4 6.4 5.3 5.3"/>',
+  download: '<path d="M10 3.6v8.8"/><path d="m6.4 9.2 3.6 3.6 3.6-3.6"/><path d="M4.6 15.6h10.8"/>',
   share: '<path d="M10 12.4V3.4"/><path d="m6.5 6.7 3.5-3.3 3.5 3.3"/><path d="M4.6 11.2v4.2c0 .6.5 1.1 1.1 1.1h8.6c.6 0 1.1-.5 1.1-1.1v-4.2"/>',
 };
 ---

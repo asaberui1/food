@@ -66,6 +66,7 @@ const sections = [
   dishes.length > 0 && { id: "dishes-title", label: "推荐菜" },
   (menu.length > 0 || order) && { id: "menu-title", label: "菜单" },
   hasBody && { id: "notes-title", label: "备注" },
+  { id: "share-title", label: "分享" },
 ].filter(Boolean) as { id: string; label: string }[];
 const step = (label: string) =>
   String(sections.findIndex((section) => section.label === label) + 1).padStart(2, "0");
@@ -396,10 +397,10 @@ const structuredData = sample
 
         <section class="share-section" aria-labelledby="share-title">
           <div class="shop-section__head">
-            <p class="label-eyebrow">分享</p>
+            <p class="label-eyebrow">{step("分享")} — 分享</p>
             <h2 id="share-title" class="display">存一张卡片带走</h2>
           </div>
-          <div class="share-card">
+          <figure class="share-card">
             <img
               class="share-card__image"
               src={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
@@ -409,27 +410,29 @@ const structuredData = sample
               loading="lazy"
               data-lightbox
             />
-            <div class="share-card__copy">
-              <p>默认卡是现成的，直接存；想换成自己点的菜，点下面自己拼一张。</p>
-              <div class="share-card__actions">
-                <ShareStudio
-                  shop={shop}
-                  menu={menu.map((group) => ({
-                    title: group.title,
-                    items: group.items.map((item) => ({ name: item.name, price: item.price })),
-                  }))}
-                  qr={`${import.meta.env.BASE_URL}qr/${shop.id}.png`}
-                />
-                <a
-                  class="button-link button-link--outline"
-                  href={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
-                  download={`${name}-创智食单.jpg`}
-                >
-                  下载默认卡
-                </a>
-              </div>
+            <div class="share-card__tools">
+              <ShareStudio
+                triggerClass="share-tool"
+                triggerLabel="自定义"
+                triggerIcon="gear"
+                shop={shop}
+                menu={menu.map((group) => ({
+                  title: group.title,
+                  items: group.items.map((item) => ({ name: item.name, price: item.price })),
+                }))}
+                qr={`${import.meta.env.BASE_URL}qr/${shop.id}.png`}
+              />
+              <a
+                class="share-tool share-tool--round"
+                href={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
+                download={`${name}-创智食单.jpg`}
+                aria-label={`下载「${name}」的默认分享卡`}
+                title="下载默认分享卡"
+              >
+                <Icon name="download" size={17} />
+              </a>
             </div>
-          </div>
+          </figure>
         </section>
 
         <nav class="shop-foot" aria-label="页面导航">

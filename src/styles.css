@@ -339,11 +339,11 @@
 }.site-footer{
   border-top: 1px solid var(--border);
   background: var(--background);
-  padding-block: clamp(4rem, 8vw, 6rem) 2.25rem;
+  padding-block: clamp(2.5rem, 4.5vw, 3.5rem) 1.75rem;
 }.footer-grid{
   display: grid;
   grid-template-columns: minmax(12rem, 1.4fr) repeat(3, minmax(8rem, 1fr));
-  gap: clamp(2rem, 5vw, 4.5rem) clamp(1.5rem, 4vw, 3rem);
+  gap: clamp(1.5rem, 2.6vw, 2.25rem) clamp(1.5rem, 4vw, 3rem);
   align-items: start;
 }.footer-brand{
   max-width: 21rem;
@@ -358,7 +358,7 @@
   color: rgb(240 231 216 / 0.75);
   line-height: 1.6;
 }.footer-brand p{
-  margin-top: 1.75rem;
+  margin-top: 1rem;
 }.footer-col ul{
   display: grid;
   gap: 0.55rem;
@@ -368,6 +368,9 @@
 }.footer-col li{
   line-height: 1.75;
   letter-spacing: 0.02em;
+}/* 店铺页有浮动目录，页脚底部留出它的位置，免得盖住版权行 */
+body:has(.shop-toc) .site-footer{
+  padding-bottom: 5.25rem;
 }.footer-bottom .ember-dot{
   margin-right: 0.5rem;
 }.footer-bottom{
@@ -379,8 +382,8 @@
   color: var(--muted-foreground);
   font-size: 0.95rem;
   letter-spacing: 0.18em;
-  margin-top: clamp(1rem, 3vw, 2rem);
-  padding-top: 1.5rem;
+  margin-top: clamp(0.5rem, 1vw, 0.75rem);
+  padding-top: 1.1rem;
   text-transform: uppercase;
 }.reveal{
   --reveal-y: 1.35rem;
@@ -902,7 +905,10 @@
 
 .shop-section{
   scroll-margin-top: 5.5rem;
-}.shop-toc{
+}.shop-section__head h2, .share-section .shop-section__head h2{
+  scroll-margin-top: 8.5rem;
+}
+.shop-toc{
   position: fixed;
   right: clamp(0.9rem, 2.2vw, 1.75rem);
   bottom: clamp(0.9rem, 2.2vw, 1.75rem);
@@ -910,10 +916,6 @@
   transition:
     opacity 220ms ease,
     transform 220ms ease;
-}.shop-toc.is-parked{
-  opacity: 0;
-  transform: translateY(0.5rem);
-  pointer-events: none;
 }.shop-toc__toggle{
   display: flex;
   align-items: center;
@@ -1389,34 +1391,61 @@
 /* ---------- 分享卡与大图 ---------- */
 
 .share-section {
-  padding-block: clamp(2.25rem, 3.6vw, 3rem);
+  padding-block: clamp(1.75rem, 3vw, 2.5rem) clamp(2.25rem, 4vw, 3rem);
   border-top: 1px solid var(--border);
 }
 
 .share-card {
-  display: grid;
-  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
-  gap: clamp(1.25rem, 3vw, 2.5rem);
-  align-items: start;
+  position: relative;
+  width: min(100%, 36rem);
+  margin: 0;
 }
 
 .share-card__image {
+  display: block;
   width: 100%;
   height: auto;
   border: 1px solid var(--border);
   cursor: zoom-in;
 }
 
-.share-card__copy {
-  display: grid;
-  gap: 0.9rem;
-  justify-items: start;
+.share-card__tools {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
-.share-card__copy p {
-  margin: 0;
-  color: rgb(240 231 216 / 0.78);
-  line-height: 1.7;
+.share-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.4rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgb(251 240 220 / 0.34);
+  background: rgb(23 19 15 / 0.82);
+  backdrop-filter: blur(10px);
+  color: var(--cream);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.share-tool:hover,
+.share-tool:focus-visible {
+  border-color: var(--ember);
+  color: var(--ember);
+}
+
+.share-tool--round {
+  width: 2.4rem;
+  padding: 0;
+  justify-content: center;
+  border-radius: 999px;
 }
 
 .lightbox {
@@ -1454,11 +1483,7 @@
 
 @media (max-width: 640px) {
   .share-card {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .share-card__image {
-    max-width: 16rem;
+    width: min(100%, 21rem);
   }
 }
 
@@ -1570,12 +1595,6 @@
   .share-preview img {
     max-width: 22rem;
   }
-}
-
-.share-card__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
 }
 
 .share-pos {
@@ -2014,12 +2033,6 @@
   .share-preview img {
     max-width: 22rem;
   }
-}
-
-.share-card__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
 }
 
 .share-pos {
