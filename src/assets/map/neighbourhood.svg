@@ -107,16 +107,16 @@
 </g>
 <g class="map-roadnames" font-family="PingFang SC, Noto Sans SC, sans-serif">
 <text x="278" y="665" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-14.5 278 665)" letter-spacing="2.5" opacity="0.85">业祥路</text>
-<text x="1083" y="305" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.4 1083 305)" letter-spacing="2.5" opacity="0.85">龙吴路</text>
-<text x="596" y="437" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.3 596 437)" letter-spacing="2.5" opacity="0.85">长华路</text>
-<text x="381" y="846" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.2 381 846)" letter-spacing="2.5" opacity="0.85">外环高速</text>
-<text x="297" y="824" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.1 297 824)" letter-spacing="2.5" opacity="0.85">朱梅路</text>
+<text x="397" y="816" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.3 397 816)" letter-spacing="2.5" opacity="0.85">徐梅路</text>
+<text x="150" y="199" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-47.8 150 199)" letter-spacing="2.5" opacity="0.85">罗香路</text>
+<text x="319" y="821" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.6 319 821)" letter-spacing="2.5" opacity="0.85">朱梅路</text>
+<text x="225" y="401" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(77.9 225 401)" letter-spacing="2.5" opacity="0.85">老沪闵路</text>
 <text x="514" y="622" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-10.2 514 622)" letter-spacing="2.5" opacity="0.85">华发路</text>
 <text x="767" y="872" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-17.1 767 872)" letter-spacing="2.5" opacity="0.85">建华路</text>
-<text x="225" y="401" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(77.9 225 401)" letter-spacing="2.5" opacity="0.85">老沪闵路</text>
-<text x="150" y="199" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-47.8 150 199)" letter-spacing="2.5" opacity="0.85">罗香路</text>
-<text x="397" y="816" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.3 397 816)" letter-spacing="2.5" opacity="0.85">徐梅路</text>
+<text x="596" y="437" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.3 596 437)" letter-spacing="2.5" opacity="0.85">长华路</text>
 <text x="127" y="343" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-7.9 127 343)" letter-spacing="2.5" opacity="0.85">罗秀路</text>
+<text x="1083" y="305" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.4 1083 305)" letter-spacing="2.5" opacity="0.85">龙吴路</text>
+<text x="343" y="852" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.2 343 852)" letter-spacing="2.5" opacity="0.85">外环高速</text>
 </g>
 <rect width="1200" height="1031" fill="url(#map-vignette)" pointer-events="none"/>
 <g class="map-pins" font-family="PingFang SC, Noto Sans SC, sans-serif">
@@ -189,26 +189,37 @@
 </g>
 <g class="map-shopnames" font-family="PingFang SC, Noto Sans SC, sans-serif">
 <path d="M722 830L738 840" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="741" y="829" width="62" height="22" fill="transparent" pointer-events="all"/>
 <text x="744" y="840" font-size="14.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">云西酒家</text>
 <path d="M620 903L603 913" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="524" y="902" width="76" height="22" fill="transparent" pointer-events="all"/>
 <text x="597" y="913" font-size="14.0" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">华泾家常菜</text>
 <path d="M652 893L668 903" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="671" y="892" width="76" height="22" fill="transparent" pointer-events="all"/>
 <text x="674" y="903" font-size="14.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">南京汤包店</text>
 <path d="M882 575L898 586" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="901" y="575" width="62" height="22" fill="transparent" pointer-events="all"/>
 <text x="904" y="586" font-size="14.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">胡记锅贴</text>
 <path d="M867 576L903 557" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="906" y="546" width="118" height="22" fill="transparent" pointer-events="all"/>
 <text x="909" y="557" font-size="14.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">苏州藏书羊肉面馆</text>
 <path d="M862 576L844 543" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="737" y="532" width="104" height="22" fill="transparent" pointer-events="all"/>
 <text x="838" y="543" font-size="14.0" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">牛博士牛肉汤馆</text>
 <path d="M789 580L772 590" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="651" y="579" width="118" height="22" fill="transparent" pointer-events="all"/>
 <text x="766" y="590" font-size="14.0" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">笼面王·杭州小吃</text>
 <path d="M1067 566L1083 577" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="1086" y="565" width="76" height="22" fill="transparent" pointer-events="all"/>
 <text x="1089" y="577" font-size="14.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">一碗勾馄面</text>
 <path d="M196 649L180 659" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="45" y="648" width="132" height="22" fill="transparent" pointer-events="all"/>
 <text x="174" y="659" font-size="14.0" fill="#fbf0dc" text-anchor="end" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">牛麦香·红烧牛肉面</text>
 <path d="M131 698L156 712" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="159" y="701" width="132" height="22" fill="transparent" pointer-events="all"/>
 <text x="162" y="712" font-size="14.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">有滋有味·江西小炒</text>
 <path d="M504 76L520 86" stroke="#7d6a56" stroke-width="1" opacity="0.65"/>
+<rect x="523" y="75" width="76" height="22" fill="transparent" pointer-events="all"/>
 <text x="526" y="86" font-size="14.0" fill="#fbf0dc" text-anchor="start" dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" stroke-linejoin="round">西北红拉面</text>
 </g>
 <g class="map-campus" font-family="PingFang SC, Noto Sans SC, sans-serif">

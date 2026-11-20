@@ -240,7 +240,7 @@
   display: flex;
   min-height: 100%;
   align-items: end;
-  padding: 8rem var(--gutter) clamp(5.25rem, 9vw, 6.5rem);
+  padding: 8rem var(--gutter) clamp(4rem, 8vw, 5rem);
 }.hero-grid{
   display: grid;
   width: 100%;
@@ -2707,7 +2707,7 @@ body:has(.map-dialog[open]) {
 .hero-scroll {
   position: absolute;
   left: 50%;
-  bottom: clamp(0.5rem, 1.4vh, 1.4rem);
+  bottom: clamp(1rem, 2.6vh, 2rem);
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -2726,7 +2726,7 @@ body:has(.map-dialog[open]) {
 }
 
 .hero-scroll__chev {
-  opacity: 0.45;
+  opacity: 0.3;
   animation: hero-chev 2.1s ease-in-out infinite;
 }
 
@@ -2741,7 +2741,7 @@ body:has(.map-dialog[open]) {
 @keyframes hero-chev {
   0%,
   100% {
-    opacity: 0.4;
+    opacity: 0.22;
   }
 
   45% {
@@ -2911,7 +2911,7 @@ body:has(.map-dialog[open]) {
   top: 14px;
   right: 14px;
   padding: 0.22rem 0.55rem;
-  border: 1px solid var(--button-bg);
+  border: 1px solid #0d0a07;
   border-radius: 4px;
   background: var(--button-bg);
   color: var(--button-fg);
@@ -2930,23 +2930,29 @@ body:has(.map-dialog[open]) {
 }
 
 
+
+
+
+
 @media (max-width: 640px) {
-  /* 手机上首屏内容更挤，给底部提示留出位置，别压在按钮上 */
-  .hero-content {
-    padding-bottom: 5.25rem;
+  .hero-grid {
+    row-gap: 1.25rem;
+  }
+
+  .hero-title {
+    margin-top: 0.9rem;
+  }
+
+  .hero-copy {
+    gap: 1.15rem;
   }
 
   .hero-actions {
-    margin-top: 0.5rem;
+    gap: 1.25rem;
   }
 
-  .hero-scroll {
-    bottom: 0.75rem;
-  }
-}
-
-@media (max-height: 820px) {
+  /* 内容仍然是贴底排的，底部留出提示条的位置 */
   .hero-content {
-    padding-bottom: 5.5rem;
+    padding-bottom: 4.75rem;
   }
 }
