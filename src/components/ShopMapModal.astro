@@ -69,7 +69,6 @@ const cards = shops
       <div class="map-pop" data-map-pop hidden>
         <a class="map-pop__enter" data-map-pop-enter href="#">进店</a>
         <img class="map-pop__shot" data-map-pop-img alt="" width="320" height="200" loading="lazy" decoding="async" />
-        <p class="map-pop__name" data-map-pop-name></p>
       </div>
 
       <div class="map-scale" data-map-scale aria-hidden="true">
@@ -111,7 +110,6 @@ const cards = shops
     const svg = canvas?.querySelector<SVGSVGElement>(".map-svg");
     const pop = dialog.querySelector<HTMLElement>("[data-map-pop]");
     const popImg = dialog.querySelector<HTMLImageElement>("[data-map-pop-img]");
-    const popName = dialog.querySelector<HTMLElement>("[data-map-pop-name]");
     const popEnter = dialog.querySelector<HTMLAnchorElement>("[data-map-pop-enter]");
     const scaleBar = dialog.querySelector<HTMLElement>("[data-map-scale-bar]");
     const scaleLabel = dialog.querySelector<HTMLElement>("[data-map-scale-label]");
@@ -239,7 +237,6 @@ const cards = shops
         popImg.src = card.cover;
         popImg.alt = `${card.name} 的店招`;
       }
-      if (popName) popName.textContent = card.name;
       if (popEnter) popEnter.href = card.href;
 
       pop.hidden = false;
@@ -309,9 +306,12 @@ const cards = shops
       });
     });
 
-    viewport?.addEventListener("pointerdown", () => {
-      // 拖动地图时收起小卡
-      if (!pop?.hidden) hidePop();
+    viewport?.addEventListener("pointerdown", (event) => {
+      // 点地图空白处才收起小卡；点图钉本身不能收，否则会把刚弹出的收掉
+      if (!pop || pop.hidden) return;
+      const onPin = (event.target as Element)?.closest?.(".map-pin");
+      const inPop = pop.contains(event.target as Node);
+      if (!onPin && !inPop) hidePop();
     });
 
     document.querySelectorAll("[data-map-open]").forEach((button) => {
@@ -401,7 +401,7 @@ const cards = shops
       if (!dragging) return;
       const dx = event.clientX - lastX;
       const dy = event.clientY - lastY;
-      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+      if (Math.abs(dx) + Math.abs(dy) > 8) moved = true;
       lastX = event.clientX;
       lastY = event.clientY;
       tx += dx;

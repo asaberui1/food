@@ -1210,16 +1210,16 @@ body:has(.shop-toc) .site-footer{
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--cream);
+  border: 1px solid var(--button-bg);
+  background: var(--button-bg);
+  color: var(--button-fg);
   font-size: 0.95rem;
   padding: 0.6rem 1rem;
   cursor: pointer;
-  transition: border-color 160ms ease, color 160ms ease;
+  transition: border-color 160ms ease, background-color 160ms ease;
 }.search-button:hover{
   border-color: var(--ember);
-  color: var(--ember);
+  background: #f0e2c8;
 }.tag-row--filter{
   display: flex;
   flex-wrap: wrap;
@@ -1802,7 +1802,7 @@ body:has(.shop-toc) .site-footer{
   display: flex;
   align-items: center;
   gap: calc(var(--s) * 10px);
-  height: max(30px, calc(var(--s) * 48px));
+  height: max(26px, calc(var(--s) * 48px));
   padding: 0 max(10px, calc(var(--s) * 14px));
   border: 1px solid rgb(251 240 220 / 0.38);
   border-radius: calc(var(--s) * 8px);
@@ -1826,8 +1826,8 @@ body:has(.shop-toc) .site-footer{
 .studio__slot-tool {
   display: grid;
   place-items: center;
-  width: max(30px, calc(var(--s) * 30px));
-  height: max(30px, calc(var(--s) * 30px));
+  width: max(24px, calc(var(--s) * 30px));
+  height: max(26px, calc(var(--s) * 30px));
   margin-left: auto;
   border: 0;
   border-left: 1px solid rgb(251 240 220 / 0.25);
@@ -2246,7 +2246,7 @@ body:has(.shop-toc) .site-footer{
   display: flex;
   align-items: center;
   gap: calc(var(--s) * 10px);
-  height: max(30px, calc(var(--s) * 48px));
+  height: max(26px, calc(var(--s) * 48px));
   padding: 0 max(10px, calc(var(--s) * 14px));
   border: 1px solid rgb(251 240 220 / 0.38);
   border-radius: calc(var(--s) * 8px);
@@ -2270,8 +2270,8 @@ body:has(.shop-toc) .site-footer{
 .studio__slot-tool {
   display: grid;
   place-items: center;
-  width: max(30px, calc(var(--s) * 30px));
-  height: max(30px, calc(var(--s) * 30px));
+  width: max(24px, calc(var(--s) * 30px));
+  height: max(26px, calc(var(--s) * 30px));
   margin-left: auto;
   border: 0;
   border-left: 1px solid rgb(251 240 220 / 0.25);
@@ -2427,19 +2427,19 @@ body:has(.shop-toc) .site-footer{
   align-items: center;
   gap: 0.45rem;
   padding: 0.6rem 1rem;
-  border: 1px solid var(--button-bg);
-  background: var(--button-bg);
-  color: var(--button-fg);
+  border: 1px solid #0d0a07;
+  background: #0d0a07;
+  color: var(--cream);
   font-family: inherit;
   font-size: 0.95rem;
   line-height: inherit;
   cursor: pointer;
-  transition: background-color 160ms ease, border-color 160ms ease;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
 }
 
 .map-button:hover {
   border-color: var(--ember);
-  background: #f0e2c8;
+  color: var(--focus);
 }
 
 .map-button:focus-visible {
@@ -2448,7 +2448,7 @@ body:has(.shop-toc) .site-footer{
 }
 
 .map-button__pin {
-  color: #c0452f;
+  color: #fbf0dc;
 }
 
 .map-dialog {
@@ -2693,7 +2693,7 @@ body:has(.map-dialog[open]) {
 .hero-scroll {
   position: absolute;
   left: 50%;
-  bottom: clamp(1rem, 2.6vh, 2rem);
+  bottom: clamp(0.5rem, 1.4vh, 1.4rem);
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -2712,7 +2712,7 @@ body:has(.map-dialog[open]) {
 }
 
 .hero-scroll__chev {
-  opacity: 0.3;
+  opacity: 0.45;
   animation: hero-chev 2.1s ease-in-out infinite;
 }
 
@@ -2727,7 +2727,7 @@ body:has(.map-dialog[open]) {
 @keyframes hero-chev {
   0%,
   100% {
-    opacity: 0.22;
+    opacity: 0.4;
   }
 
   45% {
@@ -2859,7 +2859,7 @@ body:has(.map-dialog[open]) {
 .map-pop__shot {
   display: block;
   width: 100%;
-  height: 150px;
+  height: 148px;
   /* 店招多在半身以上，从上往下裁才露得出店名 */
   object-fit: cover;
   object-position: center top;
@@ -2886,13 +2886,18 @@ body:has(.map-dialog[open]) {
   background: #f0e2c8;
 }
 
-.map-pop__name {
-  margin: 0.5rem 0.15rem 0;
-  color: var(--cream);
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
 .map-pin.is-active circle:last-of-type {
   stroke: var(--focus);
+}
+
+
+@media (max-width: 640px) {
+  /* 手机上首屏内容更挤，给底部提示留出位置，别压在按钮上 */
+  .hero-content {
+    padding-bottom: 3.25rem;
+  }
+
+  .hero-scroll {
+    bottom: 0.9rem;
+  }
 }
