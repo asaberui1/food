@@ -39,7 +39,10 @@ const restaurants = defineCollection({
           }),
         )
         .default([]),
-      /** 菜单总说明，显示在所有分类之前 */
+      /**
+       * 菜单总说明：只写看菜单时需要解释的事（菜名写法、份量、促销话术这类），
+       * 属于解释性文字，不是必填项，没有明确要说明的就不要加。
+       */
       menuNote: z.string().optional(),
       menu: z
         .array(
