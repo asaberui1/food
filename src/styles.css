@@ -221,11 +221,11 @@
   min-height: 640px;
   height: 100svh;
   overflow: hidden;
-}.hero img, .shop-hero img{
+}.hero > picture img, .shop-hero > picture img{
   width: 100%;
   height: 100%;
   object-fit: cover;
-}.shop-hero img{
+}.shop-hero > picture img{
   object-position: center top;
 }.media-fill{
   position: absolute;
@@ -478,9 +478,41 @@ body:has(.shop-toc) .site-footer{
    ============================================================ */
 
 .brand{
+  flex-direction: row;
+  align-items: center;
+  gap: 0.7rem;
+}.brand__mark{
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}.brand__text{
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.4rem;
+}.hero-heading__row{
+  display: flex;
+  align-items: stretch;
+  gap: clamp(1rem, 2vw, 1.6rem);
+  margin-top: 1.4rem;
+}.hero-mark{
+  display: block;
+  flex: none;
+  align-self: flex-start;
+  width: calc(2.2 * clamp(2.6rem, 5.6vw, 5rem));
+  height: calc(2.2 * clamp(2.6rem, 5.6vw, 5rem));
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}.hero-mark img{
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}.hero-title{
+  margin: 0;
 }.brand-sub{
   color: var(--muted-foreground);
   font-family: var(--font-mono);

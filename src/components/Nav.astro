@@ -8,8 +8,18 @@ const current = Astro.url.pathname;
 <header class="site-header">
   <div class="nav-grid">
     <a class="brand" href={withBase("/")} aria-label={`${siteConfig.name} 首页`}>
-      <span>{siteConfig.name}</span>
-      <span class="brand-sub">FOOD AROUND SII</span>
+      <img
+        class="brand__mark"
+        src={`${import.meta.env.BASE_URL}logo-192.png`}
+        alt=""
+        width="38"
+        height="38"
+        decoding="async"
+      />
+      <span class="brand__text">
+        <span>{siteConfig.name}</span>
+        <span class="brand-sub">FOOD AROUND SII</span>
+      </span>
     </a>
 
     <nav class="nav-links" aria-label="主导航">
