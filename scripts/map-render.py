@@ -363,12 +363,15 @@ for slug, label, x, y in placed:
         ex = lx - 6 if anchor == "start" else lx + 6 if anchor == "end" else lx
         S.append(f'<path d="M{x:.0f} {y - PIN_H:.0f}L{ex:.0f} {ly:.0f}" stroke="#7d6a56" '
                  'stroke-width="1" opacity="0.65"/>')
-    # 店名本身也做成可点的：垫一块透明矩形，扩大点击面积（挨得近的两家才好点）
+    # 店名单独也是一个链接：垫一块透明矩形扩大点击面积，挨得近的两家才好点
+    S.append(f'<a href="{{{{base}}}}restaurants/{slug}/" class="map-label" data-map-slug="{slug}">')
+    S.append(f"<title>{label}</title>")
     S.append(f'<rect x="{b[0] - 3:.0f}" y="{b[1] - 2:.0f}" width="{b[2] - b[0] + 6:.0f}" '
              f'height="{b[3] - b[1] + 4:.0f}" fill="transparent" pointer-events="all"/>')
     S.append(f'<text x="{lx:.0f}" y="{ly:.0f}" font-size="{size}" fill="#fbf0dc" text-anchor="{anchor}" '
              'dominant-baseline="middle" stroke="#14100c" stroke-width="3.6" paint-order="stroke" '
              f'stroke-linejoin="round">{label}</text>')
+    S.append("</a>")
 S.append("</g>")
 
 # ---- 学院：圆形徽章 + 五角星 ----

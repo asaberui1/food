@@ -2596,7 +2596,8 @@ body:has(.map-dialog[open]) {
 }
 
 /* 图钉是链接：悬停和键盘聚焦时描边变成学院那种黄 */
-.map-pin {
+.map-pin,
+.map-label {
   cursor: pointer;
 }
 
@@ -2707,7 +2708,7 @@ body:has(.map-dialog[open]) {
 .hero-scroll {
   position: absolute;
   left: 50%;
-  bottom: clamp(1rem, 2.6vh, 2rem);
+  bottom: 0.4rem;
   transform: translateX(-50%);
   display: flex;
   flex-direction: column;
@@ -2936,15 +2937,15 @@ body:has(.map-dialog[open]) {
 
 @media (max-width: 640px) {
   .hero-grid {
-    row-gap: 1.25rem;
+    row-gap: 1rem;
   }
 
   .hero-title {
-    margin-top: 0.9rem;
+    margin-top: 0.75rem;
   }
 
   .hero-copy {
-    gap: 1.15rem;
+    gap: 0.95rem;
   }
 
   .hero-actions {

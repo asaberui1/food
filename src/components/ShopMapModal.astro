@@ -305,9 +305,9 @@ const cards = shops
     };
 
     // 点图钉 / 店名：先弹店招小卡，再点一次或点「进店」才跳转
-    dialog.querySelectorAll<SVGElement>(".map-pin").forEach((pin) => {
-      pin.addEventListener("click", (event) => {
-        const slug = pin.dataset.mapSlug ?? "";
+    dialog.querySelectorAll<SVGElement>(".map-pin, .map-label").forEach((trigger) => {
+      trigger.addEventListener("click", (event) => {
+        const slug = trigger.dataset.mapSlug ?? "";
         if (!cards[slug]) return; // 没有卡片数据就按普通链接走
         event.preventDefault();
         // 再点一次就是收起卡片，进店只走卡片上的「进店」按钮
@@ -319,7 +319,7 @@ const cards = shops
     viewport?.addEventListener("pointerdown", (event) => {
       // 点地图空白处才收起小卡；点图钉本身不能收，否则会把刚弹出的收掉
       if (!pop || pop.hidden) return;
-      const onPin = (event.target as Element)?.closest?.(".map-pin");
+      const onPin = (event.target as Element)?.closest?.(".map-pin, .map-label");
       const inPop = pop.contains(event.target as Node);
       if (!onPin && !inPop) hidePop();
     });
@@ -339,7 +339,7 @@ const cards = shops
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) dialog.close();
       if (pop && !pop.hidden && !pop.contains(event.target as Node)) {
-        const inPin = (event.target as Element)?.closest?.(".map-pin");
+        const inPin = (event.target as Element)?.closest?.(".map-pin, .map-label");
         if (!inPin) hidePop();
       }
     });
