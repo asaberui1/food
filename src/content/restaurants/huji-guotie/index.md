@@ -1,7 +1,7 @@
 ---
 name: 胡记锅贴
 added: "2026-11-20"
-cuisine: 小吃
+cuisine: 面食
 dining: single
 address: 华发路 281 号
 summary: 锅贴和老鸭粉丝汤是主打；锅贴 8 元一两四只，招牌老鸭粉丝汤 16 元。
@@ -111,7 +111,7 @@ menu:
       - { name: 鸭胗肠, price: ¥8 }
       - { name: 虫草菇, price: ¥9 }
       - { name: 酱香鸭腿, price: ¥10 }
-tags: [面食, 锅贴]
+tags: []
 ---
 
 和[南京汤包店](../nanjing-tangbaodian/)重叠的只有老鸭粉丝汤，其余锅贴、炒饭、盖浇饭都是这家的。店面比那边精致一些，汤底调味也更合适。

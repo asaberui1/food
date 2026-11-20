@@ -1,7 +1,7 @@
 ---
 name: 笼面王·杭州小吃
 added: "2026-11-19"
-cuisine: 小吃
+cuisine: 面食
 dining: single
 address: 华发路 345 号
 summary: 名字叫杭州小吃，卖的其实是嵊州那一路：豆腐小笼包、榨面、年糕，一个人来吃刚好。
