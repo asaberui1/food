@@ -10,7 +10,7 @@ type Props = {
 };
 
 const { shop, large = false } = Astro.props;
-const { name, cuisine, walkMinutes, summary, cover, sample, dining } = shop.data;
+const { name, cuisine, walkMinutes, summary, cover, dining } = shop.data;
 
 const diningLabel = { group: "多人聚餐", single: "单人餐", both: "聚餐 / 单人餐" }[dining];
 // 单人餐只列菜单，卡片上就不写人均
@@ -39,7 +39,6 @@ const meta = [priceText, walkText].filter(Boolean);
         </span>
       )
     }
-    {sample && <span class="shop-card__badge">示例</span>}
   </div>
   <div class="shop-card__body">
     <p class="label-eyebrow">{cuisine} · {diningLabel}</p>

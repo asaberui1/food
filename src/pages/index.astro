@@ -9,18 +9,15 @@ import SearchDialog from "../components/SearchDialog.astro";
 import { siteConfig } from "../config/site";
 import { withBase } from "../lib/urls";
 import { allTagsOf } from "../lib/shops";
-import { buildSearchIndex } from "../lib/search-index";
 import heroImage from "../assets/hero.jpg";
 import Icon from "../components/Icon.astro";
 
 const shops = (await getCollection("restaurants")).sort((a, b) => a.data.name.localeCompare(b.data.name, "zh"));
-const samples = shops.filter((shop) => shop.data.sample).length;
 
 // 跑马灯直接用站内标签，点一下就能跳到对应的筛选结果
 const marqueeItems = allTagsOf(shops);
 
 // 首页也能直接搜菜名，不用先跳转
-const searchIndex = buildSearchIndex(shops);
 
 // 区块编号按实际渲染的区块算，跳过哪个都不会跳号
 const steps = [shops.length > 0 && "all", "submit"].filter(Boolean) as string[];
@@ -166,7 +163,7 @@ const structuredData = {
         <div class="reservation-facts reveal">
           <div>
             <p class="label-eyebrow">当前收录</p>
-            <p>{shops.length} 家{samples > 0 ? `（其中 ${samples} 家为示例）` : ""}</p>
+            <p>{shops.length} 家</p>
           </div>
           <div>
             <p class="label-eyebrow">范围</p>
@@ -179,7 +176,7 @@ const structuredData = {
 
   <Footer />
 
-  <SearchDialog index={searchIndex} />
+  <SearchDialog />
 
   <script is:inline>
     (() => {

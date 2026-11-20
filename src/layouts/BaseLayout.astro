@@ -7,11 +7,23 @@ type Props = {
   title?: string;
   description?: string;
   image?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  type?: "website" | "article";
   structuredData?: Record<string, unknown>;
   enableReveal?: boolean;
 };
 
-const { title, description, image, structuredData, enableReveal = siteConfig.effects.reveal } = Astro.props;
+const {
+  title,
+  description,
+  image,
+  imageWidth,
+  imageHeight,
+  type,
+  structuredData,
+  enableReveal = siteConfig.effects.reveal,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -30,7 +42,15 @@ const { title, description, image, structuredData, enableReveal = siteConfig.eff
         </script>
       )
     }
-    <SeoHead title={title} description={description} image={image} structuredData={structuredData} />
+    <SeoHead
+      title={title}
+      description={description}
+      image={image}
+      imageWidth={imageWidth}
+      imageHeight={imageHeight}
+      type={type}
+      structuredData={structuredData}
+    />
     {
       siteConfig.analytics.goatcounter && (
         <script

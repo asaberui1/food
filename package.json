@@ -24,7 +24,8 @@
     "check": "astro check",
     "og": "node scripts/og.mjs",
     "fonts": "node scripts/font-subset.mjs",
-    "share": "node scripts/share-cards.mjs"
+    "share": "node scripts/share-cards.mjs",
+    "prebuild": "astro check"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

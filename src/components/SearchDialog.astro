@@ -2,12 +2,18 @@
 type MenuItem = { name: string; price: string; group: string };
 type ShopIndex = { id: string; name: string; menu: MenuItem[] };
 
-type Props = { index: ShopIndex[] };
+type Props = { indexUrl?: string };
 
-const { index } = Astro.props;
+const { indexUrl = `${import.meta.env.BASE_URL}search-index.json` } = Astro.props;
 ---
 
-<dialog class="search-dialog" data-search-dialog data-base={import.meta.env.BASE_URL} aria-labelledby="search-title">
+<dialog
+  class="search-dialog"
+  data-search-dialog
+  data-base={import.meta.env.BASE_URL}
+  data-index-url={indexUrl}
+  aria-labelledby="search-title"
+>
   <div class="search-dialog__inner">
     <div class="search-dialog__head">
       <h2 id="search-title" class="search-dialog__title">搜菜名</h2>
@@ -32,16 +38,32 @@ const { index } = Astro.props;
   </div>
 </dialog>
 
-<script type="application/json" class="search-index" set:html={JSON.stringify(index)} />
-
 <script is:inline>
   (() => {
     const dialog = document.querySelector("[data-search-dialog]");
-    const indexNode = document.querySelector(".search-index");
-    if (!dialog || !indexNode) return;
+    if (!dialog) return;
 
     const base = dialog.dataset.base || "/";
-    const shops = JSON.parse(indexNode.textContent);
+    const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json`;
+    let shops = null;
+    let loading = null;
+
+    // 打开搜索框时才去取索引，首页不再内联这几十 KB
+    const loadIndex = () => {
+      if (!loading) {
+        loading = fetch(indexUrl)
+          .then((response) => (response.ok ? response.json() : []))
+          .then((data) => {
+            shops = Array.isArray(data) ? data : [];
+            return shops;
+          })
+          .catch(() => {
+            shops = [];
+            return shops;
+          });
+      }
+      return loading;
+    };
     const input = dialog.querySelector("[data-search]");
     const results = dialog.querySelector("[data-results]");
     const noResult = dialog.querySelector("[data-search-empty]");
@@ -65,7 +87,7 @@ const { index } = Astro.props;
       const query = normalize(input.value);
       results.replaceChildren();
       noResult.hidden = true;
-      if (!query) return;
+      if (!query || !shops) return;
 
       let count = 0;
       shops.forEach((shop) => {
@@ -99,8 +121,9 @@ const { index } = Astro.props;
 
     let opener = null;
 
-    const open = (trigger) => {
+    const open = async (trigger) => {
       opener = trigger || document.activeElement;
+      await loadIndex();
       if (typeof dialog.showModal === "function") dialog.showModal();
       else dialog.setAttribute("open", "");
       input.value = "";
@@ -128,7 +151,13 @@ const { index } = Astro.props;
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) close();
     });
-    input.addEventListener("input", render);
+    input.addEventListener("input", () => {
+      if (!shops) {
+        loadIndex().then(render);
+        return;
+      }
+      render();
+    });
 
     if (new URLSearchParams(window.location.search).get("search") === "1") open();
   })();
