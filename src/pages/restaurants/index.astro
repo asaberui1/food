@@ -66,11 +66,10 @@ const seen = new Set<string>();
                       {tag}
                     </button>
                   ))}
+                  <button type="button" class="chip chip--clear" data-clear-filter hidden>
+                    清空筛选
+                  </button>
                 </div>
-
-                <button type="button" class="filter-clear" data-clear-filter hidden>
-                  清空筛选
-                </button>
 
                 <p class="search-hint">
                   「四六分餐馆」：一个人来能吃，四五个人点一桌炒菜也行。菜名搜索只覆盖已录入菜单的店。

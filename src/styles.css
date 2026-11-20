@@ -1138,18 +1138,14 @@ body:has(.shop-toc) .site-footer{
   border-color: var(--ember);
   outline: 2px solid var(--focus);
   outline-offset: 2px;
-}.filter-clear{
-  margin-top: 0.85rem;
-  border: 0;
-  border-bottom: 1px solid rgb(251 240 220 / 0.35);
-  background: transparent;
-  color: var(--muted-foreground);
-  font-size: 0.95rem;
-  padding: 0 0 0.15rem;
-  cursor: pointer;
-}.filter-clear:hover{
-  color: var(--ember);
-  border-color: var(--ember);
+}.chip--clear{
+  background: var(--button-bg);
+  border-color: transparent;
+  color: var(--button-fg);
+  font-weight: 600;
+}.chip--clear:hover{
+  background: var(--cream);
+  color: var(--button-fg);
 }.search-hint{
   margin: 0;
   color: var(--muted-foreground);
@@ -1371,6 +1367,8 @@ body:has(.shop-toc) .site-footer{
   padding: 0;
 }.bill-dish__popover{
   position: fixed;
+  inset: auto;
+  margin: 0;
   z-index: 80;
   width: max-content;
   max-width: min(24rem, 78vw);

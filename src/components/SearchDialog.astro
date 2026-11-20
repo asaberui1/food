@@ -21,7 +21,7 @@ const { indexUrl = `${import.meta.env.BASE_URL}search-index.json` } = Astro.prop
     </div>
 
     <label class="search-field">
-      <span class="label-eyebrow">菜名或店名</span>
+      <span class="label-eyebrow">菜名</span>
       <input
         type="search"
         name="dish"
@@ -91,9 +91,9 @@ const { indexUrl = `${import.meta.env.BASE_URL}search-index.json` } = Astro.prop
 
       let count = 0;
       shops.forEach((shop) => {
-        const hits = shop.menu.filter((item) => matches(`${item.name}${item.group}`, query));
-        const nameHit = matches(shop.name, query);
-        if (!hits.length && !nameHit) return;
+        // 只认菜名，不拿店名和分类名凑数
+        const hits = shop.menu.filter((item) => matches(item.name, query));
+        if (!hits.length) return;
         count += 1;
 
         const li = document.createElement("li");

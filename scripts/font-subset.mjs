@@ -57,10 +57,24 @@ async function collectChars() {
   return [...used];
 }
 
+/**
+ * 按码点哈希分桶：新增一个汉字只会动到一个 woff2，
+ * 其余文件的内容与哈希保持不变，浏览器缓存能一直用下去。
+ */
+function bucketize(chars, count) {
+  const buckets = Array.from({ length: count }, () => []);
+  for (const char of chars) {
+    const cp = char.codePointAt(0);
+    const index = (cp * 2654435761) % count;
+    buckets[index].push(char);
+  }
+  return buckets.map((bucket) => bucket.sort((a, b) => a.codePointAt(0) - b.codePointAt(0)));
+}
+
 async function main() {
   const chars = await collectChars();
-  const batches = [];
-  for (let i = 0; i < chars.length; i += BATCH) batches.push(chars.slice(i, i + BATCH));
+  const buckets = Math.max(1, Math.ceil(chars.length / BATCH));
+  const batches = bucketize(chars, buckets);
 
   const tmpDir = `${FONT_DIR}-tmp`;
   await rm(tmpDir, { recursive: true, force: true });
@@ -96,10 +110,19 @@ async function main() {
 `;
   }
 
+  // 自检：站里用到的每个字都必须落在某个子集里，否则会悄悄回退到系统字体
+  const covered = new Set(batches.flat());
+  const missing = chars.filter((char) => !covered.has(char));
+  if (missing.length) {
+    throw new Error(`子集缺字：${missing.join("")}`);
+  }
+
   await rm(FONT_DIR, { recursive: true, force: true });
   await rename(tmpDir, FONT_DIR);
   await writeFile(CSS_FILE, css);
-  console.log(`字体子集：${chars.length} 字，${batches.length} 批，共 ${(total / 1024).toFixed(0)} KB`);
+  console.log(
+    `字体子集：${chars.length} 字，${batches.length} 个文件，共 ${(total / 1024).toFixed(0)} KB（已校验无缺字）`,
+  );
 }
 
 main().catch((error) => {

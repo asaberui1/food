@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
 import { withBase } from "../lib/urls";
 import { priceLabel } from "../lib/bills";
@@ -23,7 +23,9 @@ const meta = [priceText, walkText].filter(Boolean);
   <div class:list={["shop-card__media", { "shop-card__media--blank": !cover }]}>
     {
       cover ? (
-        <Image
+        <Picture
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
           src={cover}
           alt={`${name} 的店内照片`}
           widths={large ? [640, 960, 1440] : [400, 640, 900]}

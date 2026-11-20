@@ -1,0 +1,15 @@
+{
+  "name": "创智食单",
+  "short_name": "食单",
+  "description": "上海创智学院周边的餐馆指南：环境、菜单、人均和值得点的那道菜。",
+  "start_url": "/food/",
+  "scope": "/food/",
+  "display": "standalone",
+  "background_color": "#17130f",
+  "theme_color": "#17130f",
+  "icons": [
+    { "src": "logo-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "logo-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "logo-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

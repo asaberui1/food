@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Picture } from "astro:assets";
 import { getCollection } from "astro:content";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Nav from "../components/Nav.astro";
@@ -38,7 +38,9 @@ const structuredData = {
 
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <Image
+      <Picture
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
         class="media-fill"
         src={heroImage}
         alt="海边盛开的三角梅，一只黄色蝴蝶停在花上"

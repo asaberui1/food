@@ -1,5 +1,5 @@
 ---
-import { Image, getImage } from "astro:assets";
+import { Picture, getImage } from "astro:assets";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
@@ -112,6 +112,15 @@ const structuredData = {
   hasMenu: `${pageUrl}#menu-title`,
   address: { "@type": "PostalAddress", streetAddress: address, addressCountry: "CN" },
   ...(hours ? { openingHours: hours } : {}),
+  // 有封面才写 image，没拍就先空着
+  ...(cover
+    ? {
+        image: new URL(
+          `${import.meta.env.BASE_URL}${cover.src.replace(/^\//, "")}`,
+          siteUrl,
+        ).href,
+      }
+    : {}),
 };
 ---
 
@@ -134,7 +143,9 @@ const structuredData = {
         {
           cover && (
             <>
-              <Image
+              <Picture
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
                 class="media-fill"
                 src={cover}
                 alt={`${name} 的店内环境`}
@@ -196,15 +207,20 @@ const structuredData = {
                   </tr>
                 </thead>
                 <tbody>
-                  {bills.map((record) => (
+                  {bills.map((record, index) => (
                     <tr>
                       <td>{record.people} 人</td>
                       <td>
                         <span class="bill-dish">
-                          <button type="button" class="bill-dish__button" aria-expanded="false">
+                          <button
+                            type="button"
+                            class="bill-dish__button"
+                            popovertarget={`bill-${shop.id}-${index}`}
+                            aria-expanded="false"
+                          >
                             {billComposition(record)}
                           </button>
-                          <span class="bill-dish__popover" role="tooltip" hidden>
+                          <span class="bill-dish__popover" id={`bill-${shop.id}-${index}`} popover>
                             {record.dishes.join("、")}
                           </span>
                         </span>
@@ -231,7 +247,9 @@ const structuredData = {
               <div class="gallery">
                 {galleryLarge.map((photo) => (
                   <figure class="gallery__item">
-                    <Image
+                    <Picture
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
                       src={photo.src}
                       alt={photo.alt}
                       widths={[480, 960]}
@@ -268,7 +286,9 @@ const structuredData = {
                     </div>
                     {dish.image && (
                       <div class="dish__media">
-                        <Image
+                        <Picture
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
                           src={dish.image}
                           alt={dish.name}
                           widths={[160, 320]}
@@ -328,7 +348,9 @@ const structuredData = {
               {order && (
                 <div class="order-block">
                   {order.qr && (
-                    <Image
+                    <Picture
+          formats={["avif", "webp"]}
+          fallbackFormat="webp"
                       class="order-block__qr"
                       src={order.qr}
                       alt={`${name} 的扫码点餐二维码`}
@@ -437,9 +459,9 @@ const structuredData = {
       if (!cells.length) return;
       const margin = 12;
       const canHover = window.matchMedia("(hover: hover)").matches;
+      const hasPopover = typeof HTMLElement.prototype.showPopover === "function";
 
       const place = (button, popover) => {
-        popover.hidden = false;
         const rect = button.getBoundingClientRect();
         const box = popover.getBoundingClientRect();
 
@@ -460,7 +482,25 @@ const structuredData = {
         const popover = cell.querySelector(".bill-dish__popover");
         if (!button || !popover) return;
 
+        if (hasPopover) {
+          // 原生 popover：Esc、点外面关闭、顶层显示都由浏览器负责
+          popover.addEventListener("toggle", (event) => {
+            button.setAttribute("aria-expanded", String(event.newState === "open"));
+            if (event.newState === "open") place(button, popover);
+          });
+
+          if (canHover) {
+            button.addEventListener("mouseenter", () => popover.showPopover());
+            button.addEventListener("mouseleave", () => popover.hidePopover());
+            button.addEventListener("focus", () => popover.showPopover());
+            button.addEventListener("blur", () => popover.hidePopover());
+          }
+          return;
+        }
+
+        // 老浏览器：退回 hidden 开关
         const open = () => {
+          popover.hidden = false;
           place(button, popover);
           button.setAttribute("aria-expanded", "true");
         };
@@ -468,35 +508,28 @@ const structuredData = {
           popover.hidden = true;
           button.setAttribute("aria-expanded", "false");
         };
-
         if (canHover) {
           button.addEventListener("mouseenter", open);
           button.addEventListener("mouseleave", close);
           button.addEventListener("focus", open);
           button.addEventListener("blur", close);
         }
-
         button.addEventListener("click", (event) => {
           event.preventDefault();
           if (popover.hidden) open();
           else close();
         });
-      });
-
-      document.addEventListener("click", (event) => {
-        if (event.target.closest(".bill-dish")) return;
-        cells.forEach((cell) => {
-          const popover = cell.querySelector(".bill-dish__popover");
-          const button = cell.querySelector(".bill-dish__button");
-          if (popover) popover.hidden = true;
-          if (button) button.setAttribute("aria-expanded", "false");
+        document.addEventListener("click", (event) => {
+          if (event.target.closest(".bill-dish")) return;
+          close();
         });
       });
 
       window.addEventListener("resize", () => {
         cells.forEach((cell) => {
           const popover = cell.querySelector(".bill-dish__popover");
-          if (popover && !popover.hidden) place(cell.querySelector(".bill-dish__button"), popover);
+          const button = cell.querySelector(".bill-dish__button");
+          if (popover && !popover.hidden && popover.matches(":popover-open")) place(button, popover);
         });
       });
     })();
