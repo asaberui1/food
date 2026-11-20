@@ -3,10 +3,10 @@
  * 学院周边餐馆地图（弹窗版）。
  *
  * 底图是 scripts/map-render.py 从 OSM 数据离线渲染的矢量图
- * （src/assets/map/neighbourhood.svg），不请求任何瓦片服务，
- * 配色和站点一致；图上的图钉本身就是各店详情页的链接。
+ * （src/assets/map/neighbourhood.svg），不请求任何瓦片服务，配色和站点一致。
  *
  * 交互：滚轮 / 双击 / +− 按钮缩放，按住拖动平移，Esc 或右上角关闭。
+ * 点图钉或店名先弹一张店招小卡，卡上「进店」才跳详情页。
  * 新增门店后要重跑脚本补图钉，否则这家店不会出现在图上——构建时会打印警告。
  */
 import { getCollection } from "astro:content";
@@ -16,25 +16,32 @@ import { withBase } from "../lib/urls";
 // 脚本里用 {{base}} 占位，部署到 /food/ 下时才替换成真实前缀
 const svg = rawMap.replaceAll("{{base}}", withBase("/"));
 
+const shops = await getCollection("restaurants");
 const pinned = new Set([...rawMap.matchAll(/data-map-slug="([^"]+)"/g)].map((match) => match[1]));
-const missing = (await getCollection("restaurants"))
-  .filter((shop) => !pinned.has(shop.id))
-  .map((shop) => shop.data.name);
+const missing = shops.filter((shop) => !pinned.has(shop.id)).map((shop) => shop.data.name);
 
 if (missing.length > 0) {
   console.warn(
     `[ShopMap] 这些店还没标在地图上：${missing.join("、")}。补好坐标后重跑 python3 scripts/map-render.py`,
   );
 }
+
+// 图钉点开后的小卡：店招图 + 进店链接
+const cards = shops
+  .filter((shop) => pinned.has(shop.id))
+  .map((shop) => ({
+    id: shop.id,
+    name: shop.data.name,
+    cover: shop.data.cover?.src ?? "",
+    href: withBase(`/restaurants/${shop.id}/`),
+    meta: shop.data.cuisine,
+  }));
 ---
 
 <dialog class="map-dialog" id="map-dialog" aria-labelledby="map-dialog-title">
   <div class="map-dialog__panel" tabindex="-1" data-map-panel>
     <header class="map-dialog__bar">
-      <div class="map-dialog__headline">
-        <h2 class="map-dialog__title display" id="map-dialog-title">学院周边</h2>
-        <p class="map-dialog__hint">拖动平移 · 缩放 · 点图钉进店</p>
-      </div>
+      <h2 class="map-dialog__title display" id="map-dialog-title">学院周边</h2>
       <div class="map-dialog__tools">
         <button type="button" class="map-tool" data-map-zoom="out" aria-label="缩小地图">
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -58,22 +65,33 @@ if (missing.length > 0) {
       <div class="map-dialog__canvas" data-map-canvas>
         <Fragment set:html={svg} />
       </div>
+
+      <div class="map-pop" data-map-pop hidden>
+        <a class="map-pop__enter" data-map-pop-enter href="#">进店</a>
+        <img class="map-pop__shot" data-map-pop-img alt="" width="320" height="200" loading="lazy" decoding="async" />
+        <p class="map-pop__name" data-map-pop-name></p>
+      </div>
+
+      <div class="map-scale" data-map-scale aria-hidden="true">
+        <span class="map-scale__bar" data-map-scale-bar></span>
+        <span class="map-scale__label" data-map-scale-label></span>
+      </div>
     </div>
 
     <footer class="map-dialog__foot">
       <span class="map-key">
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <circle cx="12" cy="12" r="11" fill="#fbeecb"></circle>
           <path d="M12 4.6l2.2 5.2 5.6.5-4.2 3.8 1.2 5.5L12 16.8l-4.8 2.8 1.2-5.5-4.2-3.8 5.6-.5z" fill="#d98a34"></path>
         </svg>
         上海创智学院
       </span>
       <span class="map-key">
-        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
           <path d="M12 22.5V11.6" stroke="#b9b1a6" stroke-width="2.4" stroke-linecap="round"></path>
           <circle cx="12" cy="7.6" r="5.6" fill="#d34731" stroke="#fbf0dc" stroke-width="1.6"></circle>
         </svg>
-        收录的餐馆，点图钉进店
+        收录的餐馆
       </span>
       <span class="map-dialog__credit">
         底图 © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> 贡献者
@@ -82,24 +100,58 @@ if (missing.length > 0) {
   </div>
 </dialog>
 
+<script type="application/json" data-map-cards set:html={JSON.stringify(cards)}></script>
+
 <script>
   const dialog = document.getElementById("map-dialog") as HTMLDialogElement | null;
 
   if (dialog) {
     const viewport = dialog.querySelector<HTMLElement>("[data-map-viewport]");
     const canvas = dialog.querySelector<HTMLElement>("[data-map-canvas]");
-    const svg = canvas?.querySelector("svg");
-    let baseW = 0;
-    let baseH = 0;
+    const svg = canvas?.querySelector<SVGSVGElement>(".map-svg");
+    const pop = dialog.querySelector<HTMLElement>("[data-map-pop]");
+    const popImg = dialog.querySelector<HTMLImageElement>("[data-map-pop-img]");
+    const popName = dialog.querySelector<HTMLElement>("[data-map-pop-name]");
+    const popEnter = dialog.querySelector<HTMLAnchorElement>("[data-map-pop-enter]");
+    const scaleBar = dialog.querySelector<HTMLElement>("[data-map-scale-bar]");
+    const scaleLabel = dialog.querySelector<HTMLElement>("[data-map-scale-label]");
+
+    let cards: Record<string, { name: string; cover: string; href: string }> = {};
+    try {
+      const raw = document.querySelector("[data-map-cards]")?.textContent ?? "[]";
+      for (const card of JSON.parse(raw)) cards[card.id] = card;
+    } catch {
+      cards = {};
+    }
+
+    const mapMeters = Number(svg?.dataset.mapMeters ?? 0);
+
+    let baseW = 0; // 缩放 1 时的画布宽度（= 视口宽度）
+    let baseH = 0; // 缩放 1 时的画布高度（随宽度等比）
     let scale = 1;
     let minScale = 1;
     let maxScale = 4;
     let tx = 0;
     let ty = 0;
+    let activeSlug = "";
 
     const apply = () => {
       if (!canvas) return;
-      canvas.style.transform = `translate3d(${tx}px, ${ty}px, 0) scale(${scale})`;
+      // 用宽度而不是 transform:scale 缩放，文字才是重新光栅化的矢量，放大不发虚
+      canvas.style.width = `${baseW * scale}px`;
+      canvas.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+      updateScaleBar();
+    };
+
+    const updateScaleBar = () => {
+      if (!scaleBar || !scaleLabel || !mapMeters || !baseW) return;
+      const metersPerPixel = mapMeters / (baseW * scale);
+      let meters = 50;
+      for (const candidate of [50, 100, 200, 500, 1000, 2000]) {
+        if (candidate / metersPerPixel <= 130) meters = candidate;
+      }
+      scaleBar.style.width = `${Math.max(28, Math.round(meters / metersPerPixel))}px`;
+      scaleLabel.textContent = `${meters} 米`;
     };
 
     const clamp = () => {
@@ -114,16 +166,15 @@ if (missing.length > 0) {
 
     const measure = () => {
       if (!viewport || !canvas) return;
+      canvas.style.width = "";
       canvas.style.transform = "none";
       baseW = canvas.offsetWidth;
       baseH = canvas.offsetHeight;
       if (!baseW || !baseH) return;
-      // 整张图刚好装进视口
       minScale = Math.min(1, viewport.clientWidth / baseW, viewport.clientHeight / baseH);
       maxScale = minScale * 10;
     };
 
-    /** 把某个 SVG 坐标点移到视口正中 */
     const centerOn = (fx: number, fy: number) => {
       if (!viewport) return;
       tx = viewport.clientWidth / 2 - fx * baseW * scale;
@@ -133,10 +184,9 @@ if (missing.length > 0) {
     };
 
     const shopAnchor = () => {
-      const svgEl = dialog?.querySelector<SVGSVGElement>(".map-svg");
       const pins = [...(dialog?.querySelectorAll(".map-pin circle") ?? [])];
-      if (!svgEl || pins.length === 0) return null;
-      const vb = svgEl.viewBox.baseVal;
+      if (!svg || pins.length === 0) return null;
+      const vb = svg.viewBox.baseVal;
       if (!vb || !vb.width) return null;
       const sum = pins.reduce(
         (acc, pin) => [acc[0] + Number(pin.getAttribute("cx")), acc[1] + Number(pin.getAttribute("cy"))],
@@ -147,15 +197,17 @@ if (missing.length > 0) {
 
     const fit = () => {
       measure();
-      // 手机上整图缩小后字号只剩 4px，直接放大到看得清的倍数并对准学院
       const narrow = (viewport?.clientWidth ?? 999) < 700;
+      // 窄屏整图缩小后字号只剩 4px，直接放大到看得清的倍数并对准餐馆
       scale = narrow ? Math.min(maxScale, Math.max(minScale, 980 / baseW)) : minScale;
       tx = 0;
       ty = 0;
       clamp();
       apply();
-      const anchor = narrow ? shopAnchor() : null;
-      if (anchor) centerOn(anchor[0], anchor[1]);
+      if (narrow) {
+        const anchor = shopAnchor();
+        if (anchor) centerOn(anchor[0], anchor[1]);
+      }
     };
 
     const zoomTo = (next: number, cx?: number, cy?: number) => {
@@ -171,11 +223,100 @@ if (missing.length > 0) {
       apply();
     };
 
-    // 打开 / 关闭
+    const hidePop = () => {
+      if (pop) pop.hidden = true;
+      activeSlug = "";
+      dialog.querySelectorAll(".map-pin.is-active").forEach((pin) => pin.classList.remove("is-active"));
+    };
+
+    const showPop = (slug: string) => {
+      const card = cards[slug];
+      const pin = dialog.querySelector<SVGGElement>(`.map-pin[data-map-slug="${slug}"]`);
+      if (!card || !pin || !pop || !viewport) return;
+
+      activeSlug = slug;
+      if (popImg) {
+        popImg.src = card.cover;
+        popImg.alt = `${card.name} 的店招`;
+      }
+      if (popName) popName.textContent = card.name;
+      if (popEnter) popEnter.href = card.href;
+
+      pop.hidden = false;
+      const vp = viewport.getBoundingClientRect();
+      // 以针头（圆）为准定位，针脚和店名不参与
+      const head = pin.querySelector("circle") ?? pin;
+      const box = head.getBoundingClientRect();
+      const width = pop.offsetWidth;
+      const height = pop.offsetHeight;
+      const cx = box.left - vp.left + box.width / 2;
+      const cy = box.top - vp.top + box.height / 2;
+      const gap = 12;
+
+      // 空间够就放上面，不够依次试下面、左边、右边，三角始终对着图钉
+      const spaceTop = box.top - vp.top;
+      const spaceBottom = vp.height - (box.bottom - vp.top);
+      const spaceLeft = box.left - vp.left;
+      const spaceRight = vp.width - (box.right - vp.left);
+      let side = "top";
+      if (spaceTop >= height + gap) side = "top";
+      else if (spaceBottom >= height + gap) side = "bottom";
+      else if (spaceLeft >= width + gap) side = "left";
+      else if (spaceRight >= width + gap) side = "right";
+      else side = spaceTop > spaceBottom ? "top" : "bottom";
+
+      let left = cx - width / 2;
+      let top = box.top - vp.top - height - gap;
+      if (side === "bottom") top = box.bottom - vp.top + gap;
+      if (side === "left") {
+        left = box.left - vp.left - width - gap;
+        top = cy - height / 2;
+      }
+      if (side === "right") {
+        left = box.right - vp.left + gap;
+        top = cy - height / 2;
+      }
+
+      left = Math.max(8, Math.min(vp.width - width - 8, left));
+      top = Math.max(8, Math.min(vp.height - height - 8, top));
+
+      pop.style.left = `${left}px`;
+      pop.style.top = `${top}px`;
+      pop.classList.toggle("is-top", side === "top");
+      pop.classList.toggle("is-bottom", side === "bottom");
+      pop.classList.toggle("is-left", side === "left");
+      pop.classList.toggle("is-right", side === "right");
+      const arrowX = Math.max(18, Math.min(width - 18, cx - left));
+      const arrowY = Math.max(18, Math.min(height - 18, cy - top));
+      pop.style.setProperty("--arrow-x", `${arrowX}px`);
+      pop.style.setProperty("--arrow-y", `${arrowY}px`);
+
+      dialog.querySelectorAll(".map-pin.is-active").forEach((el) => el.classList.remove("is-active"));
+      pin.classList.add("is-active");
+    };
+
+    // 点图钉 / 店名：先弹店招小卡，再点一次或点「进店」才跳转
+    dialog.querySelectorAll<SVGElement>(".map-pin").forEach((pin) => {
+      pin.addEventListener("click", (event) => {
+        const slug = pin.dataset.mapSlug ?? "";
+        if (!cards[slug]) return; // 没有卡片数据就按普通链接走
+        event.preventDefault();
+        if (activeSlug === slug) {
+          window.location.href = cards[slug].href;
+          return;
+        }
+        showPop(slug);
+      });
+    });
+
+    viewport?.addEventListener("pointerdown", () => {
+      // 拖动地图时收起小卡
+      if (!pop?.hidden) hidePop();
+    });
+
     document.querySelectorAll("[data-map-open]").forEach((button) => {
       button.addEventListener("click", () => {
         dialog.showModal();
-        // 弹窗 display 之后才有尺寸
         requestAnimationFrame(() => {
           fit();
           dialog.querySelector<HTMLElement>("[data-map-panel]")?.focus();
@@ -185,18 +326,21 @@ if (missing.length > 0) {
 
     dialog.querySelector("[data-map-close]")?.addEventListener("click", () => dialog.close());
 
-    // 点遮罩关闭
     dialog.addEventListener("click", (event) => {
       if (event.target === dialog) dialog.close();
+      if (pop && !pop.hidden && !pop.contains(event.target as Node)) {
+        const inPin = (event.target as Element)?.closest?.(".map-pin");
+        if (!inPin) hidePop();
+      }
     });
 
     dialog.querySelectorAll<HTMLElement>("[data-map-zoom]").forEach((button) => {
       button.addEventListener("click", () => {
+        hidePop();
         zoomTo(button.dataset.mapZoom === "in" ? scale * 1.5 : scale / 1.5);
       });
     });
 
-    // 滚轮缩放（以指针为中心）
     viewport?.addEventListener(
       "wheel",
       (event) => {
@@ -208,7 +352,6 @@ if (missing.length > 0) {
       { passive: false },
     );
 
-    // 双击放大
     viewport?.addEventListener("dblclick", (event) => {
       const rect = viewport.getBoundingClientRect();
       zoomTo(scale * 1.8, event.clientX - rect.left, event.clientY - rect.top);
@@ -278,7 +421,6 @@ if (missing.length > 0) {
     viewport?.addEventListener("pointerup", endDrag);
     viewport?.addEventListener("pointercancel", endDrag);
 
-    // 拖完松手时别顺手触发图钉链接
     viewport?.addEventListener(
       "click",
       (event) => {
@@ -291,8 +433,12 @@ if (missing.length > 0) {
       true,
     );
 
-    // 键盘：Esc 关闭是 dialog 自带的，这里补上下左右平移
     dialog.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && pop && !pop.hidden) {
+        event.preventDefault();
+        hidePop();
+        return;
+      }
       const step = 60;
       if (event.key === "ArrowLeft") tx += step;
       else if (event.key === "ArrowRight") tx -= step;
@@ -304,11 +450,8 @@ if (missing.length > 0) {
       apply();
     });
 
-    // 视口尺寸变化（转屏、改窗口）后重新贴合
     window.addEventListener("resize", () => {
       if (dialog.open) fit();
     });
-
-    if (svg) svg.setAttribute("aria-hidden", "false");
   }
 </script>

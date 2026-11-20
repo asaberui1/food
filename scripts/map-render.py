@@ -215,7 +215,8 @@ ccx, ccy = px(*CAMPUS)
 
 S = [
     f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W:.0f} {H:.0f}" '
-    f'role="group" aria-label="学院周边餐馆位置图" class="map-svg">',
+    f'role="group" aria-label="学院周边餐馆位置图" class="map-svg" '
+    f'data-map-meters="{SPAN:.0f}">',
     f'<rect width="{W:.0f}" height="{H:.0f}" fill="#14100c"/>',
     '<defs><radialGradient id="map-vignette" cx="50%" cy="50%" r="72%">'
     '<stop offset="52%" stop-color="#14100c" stop-opacity="0"/>'
@@ -381,15 +382,6 @@ S.append(f'<polygon points="{" ".join(star)}" fill="#d98a34"/>')
 S.append(f'<text x="{ccx:.0f}" y="{ccy + BADGE_R + 17:.0f}" font-size="16" font-weight="600" '
          'fill="#f7e6bf" text-anchor="middle" stroke="#14100c" stroke-width="4" paint-order="stroke" '
          'stroke-linejoin="round" letter-spacing="1">上海创智学院</text>')
-S.append("</g>")
-
-bar = 500 * SCALE
-bx, by = 34, H - 40
-S.append('<g class="map-scale" font-family="PingFang SC, Noto Sans SC, sans-serif">')
-S.append(f'<path d="M{bx} {by}h{bar:.0f}" stroke="#5f5145" stroke-width="3"/>')
-S.append(f'<path d="M{bx} {by - 5}v10M{bx + bar:.0f} {by - 5}v10" stroke="#5f5145" stroke-width="3"/>')
-S.append(f'<text x="{bx + bar / 2:.0f}" y="{by - 12:.0f}" font-size="13.5" fill="#8a7864" '
-         'text-anchor="middle" letter-spacing="1">500 米</text>')
 S.append("</g>")
 
 S.append("</svg>")

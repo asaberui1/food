@@ -13,26 +13,24 @@ gallery:
   - src: ./room-door.webp
     alt: 包厢门口，浅蓝墙面配深色木门，门牌写着「五福临门」
 dishes:
+  - name: 自制特色基围虾
+    price: ¥38
+    note: 虾先炸过，趁热放进调好的酱汁里，靠热胀冷缩把味吸进去，所以外面挂着汁、里面也有味。
+    image: ./jixiaxia.webp
   - name: 椒盐排条
     price: ¥30
     note: 现炸的排条裹一层薄糊，和洋葱丝、芹菜段一起上桌，趁热吃最脆。
     image: ./paigu.webp
-  - name: 白斩草鸡
-    price: ¥32
-    note: 皮黄肉紧，蘸一点酱油就够。
-  - name: 酒香草头
-    price: ¥25
-    note: 草头嫩的时候才点得到，酒味很冲，下饭。
-  - name: 自制特色基围虾
-    price: ¥38
-    image: ./jixiaxia.webp
   - name: 八宝辣酱
     price: ¥32
     note: 八样料：鸡丁、鸭胗丁、虾仁丁、豌豆、胡萝卜丁、豆腐丁、高笋丁、花生米。
     image: ./babao-lajiang.webp
+  - name: 白切草鸡
+    price: ¥32
+    note: 皮黄肉紧，蘸一点酱油就够。
 bills:
   - people: 2
-    dishes: [椒盐排条, 白斩草鸡, 酒香草头]
+    dishes: [椒盐排条, 白切草鸡, 酒香草头]
     total: 93
   - people: 3
     dishes: [香菜拌素鸡, 无为卤鹅, 八宝辣酱, 自制特色基围虾, 椒盐排条]
@@ -55,6 +53,9 @@ menu:
       - { name: 五香烤子鱼, price: ¥32 }
       - { name: 肴蹄, price: ¥28 }
       - { name: 盐水小豌豆, price: ¥18 }
+      - name: 香菜拌素鸡
+        price: ¥16
+        image: ./xiangcai-suji.webp
       - { name: 四喜烤夫, price: ¥18 }
       - { name: 时蔬色拉, price: ¥25 }
       - { name: 糟香毛豆, price: ¥12 }
@@ -65,9 +66,6 @@ menu:
       - { name: 蒜泥黄瓜, price: ¥12 }
       - { name: 酱萝卜, price: ¥15 }
       - { name: 五香素鸡, price: ¥18 }
-      - name: 香菜拌素鸡
-        price: 待补充
-        image: ./xiangcai-suji.webp
       - { name: 马兰头香干, price: ¥16 }
       - { name: 皮蛋拌豆腐, price: ¥16 }
       - { name: 自制泡菜, price: ¥8 }
@@ -89,6 +87,8 @@ menu:
       - { name: 青蟹（姜葱炒、香辣，蛋黄加 8 元）, price: 时价 }
       - { name: 花蟹（姜葱炒、香辣，蛋黄加 8 元）, price: 时价 }
       - { name: 膏蟹（姜葱炒、香辣，蛋黄加 8 元）, price: 时价 }
+      - { name: 东星斑（清蒸、红烧）, price: 时价 }
+      - { name: 笋壳鱼（清蒸、红烧）, price: 时价 }
   - title: 特色菜
     items:
       - { name: 椒盐扇子骨, price: ¥78 }
@@ -115,11 +115,14 @@ menu:
       - { name: 红烧带鱼, price: ¥58 }
       - { name: 茶树菇鱿鱼, price: ¥35 }
       - { name: 茶树菇牛柳, price: ¥38 }
-      - { name: 红烧肚档, price: ¥30 }
+      - { name: 红烧肚裆, price: ¥30 }
       - { name: 红烧甩水, price: ¥32 }
       - { name: 糟溜鱼片, price: ¥32 }
       - { name: 茄汁鱼片, price: ¥28 }
       - { name: 糖醋瓦块鱼, price: ¥36 }
+      - { name: 草头圈子, price: ¥68 }
+      - { name: 葱姜花蛤, price: ¥28 }
+      - { name: 水煮鱼片, price: ¥26 }
   - title: 炒菜
     items:
       - { name: 咸菜目鱼, price: ¥58 }
@@ -136,7 +139,7 @@ menu:
       - { name: 辣子鸡丁, price: ¥28 }
       - { name: 糖醋排条, price: ¥32 }
       - { name: 椒盐排条, price: ¥30 }
-      - { name: 椒盐猪手, price: ¥58 }
+      - { name: 椒盐猪爪, price: ¥58 }
       - { name: 三洋锅巴, price: ¥26 }
       - { name: 炒时件, price: ¥28 }
       - { name: 手撕包菜, price: ¥25 }

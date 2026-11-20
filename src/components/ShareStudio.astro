@@ -67,7 +67,7 @@ const payload = {
     <button type="button" class="button-link" data-studio-generate>生成分享卡</button>
     <a class="button-link" data-studio-download download hidden>下载</a>
     <button type="button" class="button-link button-link--outline" data-studio-edit hidden>重新调整</button>
-    <span class="studio__hint" data-studio-hint>方向键挪底图，铅笔换菜</span>
+    <span class="studio__hint" data-studio-hint>拖动挪底图，铅笔换菜</span>
     <button type="button" class="studio__close" data-studio-close>关闭</button>
   </div>
 
@@ -231,7 +231,7 @@ const payload = {
         tool.type = "button";
         tool.className = "studio__slot-tool";
         tool.setAttribute("aria-label", name ? "更换这道菜" : "选择一道菜");
-        tool.innerHTML = '<svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m13.2 3.6 3.2 3.2L7.2 16 3 17l1-4.2z"/><path d="m11.7 5.1 3.2 3.2"/></svg>';
+        tool.innerHTML = '<svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m13.2 3.6 3.2 3.2L7.2 16 3 17l1-4.2z"/><path d="m11.7 5.1 3.2 3.2"/></svg>';
         tool.addEventListener("click", () => openPicker(index));
         slot.append(tool);
 
@@ -304,6 +304,82 @@ const payload = {
     });
 
     const zoomButton = dialog.querySelector("[data-zoom]");
+
+    // 拖动 / 双指缩放底图
+    const clamp01 = (value) => Math.max(0, Math.min(1, value));
+    const pointers = new Map();
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let pinchStart = 0;
+    let pinchZoom = 1;
+
+    const coverSize = () => {
+      if (!coverReady) return null;
+      const scale = Math.max(1080 / cover.width, 1440 / cover.height) * zoom;
+      return { w: cover.width * scale, h: cover.height * scale };
+    };
+
+    card.addEventListener("pointerdown", (event) => {
+      if (event.target.closest("button")) return;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      card.setPointerCapture(event.pointerId);
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        pinchStart = Math.hypot(a.x - b.x, a.y - b.y);
+        pinchZoom = zoom;
+        dragging = false;
+        return;
+      }
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      card.classList.add("is-dragging");
+    });
+
+    card.addEventListener("pointermove", (event) => {
+      if (!pointers.has(event.pointerId)) return;
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+
+      if (pointers.size === 2) {
+        const [a, b] = [...pointers.values()];
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        if (pinchStart > 0 && dist > 0) {
+          zoom = Math.max(1, Math.min(2.4, pinchZoom * (dist / pinchStart)));
+          zoomIndex = ZOOMS.findIndex((z) => Math.abs(z - zoom) < 0.02);
+          zoomButton.setAttribute("aria-label", `缩放底图，当前 ${Math.round(zoom * 100)}%`);
+          zoomButton.title = `缩放：${Math.round(zoom * 100)}%`;
+          draw();
+        }
+        return;
+      }
+
+      if (!dragging) return;
+      const dx = event.clientX - lastX;
+      const dy = event.clientY - lastY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+
+      const size = coverSize();
+      if (!size) return;
+      const ratio = 1080 / (card.clientWidth || 1080);
+      offsetX = clamp01(offsetX - (dx * ratio) / Math.max(1, size.w - 1080));
+      offsetY = clamp01(offsetY - (dy * ratio) / Math.max(1, size.h - 1440));
+      draw();
+    });
+
+    const endPointer = (event) => {
+      pointers.delete(event.pointerId);
+      if (pointers.size < 2) pinchStart = 0;
+      if (pointers.size === 0) {
+        dragging = false;
+        card.classList.remove("is-dragging");
+      }
+      if (card.hasPointerCapture(event.pointerId)) card.releasePointerCapture(event.pointerId);
+    };
+    card.addEventListener("pointerup", endPointer);
+    card.addEventListener("pointercancel", endPointer);
+
     const applyZoom = () => {
       zoom = ZOOMS[zoomIndex];
       zoomButton.setAttribute("aria-label", `缩放底图，当前 ${Math.round(zoom * 100)}%`);

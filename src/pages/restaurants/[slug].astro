@@ -54,16 +54,20 @@ const dishesLarge = await Promise.all(
       : { ...dish, full: undefined },
   ),
 );
-// 菜单里带图的菜：点一下看大图，不算推荐菜
+// 菜单里带图的菜：点一下看大图，不算推荐菜。
+// 推荐菜已经有图的，同名菜在菜单里也复用这张图，不再单独存一份。
+const dishPhoto = new Map(dishesLarge.filter((dish) => dish.full).map((dish) => [dish.name, dish.full]));
 const menuLarge = await Promise.all(
   menu.map(async (group) => ({
     ...group,
     items: await Promise.all(
-      group.items.map(async (item) =>
-        item.image
-          ? { ...item, full: (await getImage({ src: item.image, width: 1400, quality: 82, format: "webp" })).src }
-          : { ...item, full: undefined },
-      ),
+      group.items.map(async (item) => {
+        if (item.image) {
+          const full = (await getImage({ src: item.image, width: 1400, quality: 82, format: "webp" })).src;
+          return { ...item, full };
+        }
+        return { ...item, full: dishPhoto.get(item.name) };
+      }),
     ),
   })),
 );
@@ -104,7 +108,9 @@ const menuGroups = menuLarge.map((group) => {
   }
   const min = firsts.length ? Math.min(...firsts) : null;
   const max = lasts.length ? Math.max(...lasts) : null;
-  const range = min === null ? "" : min === max ? `¥${min}` : `¥${min}–${max}`;
+  const allMarketPrice = group.items.length > 0 && group.items.every((item) => item.price.includes("时价"));
+  const range =
+    min === null ? (allMarketPrice ? "时价" : "") : min === max ? `¥${min}` : `¥${min}–${max}`;
   return { ...group, range };
 });
 
@@ -349,7 +355,7 @@ const structuredData = {
                                 >
                                   <span class="menu-item__name is-photo">{item.name}</span>
                                   <span class="menu-item__photo" aria-hidden="true">
-                                    <Icon name="photo" size={13} />
+                                    <Icon name="photo" size={15} />
                                   </span>
                                   <span class="menu-item__leader" aria-hidden="true"></span>
                                   <span class="menu-item__price">{item.price}</span>
