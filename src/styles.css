@@ -604,9 +604,6 @@ body:has(.shop-toc) .site-footer{
   color: var(--ember);
 }[hidden]{
   display: none !important;
-}.chip--muted{
-  font-size: 0.95rem;
-  padding: 0.3rem 0.7rem;
 }.section-grid > .feature-grid{
   grid-column: 1 / -1;
   margin-top: 1rem;
@@ -937,12 +934,8 @@ body:has(.shop-toc) .site-footer{
   display: none;
 }.shop-toc__toggle:hover, .shop-toc[open] .shop-toc__toggle{
   border-color: var(--ember);
-}.shop-toc__word{
-  color: rgb(240 231 216 / 0.68);
-}.shop-toc__now:not(:empty)::before{
-  content: "·";
-  margin-right: 0.45rem;
-  color: rgb(240 231 216 / 0.36);
+}.shop-toc__now:empty{
+  display: none;
 }.shop-toc__chev{
   display: grid;
   place-items: center;
@@ -1397,7 +1390,7 @@ body:has(.shop-toc) .site-footer{
 
 .share-card {
   position: relative;
-  width: min(100%, 36rem);
+  width: min(100%, 44rem);
   margin: 0;
 }
 
@@ -1483,7 +1476,7 @@ body:has(.shop-toc) .site-footer{
 
 @media (max-width: 640px) {
   .share-card {
-    width: min(100%, 21rem);
+    width: 100%;
   }
 }
 

@@ -16,9 +16,8 @@ const { sections } = Astro.props;
 {
   sections.length > 1 && (
     <details class="shop-toc" data-shop-toc>
-      <summary class="shop-toc__toggle">
+      <summary class="shop-toc__toggle" aria-label="本页目录">
         <Icon name="list" size={15} />
-        <span class="shop-toc__word">目录</span>
         <span class="shop-toc__now" data-toc-now aria-hidden="true" />
         <span class="shop-toc__chev" aria-hidden="true">
           <Icon name="chevron" size={12} />
