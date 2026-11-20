@@ -54,8 +54,6 @@ const restaurants = defineCollection({
       bills: z
         .array(
           z.object({
-            /** 用餐时间，写成 2026-11 或 2026-11-18 */
-            date: z.string().optional(),
             people: z.number().int().positive(),
             dishes: z.array(z.string()).min(1),
             total: z.number().positive(),

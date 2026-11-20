@@ -3,6 +3,7 @@ name: 一碗勾馄面
 added: "2026-11-17"
 cuisine: 面食
 dining: single
+walkMinutes: 19
 address: 华发路 31 号，明丰新纪苑底商
 summary: 面、盖浇饭、馄饨、炒饭、酸辣粉都有，一个人吃刚好，丰俭由人。
 order:

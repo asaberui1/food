@@ -3,6 +3,7 @@ name: 胡记锅贴
 added: "2026-11-20"
 cuisine: 面食
 dining: single
+walkMinutes: 15
 address: 华发路 281 号
 summary: 锅贴和老鸭粉丝汤是主打；锅贴 8 元一两四只，招牌老鸭粉丝汤 16 元。
 dishes:

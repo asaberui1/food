@@ -3,6 +3,7 @@ name: 西北红拉面
 added: "2026-11-18"
 cuisine: 面食
 dining: single
+walkMinutes: 20
 address: 罗香路 15 号
 hours: 24 小时营业
 summary: 24 小时不打烊的老面馆，上海黄汤底的牛肉面，面条粗细可以指定。

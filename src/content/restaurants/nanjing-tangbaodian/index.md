@@ -3,6 +3,7 @@ name: 南京汤包店
 added: "2026-11-19"
 cuisine: 早餐
 dining: single
+walkMinutes: 15
 address: 建华路 117 号
 summary: 早上卖包子、烧麦和饼，中午晚上还有面条和粉丝汤；卖剩的可以按个散买。
 cover: ./door.webp
@@ -16,9 +17,8 @@ dishes:
     image: ./xiaolongbao.webp
   - name: 老鸭粉丝汤
     price: ¥12
-    note: 鸭子、粉丝加鸭血、油豆腐，荤素都有；散买几个小笼包配着吃最划算。
+    note: 鸭胗、鸭血加粉丝、油豆腐、干丝和蔬菜，荤素都有；默认调味偏咸，可以让老板少放盐。
     image: ./duck-soup.webp
-menuNote: 墙上有两块价目表，一块是面和汤包，一块是饼和胡辣汤；浇头可以另加。
 menu:
   - title: 包子 / 点心
     items:
