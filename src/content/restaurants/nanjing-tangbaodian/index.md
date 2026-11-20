@@ -3,7 +3,7 @@ name: 南京汤包店
 added: "2026-11-19"
 cuisine: 早餐
 dining: single
-walkMinutes: 15
+walkMinutes: 17
 address: 建华路 117 号
 summary: 早上卖包子、烧麦和饼，中午晚上还有面条和粉丝汤；卖剩的可以按个散买。
 cover: ./door.webp

@@ -3,7 +3,7 @@ name: 华泾家常菜
 added: "2026-11-17"
 cuisine: 本帮菜
 dining: both
-walkMinutes: 15
+walkMinutes: 18
 address: 建华路 147 号
 summary: 四五个人点一桌家常菜，一个人来也能吃份现炒盖浇饭；聚餐人均约 40 元，盖浇饭 15 元起。
 cover: ./door.webp
