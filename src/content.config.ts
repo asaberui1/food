@@ -29,6 +29,7 @@ const restaurants = defineCollection({
       summary: z.string(),
       cover: image().optional(),
       gallery: z.array(z.object({ src: image(), alt: z.string() })).default([]),
+      /** 推荐菜最多 5 道，多了页面撑不住；照片和「菜单里标橙」是两回事 */
       dishes: z
         .array(
           z.object({
@@ -38,6 +39,7 @@ const restaurants = defineCollection({
             image: image().optional(),
           }),
         )
+        .max(5, "推荐菜最多 5 道")
         .default([]),
       /**
        * 菜单总说明：只写看菜单时需要解释的事（菜名写法、份量、促销话术这类），
@@ -49,7 +51,15 @@ const restaurants = defineCollection({
           z.object({
             title: z.string(),
             note: z.string().optional(),
-            items: z.array(z.object({ name: z.string(), price: z.string(), note: z.string().optional() })),
+            items: z.array(
+              z.object({
+                name: z.string(),
+                price: z.string(),
+                note: z.string().optional(),
+                /** 有图就在菜单里标橙，点一下看大图；不算推荐菜 */
+                image: image().optional(),
+              }),
+            ),
           }),
         )
         .default([]),

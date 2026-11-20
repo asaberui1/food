@@ -38,14 +38,16 @@
       else dialog.setAttribute("open", "");
     };
 
-    document.querySelectorAll("[data-lightbox]").forEach((img) => {
-      img.addEventListener("click", () => {
-        const thumb = img.currentSrc || img.src;
-        const full = img.dataset.full || largestSource(img);
+    // 触发大图的可能是图片，也可能是菜单里的一行菜名（没有缩略图）
+    document.querySelectorAll("[data-lightbox]").forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        const isImg = trigger instanceof HTMLImageElement;
+        const thumb = isImg ? trigger.currentSrc || trigger.src : "";
+        const full = trigger.dataset.full || (isImg ? largestSource(trigger) : "");
 
         // 先用缩略图顶上，避免黑屏；大图在后台加载完再替换
-        image.src = thumb;
-        image.alt = img.alt || "";
+        image.src = thumb || full;
+        image.alt = trigger.dataset.alt || (isImg ? trigger.alt : "") || "";
         image.classList.add("is-loading");
         openDialog();
 

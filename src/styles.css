@@ -254,6 +254,8 @@
   font-size: clamp(2.6rem, 5.6vw, 5rem);
   line-height: 1.1;
   letter-spacing: 0.01em;
+  /* 背景照片偏亮，压一层极淡的暗影，强光下也读得清 */
+  text-shadow: 0 1px 2px rgb(10 7 5 / 0.5), 0 2px 18px rgb(10 7 5 / 0.32);
 }.hero-copy{
   grid-column: 9 / span 4;
   align-self: end;
@@ -2630,5 +2632,102 @@ body:has(.map-dialog[open]) {
   .map-tool,
   .map-pin circle {
     transition: none;
+  }
+}
+
+/* 菜单里带照片的菜：名字标橙，点一下看大图 */
+.menu-item--photo {
+  padding: 0;
+}
+
+.menu-item__trigger {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.32rem 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-item__trigger:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.menu-item__name.is-photo {
+  color: var(--ember);
+}
+
+.menu-item__photo {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  color: var(--ember);
+  opacity: 0.75;
+  transform: translateY(0.05em);
+}
+
+.menu-item__trigger:hover .menu-item__name.is-photo,
+.menu-item__trigger:hover .menu-item__photo {
+  color: var(--focus);
+  opacity: 1;
+}
+
+/* ---------- 首页首屏提示 ---------- */
+.hero-scroll {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1rem, 2.6vh, 2rem);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  color: rgb(251 240 220 / 0.78);
+  font-size: 0.9rem;
+  letter-spacing: 0.1em;
+  text-shadow: 0 1px 4px rgb(10 7 5 / 0.75);
+  pointer-events: none;
+}
+
+.hero-scroll svg {
+  display: block;
+  filter: drop-shadow(0 1px 3px rgb(10 7 5 / 0.7));
+}
+
+.hero-scroll__chev {
+  opacity: 0.3;
+  animation: hero-chev 2.1s ease-in-out infinite;
+}
+
+.hero-scroll__chev:nth-child(2) {
+  animation-delay: 0.16s;
+}
+
+.hero-scroll__chev:nth-child(3) {
+  animation-delay: 0.32s;
+}
+
+@keyframes hero-chev {
+  0%,
+  100% {
+    opacity: 0.22;
+  }
+
+  45% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-scroll__chev {
+    animation: none;
+    opacity: 0.65;
   }
 }

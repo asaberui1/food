@@ -142,7 +142,9 @@ menu:
       - { name: 家常豆腐, price: ¥22 }
       - { name: 红烧大肠, price: ¥32 }
       - { name: 扬州干丝, price: ¥30 }
-      - { name: 孜然牛肉, price: ¥28 }
+      - name: 孜然牛肉
+        price: ¥28
+        image: ./ziran-niurou.webp
       - { name: 百叶烧肉, price: ¥32 }
       - { name: 回锅肉片, price: ¥22 }
       - { name: 红烧猪手, price: ¥68 }

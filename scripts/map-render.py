@@ -3,12 +3,16 @@
 
 输出 src/assets/map/neighbourhood.svg，由 src/components/ShopMap.astro 内联到页面。
 
-要先拿到数据（一次性，OSM 官方 API 限制在 0.25° 见方、5 万要素以内）：
+要先拿到数据。OSM 官方 API 单次上限 5 万要素，学院周边 4 公里见方要切成四块再合并：
 
-    curl -o /tmp/osm.xml \
-      "https://api.openstreetmap.org/api/0.6/map?bbox=121.4280,31.1180,121.4620,31.1460"
+    for i in 1 2 3 4; do  # 121.395–121.479 / 31.091–31.163，切成 4 块
+      curl -o /tmp/tile_$i.xml "https://api.openstreetmap.org/api/0.6/map?bbox=..."
+    done
+    python3 -c "..."   # 按 id 去重合并成 /tmp/osm4k.xml
 
-国内直连要挂代理时加 `-x http://127.0.0.1:7890`。
+（合并脚本见仓库提交记录；国内直连要挂代理时加 `-x http://127.0.0.1:7890`。）
+数据下到 4 公里，图现在只渲染街区尺度的一段（LON0..LAT1 这几个常量），
+以后收远的店把窗口放大即可，不用重新下载。
 重跑脚本会覆盖 SVG；改了门店或坐标就重跑一次。
 
 坐标来源：门店用百度地图 POI（按店名/门牌查），再用华泾一带 7 个 OSM 地标
@@ -32,18 +36,19 @@ H = W * ((LAT1 - LAT0) * M_LAT) / SPAN
 SCALE = W / SPAN  # 每米像素数
 
 CAMPUS = (31.126958, 121.436930)
+# (slug, 图上名字, 纬度, 经度, 所在街道, 街的哪一侧 s=南 n=北)
 SHOPS = [
-    ("yunxi-jiujia", "云西酒家", 31.123970, 121.442079, "建华路"),
-    ("huajing-jiachangcai", "华泾家常菜", 31.123021, 121.439863, "建华路"),
-    ("nanjing-tangbaodian", "南京汤包店", 31.123154, 121.440558, "建华路"),
-    ("huji-guotie", "胡记锅贴", 31.128805, 121.445465, "华发路"),
-    ("suzhou-cangshu-yangrou", "藏书羊肉", 31.128817, 121.445159, "华发路"),
-    ("niuboshi-niurou", "牛博士", 31.128812, 121.445042, "华发路"),
-    ("longmianwang-hangzhou-xiaochi", "笼面王", 31.128724, 121.443496, "华发路"),
-    ("yigou-hundunmian", "一碗勾馄面", 31.128872, 121.449385, "华发路"),
-    ("niumaixiang-niuroumian", "牛麦香", 31.127449, 121.430825, "业祥路"),
-    ("youziyouwei-jiangxixiaochao", "有滋有味", 31.126606, 121.429570, "业祥路"),
-    ("xibeihong-lamian", "西北红拉面", 31.137956, 121.437454, "罗香路"),
+    ("yunxi-jiujia", "云西酒家", 31.123970, 121.442079, "建华路", "s"),
+    ("huajing-jiachangcai", "华泾家常菜", 31.123021, 121.439863, "建华路", "s"),
+    ("nanjing-tangbaodian", "南京汤包店", 31.123154, 121.440558, "建华路", "s"),
+    ("huji-guotie", "胡记锅贴", 31.128805, 121.445465, "华发路", "s"),
+    ("suzhou-cangshu-yangrou", "苏州藏书羊肉面馆", 31.128817, 121.445159, "华发路", "s"),
+    ("niuboshi-niurou", "牛博士牛肉汤馆", 31.128812, 121.445042, "华发路", "s"),
+    ("longmianwang-hangzhou-xiaochi", "笼面王·杭州小吃", 31.128724, 121.443496, "华发路", "s"),
+    ("yigou-hundunmian", "一碗勾馄面", 31.128872, 121.449385, "华发路", "s"),
+    ("niumaixiang-niuroumian", "牛麦香·红烧牛肉面", 31.127449, 121.430825, "业祥路", "n"),
+    ("youziyouwei-jiangxixiaochao", "有滋有味·江西小炒", 31.126606, 121.429570, "业祥路", "s"),
+    ("xibeihong-lamian", "西北红拉面", 31.137956, 121.437454, "罗香路", "s"),
 ]
 
 
@@ -190,17 +195,18 @@ def street_point(p, street):
 
 # 门店多数贴着街边开，POI 坐标常常落在路中心线上：先吸附到所在街道，
 # 再统一往南挪 30 米（临街那排房子），本来就在弄堂深处的店保持原位。
-SNAP_PX = 14.0            # 离街 28 米内算「沿街」
+SNAP_PX = 24.0            # 离街 48 米内算「沿街」，再远就当作在弄堂/院子里
 SOUTH_OFFSET = 24 * SCALE  # 往南 24 米（临街那排房子）
 HEAD_R = 11.0               # 针头半径
 PIN_H = 27.0               # 针尖到针头圆心的距离：针尖才是门店的真实位置
 
 placed = []
-for slug, label, lat, lon, street in SHOPS:
+for slug, label, lat, lon, street, side in SHOPS:
     p = px(lat, lon)
     snapped = street_point(p, street)
     if snapped and snapped[0] < SNAP_PX:
-        x, y = snapped[1][0], snapped[1][1] + SOUTH_OFFSET
+        shift = SOUTH_OFFSET if side == "s" else -SOUTH_OFFSET
+        x, y = snapped[1][0], snapped[1][1] + shift
     else:
         x, y = p
     placed.append((slug, label, x, y))
@@ -335,7 +341,7 @@ for radius in (18, 26, 36, 48, 62, 78):
 
 S.append('<g class="map-shopnames" font-family="PingFang SC, Noto Sans SC, sans-serif">')
 for slug, label, x, y in placed:
-    size = 15.0
+    size = 14.0
     best = None
     for dx, dy in CANDIDATES:
         anchor = "start" if dx > 5 else "end" if dx < -5 else "middle"

@@ -54,6 +54,20 @@ const dishesLarge = await Promise.all(
       : { ...dish, full: undefined },
   ),
 );
+// 菜单里带图的菜：点一下看大图，不算推荐菜
+const menuLarge = await Promise.all(
+  menu.map(async (group) => ({
+    ...group,
+    items: await Promise.all(
+      group.items.map(async (item) =>
+        item.image
+          ? { ...item, full: (await getImage({ src: item.image, width: 1400, quality: 82, format: "webp" })).src }
+          : { ...item, full: undefined },
+      ),
+    ),
+  })),
+);
+
 const diningLabel =
   dining === "group" ? "多人聚餐" : dining === "single" ? "单人餐" : "聚餐 / 单人餐";
 
@@ -79,7 +93,7 @@ const priceNumbers = (price: string) =>
       return match ? Number(match[0]) : Number.NaN;
     })
     .filter((value) => Number.isFinite(value) && value > 0);
-const menuGroups = menu.map((group) => {
+const menuGroups = menuLarge.map((group) => {
   const firsts: number[] = [];
   const lasts: number[] = [];
   for (const item of group.items) {
@@ -323,13 +337,32 @@ const structuredData = {
                       <div class="menu-acc__body">
                         {group.note && <p class="menu-acc__note">{group.note}</p>}
                         <ul class="menu-items">
-                          {group.items.map((item) => (
-                            <li class="menu-item">
-                              <span class="menu-item__name">{item.name}</span>
-                              <span class="menu-item__leader" aria-hidden="true"></span>
-                              <span class="menu-item__price">{item.price}</span>
-                            </li>
-                          ))}
+                          {group.items.map((item) =>
+                            item.full ? (
+                              <li class="menu-item menu-item--photo">
+                                <button
+                                  type="button"
+                                  class="menu-item__trigger"
+                                  data-lightbox
+                                  data-full={item.full}
+                                  data-alt={item.name}
+                                >
+                                  <span class="menu-item__name is-photo">{item.name}</span>
+                                  <span class="menu-item__photo" aria-hidden="true">
+                                    <Icon name="photo" size={13} />
+                                  </span>
+                                  <span class="menu-item__leader" aria-hidden="true"></span>
+                                  <span class="menu-item__price">{item.price}</span>
+                                </button>
+                              </li>
+                            ) : (
+                              <li class="menu-item">
+                                <span class="menu-item__name">{item.name}</span>
+                                <span class="menu-item__leader" aria-hidden="true"></span>
+                                <span class="menu-item__price">{item.price}</span>
+                              </li>
+                            ),
+                          )}
                         </ul>
                       </div>
                     </details>
