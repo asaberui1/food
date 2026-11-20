@@ -4,6 +4,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import Nav from "../../components/Nav.astro";
 import Footer from "../../components/Footer.astro";
 import ShopCard from "../../components/ShopCard.astro";
+import ShopMap from "../../components/ShopMap.astro";
 import SearchDialog from "../../components/SearchDialog.astro";
 import { siteConfig } from "../../config/site";
 import { allTagsOf, tagsOf } from "../../lib/shops";
@@ -35,6 +36,18 @@ const seen = new Set<string>();
         <p class="page-lead">
           共 {shops.length} 家。多人聚餐标注人均和实际消费，单人餐只列菜单、丰俭由人；距离按从学院大门步行计算。
         </p>
+      </div>
+    </section>
+
+    <section class="section section--tight section--map" aria-labelledby="map-title">
+      <div class="container">
+        <div class="map-head">
+          <h2 id="map-title" class="map-title display">按位置看</h2>
+          <p class="map-lead">
+            黄星是学院大门，红点是收录的店；点红点直接进店。
+          </p>
+        </div>
+        <ShopMap />
       </div>
     </section>
 

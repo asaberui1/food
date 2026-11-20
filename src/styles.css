@@ -2399,3 +2399,147 @@ body:has(.shop-toc) .site-footer{
 /* 消费记录展开：行内展开，避免微信里被裁切 */
 
 
+
+/* ---------- 餐馆地图 ---------- */
+.section--map {
+  padding-bottom: 0;
+}
+
+.map-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.map-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 2.4vw, 1.7rem);
+}
+
+.map-lead {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+}
+
+.shop-map {
+  --map-red: #d34731;
+  --map-star: #f2c14e;
+  margin: 0;
+}
+
+.shop-map__frame {
+  border: 1px solid rgb(117 97 76 / 0.4);
+  border-radius: 14px;
+  background: #14100c;
+  overflow: hidden;
+}
+
+.shop-map__scroll {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.map-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.shop-map__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.25rem;
+  margin-top: 0.8rem;
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+.shop-map__key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.shop-map__key-star {
+  width: 0.9rem;
+  height: 0.9rem;
+  background: var(--map-star);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.shop-map__key-dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--map-red);
+}
+
+.shop-map__hint {
+  display: none;
+}
+
+.shop-map__credit {
+  margin-left: auto;
+}
+
+.shop-map__credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* 图上的红点是链接：悬停和键盘聚焦时变成学院那种黄 */
+.map-pin {
+  cursor: pointer;
+}
+
+.map-pin circle,
+.map-pin text {
+  transition: fill 140ms ease;
+}
+
+.map-pin:hover circle,
+.map-pin:focus-visible circle {
+  fill: var(--map-star);
+  stroke: #14100c;
+}
+
+.map-pin:hover text,
+.map-pin:focus-visible text {
+  fill: var(--map-star);
+}
+
+.map-pin:focus-visible {
+  outline: none;
+}
+
+.map-pin:focus-visible circle {
+  stroke: var(--cream);
+  stroke-width: 3;
+}
+
+@media (max-width: 700px) {
+  /* 手机上整张图缩到屏宽会把标注压成 4px，干脆放大到 860px 横向滑动 */
+  .map-svg {
+    min-width: 860px;
+  }
+
+  .shop-map__hint {
+    display: inline;
+  }
+
+  .shop-map__credit {
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-pin circle,
+  .map-pin text {
+    transition: none;
+  }
+}
