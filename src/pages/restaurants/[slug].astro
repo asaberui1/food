@@ -269,6 +269,7 @@ const structuredData = {
               <div class="gallery">
                 {galleryLarge.map((photo) => (
                   <figure class="gallery__item">
+                    <a class="lightbox-link" href={photo.full} target="_blank" rel="noopener">
                     <Picture
           formats={["avif", "webp"]}
           fallbackFormat="webp"
@@ -281,6 +282,7 @@ const structuredData = {
                       data-lightbox
                       data-full={photo.full}
                     />
+                    </a>
                   </figure>
                 ))}
               </div>
@@ -308,6 +310,7 @@ const structuredData = {
                     </div>
                     {dish.image && (
                       <div class="dish__media">
+                        <a class="lightbox-link" href={dish.full} target="_blank" rel="noopener">
                         <Picture
           formats={["avif", "webp"]}
           fallbackFormat="webp"
@@ -320,6 +323,7 @@ const structuredData = {
                           data-lightbox
                           data-full={dish.full}
                         />
+                        </a>
                       </div>
                     )}
                   </li>
@@ -440,6 +444,12 @@ const structuredData = {
             <h2 id="share-title" class="display">存一张卡片带走</h2>
           </div>
           <figure class="share-card">
+            <a
+              class="lightbox-link"
+              href={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
+              target="_blank"
+              rel="noopener"
+            >
             <img
               class="share-card__image"
               src={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
@@ -449,6 +459,7 @@ const structuredData = {
               loading="lazy"
               data-lightbox
             />
+            </a>
             <div class="share-card__tools">
               <ShareStudio
                 triggerClass="share-tool"

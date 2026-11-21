@@ -1,0 +1,52 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import Nav from "../../../components/Nav.astro";
+import Footer from "../../../components/Footer.astro";
+import ShopCard from "../../../components/ShopCard.astro";
+import { allTagsOf, tagsOf } from "../../../lib/shops";
+import { withBase } from "../../../lib/urls";
+
+/**
+ * 单个标签的静态列表页。
+ * 有 JS 时列表页的标签按钮会拦掉跳转走多选筛选，这里是禁用 JS 时的兜底。
+ */
+export async function getStaticPaths() {
+  const shops = await getCollection("restaurants");
+  return allTagsOf(shops).map((tag) => ({ params: { tag } }));
+}
+
+const { tag = "" } = Astro.params;
+const shops = (await getCollection("restaurants"))
+  .filter((shop) => tagsOf(shop).includes(tag))
+  .sort((a, b) => a.data.name.localeCompare(b.data.name, "zh"));
+---
+
+<BaseLayout
+  title={`${tag} · 餐馆`}
+  description={`上海创智学院周边属于「${tag}」的 ${shops.length} 家餐馆，含人均、步行距离与推荐菜。`}
+>
+  <Nav />
+
+  <main id="main">
+    <section class="page-head">
+      <div class="container page-head__inner">
+        <p class="label-eyebrow">类别</p>
+        <h1 class="page-title display">{tag}</h1>
+        <p class="page-lead">
+          共 {shops.length} 家。<a href={withBase("/restaurants/")}>回到全部餐馆</a>
+        </p>
+      </div>
+    </section>
+
+    <section class="section section--tight">
+      <div class="container">
+        <div class="shop-grid shop-grid--list">
+          {shops.map((shop) => <ShopCard shop={shop} />)}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

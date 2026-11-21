@@ -3064,10 +3064,10 @@ body:has(.map-dialog[open]) {
 .filter-help__btn {
   display: grid;
   place-items: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.55rem;
+  height: 1.55rem;
   padding: 0;
-  border: 1px solid rgb(251 240 220 / 0.45);
+  border: 1.7px solid rgb(251 240 220 / 0.5);
   border-radius: 999px;
   color: var(--muted-foreground);
   cursor: pointer;
@@ -3090,7 +3090,8 @@ body:has(.map-dialog[open]) {
   top: calc(100% + 0.5rem);
   left: 0;
   z-index: 20;
-  width: min(20rem, calc(100vw - 4rem));
+  width: max-content;
+  max-width: min(20rem, calc(100vw - 3rem));
   margin: 0;
   padding: 0.7rem 0.85rem;
   border: 1px solid rgb(117 97 76 / 0.7);
@@ -3099,4 +3100,12 @@ body:has(.map-dialog[open]) {
   font-size: 0.9rem;
   line-height: 1.6;
   box-shadow: 0 18px 40px rgb(0 0 0 / 0.5);
+}
+
+
+/* 图片外面的一层链接：有 JS 时被灯箱接管，无 JS 时直接打开大图 */
+.lightbox-link {
+  display: block;
+  height: 100%;
+  cursor: zoom-in;
 }

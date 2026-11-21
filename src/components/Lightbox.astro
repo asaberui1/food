@@ -40,7 +40,9 @@
 
     // 触发大图的可能是图片，也可能是菜单里的一行菜名（没有缩略图）
     document.querySelectorAll("[data-lightbox]").forEach((trigger) => {
-      trigger.addEventListener("click", () => {
+      trigger.addEventListener("click", (event) => {
+        // 外面那层是 <a>，有 JS 时别让它跳走
+        event.preventDefault();
         const isImg = trigger instanceof HTMLImageElement;
         const thumb = isImg ? trigger.currentSrc || trigger.src : trigger.dataset.thumb || "";
         const full = trigger.dataset.full || (isImg ? largestSource(trigger) : "");
