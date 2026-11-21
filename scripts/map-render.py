@@ -24,7 +24,8 @@ import sys
 import xml.etree.ElementTree as ET
 
 OSM = sys.argv[1] if len(sys.argv) > 1 else "/tmp/osm.xml"
-OUT = "src/assets/map/neighbourhood.svg"
+OUT = "public/map/neighbourhood.svg"
+PINS = "src/assets/map/pins.json"
 
 W = 1200.0
 LON0, LON1 = 121.4268, 121.4522
@@ -394,4 +395,8 @@ S.append("</svg>")
 svg = "\n".join(S)
 with open(OUT, "w", encoding="utf-8") as fh:
     fh.write(svg)
+
+import json
+with open(PINS, "w", encoding="utf-8") as fh:
+    json.dump([shop[0] for shop in SHOPS], fh, ensure_ascii=False)
 print(f"{OUT}: {len(svg) / 1024:.0f} KB, {len(buildings)} 栋建筑, {len(SHOPS)} 家店")

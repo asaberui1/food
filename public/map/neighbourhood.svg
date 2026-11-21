@@ -106,17 +106,17 @@
 <path d="M210 862L176 868M469 831L584 813M435 826L222 860M437 837L469 831M212 873L437 837M472 820L435 826M597 800L472 820M-72 919L20 904M-77 909L-232 934M222 860L210 862M-174 935L-93 922M-282 953L-192 938M189 877L212 873M46 900L68 896M45 889L-71 908M138 874L45 889M68 896L172 879M-192 938L-174 935M172 879L189 877M20 904L46 900M-93 922L-72 919M-71 908L-77 909M176 868L138 874M685 786L611 797M974 759L1252 739L1325 729L1392 716M1447 690L1371 709L1275 726L907 754M696 784L685 786M907 754L826 763L707 782M737 788L839 773M687 796L698 794M1392 716L1450 699M908 764L974 759M584 813L630 805M630 805L648 802M698 794L708 793M660 801L687 796M707 782L696 784M648 802L660 801M611 797L597 800M839 773L908 764M708 793L737 788" stroke="#52402b" stroke-width="12"/>
 </g>
 <g class="map-roadnames" font-family="PingFang SC, Noto Sans SC, sans-serif">
-<text x="319" y="821" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.6 319 821)" letter-spacing="2.5" opacity="0.85">朱梅路</text>
+<text x="381" y="846" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.2 381 846)" letter-spacing="2.5" opacity="0.85">外环高速</text>
+<text x="225" y="401" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(77.9 225 401)" letter-spacing="2.5" opacity="0.85">老沪闵路</text>
 <text x="1083" y="305" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.4 1083 305)" letter-spacing="2.5" opacity="0.85">龙吴路</text>
+<text x="767" y="872" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-17.1 767 872)" letter-spacing="2.5" opacity="0.85">建华路</text>
+<text x="397" y="816" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.3 397 816)" letter-spacing="2.5" opacity="0.85">徐梅路</text>
 <text x="596" y="437" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(72.3 596 437)" letter-spacing="2.5" opacity="0.85">长华路</text>
 <text x="127" y="343" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-7.9 127 343)" letter-spacing="2.5" opacity="0.85">罗秀路</text>
-<text x="382" y="834" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.2 382 834)" letter-spacing="2.5" opacity="0.85">外环高速</text>
-<text x="225" y="401" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(77.9 225 401)" letter-spacing="2.5" opacity="0.85">老沪闵路</text>
-<text x="767" y="872" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-17.1 767 872)" letter-spacing="2.5" opacity="0.85">建华路</text>
 <text x="150" y="199" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-47.8 150 199)" letter-spacing="2.5" opacity="0.85">罗香路</text>
-<text x="514" y="622" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-10.2 514 622)" letter-spacing="2.5" opacity="0.85">华发路</text>
-<text x="997" y="773" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-4.5 997 773)" letter-spacing="2.5" opacity="0.85">徐梅路</text>
 <text x="278" y="665" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-14.5 278 665)" letter-spacing="2.5" opacity="0.85">业祥路</text>
+<text x="514" y="622" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-10.2 514 622)" letter-spacing="2.5" opacity="0.85">华发路</text>
+<text x="297" y="824" font-size="14.5" fill="#8f7c66" text-anchor="middle" dominant-baseline="middle" transform="rotate(-9.1 297 824)" letter-spacing="2.5" opacity="0.85">朱梅路</text>
 </g>
 <rect width="1200" height="1031" fill="url(#map-vignette)" pointer-events="none"/>
 <g class="map-pins" font-family="PingFang SC, Noto Sans SC, sans-serif">

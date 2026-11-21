@@ -3,21 +3,19 @@
  * 学院周边餐馆地图（弹窗版）。
  *
  * 底图是 scripts/map-render.py 从 OSM 数据离线渲染的矢量图
- * （src/assets/map/neighbourhood.svg），不请求任何瓦片服务，配色和站点一致。
+ * （public/map/neighbourhood.svg），打开弹窗时才 fetch，不占首屏体积，
+ * 也不请求任何瓦片服务，配色和站点一致。
  *
  * 交互：滚轮 / 双击 / +− 按钮缩放，按住拖动平移，Esc 或右上角关闭。
  * 点图钉或店名先弹一张店招小卡，卡上「进店」才跳详情页。
  * 新增门店后要重跑脚本补图钉，否则这家店不会出现在图上——构建时会打印警告。
  */
 import { getCollection } from "astro:content";
-import rawMap from "../assets/map/neighbourhood.svg?raw";
+import pinnedSlugs from "../assets/map/pins.json";
 import { withBase } from "../lib/urls";
 
-// 脚本里用 {{base}} 占位，部署到 /food/ 下时才替换成真实前缀
-const svg = rawMap.replaceAll("{{base}}", withBase("/"));
-
 const shops = await getCollection("restaurants");
-const pinned = new Set([...rawMap.matchAll(/data-map-slug="([^"]+)"/g)].map((match) => match[1]));
+const pinned = new Set(pinnedSlugs);
 const missing = shops.filter((shop) => !pinned.has(shop.id)).map((shop) => shop.data.name);
 
 if (missing.length > 0) {
@@ -63,7 +61,7 @@ const cards = shops
 
     <div class="map-dialog__viewport" data-map-viewport>
       <div class="map-dialog__canvas" data-map-canvas>
-        <Fragment set:html={svg} />
+        <p class="map-dialog__loading">地图加载中…</p>
       </div>
 
       <div class="map-pop" data-map-pop hidden>
@@ -110,7 +108,7 @@ const cards = shops
   if (dialog) {
     const viewport = dialog.querySelector<HTMLElement>("[data-map-viewport]");
     const canvas = dialog.querySelector<HTMLElement>("[data-map-canvas]");
-    const svg = canvas?.querySelector<SVGSVGElement>(".map-svg");
+    const getSvg = () => canvas?.querySelector<SVGSVGElement>(".map-svg") ?? null;
     const pop = dialog.querySelector<HTMLElement>("[data-map-pop]");
     const popImg = dialog.querySelector<HTMLImageElement>("[data-map-pop-img]");
     const popEnter = dialog.querySelector<HTMLAnchorElement>("[data-map-pop-enter]");
@@ -126,7 +124,7 @@ const cards = shops
       cards = {};
     }
 
-    const mapMeters = Number(svg?.dataset.mapMeters ?? 0);
+    let mapMeters = 0;
 
     let baseW = 0; // 缩放 1 时的画布宽度（= 视口宽度）
     let baseH = 0; // 缩放 1 时的画布高度（随宽度等比）
@@ -143,6 +141,7 @@ const cards = shops
       canvas.style.width = `${baseW * scale}px`;
       canvas.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
       updateScaleBar();
+      if (activeSlug) positionPop(activeSlug);
     };
 
     const updateScaleBar = () => {
@@ -187,8 +186,9 @@ const cards = shops
 
     const shopAnchor = () => {
       const pins = [...(dialog?.querySelectorAll(".map-pin circle") ?? [])];
-      if (!svg || pins.length === 0) return null;
-      const vb = svg.viewBox.baseVal;
+      const svgEl = getSvg();
+      if (!svgEl || pins.length === 0) return null;
+      const vb = svgEl.viewBox.baseVal;
       if (!vb || !vb.width) return null;
       const sum = pins.reduce(
         (acc, pin) => [acc[0] + Number(pin.getAttribute("cx")), acc[1] + Number(pin.getAttribute("cy"))],
@@ -234,24 +234,12 @@ const cards = shops
     const hidePop = () => {
       if (pop) pop.hidden = true;
       activeSlug = "";
-      dialog.querySelectorAll(".map-pin.is-active").forEach((pin) => pin.classList.remove("is-active"));
+      dialog.querySelectorAll(".map-pin.is-active, .map-label.is-active").forEach((el) => el.classList.remove("is-active"));
     };
 
-    const showPop = (slug: string) => {
-      const card = cards[slug];
+    const positionPop = (slug: string) => {
       const pin = dialog.querySelector<SVGGElement>(`.map-pin[data-map-slug="${slug}"]`);
-      if (!card || !pin || !pop || !viewport) return;
-
-      activeSlug = slug;
-      if (popImg && popFrame) {
-        popFrame.dataset.loading = "true";
-        popImg.removeAttribute("src");
-        popImg.alt = `${card.name} 的店招`;
-        if (card.cover) popImg.src = card.cover;
-      }
-      if (popEnter) popEnter.href = card.href;
-
-      pop.hidden = false;
+      if (!pin || !pop || !viewport) return;
       const vp = viewport.getBoundingClientRect();
       // 以针头（圆）为准定位，针脚和店名不参与
       const head = pin.querySelector("circle") ?? pin;
@@ -299,13 +287,35 @@ const cards = shops
       const arrowY = Math.max(18, Math.min(height - 18, cy - top));
       pop.style.setProperty("--arrow-x", `${arrowX}px`);
       pop.style.setProperty("--arrow-y", `${arrowY}px`);
-
-      dialog.querySelectorAll(".map-pin.is-active").forEach((el) => el.classList.remove("is-active"));
-      pin.classList.add("is-active");
     };
 
-    // 点图钉 / 店名：先弹店招小卡，再点一次或点「进店」才跳转
-    dialog.querySelectorAll<SVGElement>(".map-pin, .map-label").forEach((trigger) => {
+    const showPop = (slug: string) => {
+      const card = cards[slug];
+      if (!card || !pop) return;
+
+      activeSlug = slug;
+      if (popImg) {
+        const frame = pop.querySelector(".map-pop__frame");
+        if (frame instanceof HTMLElement) {
+          frame.dataset.loading = "true";
+          popImg.removeAttribute("src");
+          popImg.alt = `${card.name} 的店招`;
+          if (card.cover) popImg.src = card.cover;
+        }
+      }
+      if (popEnter) popEnter.href = card.href;
+
+      pop.hidden = false;
+      positionPop(slug);
+
+      dialog.querySelectorAll(".map-pin.is-active, .map-label.is-active").forEach((el) => el.classList.remove("is-active"));
+      dialog.querySelectorAll(`.map-pin[data-map-slug="${slug}"], .map-label[data-map-slug="${slug}"]`)
+        .forEach((el) => el.classList.add("is-active"));
+    };
+
+    // 点图钉 / 店名：先弹店招小卡，再点一次收起；进店只走卡片上的按钮
+    const bindPins = () => {
+      dialog.querySelectorAll<SVGElement>(".map-pin, .map-label").forEach((trigger) => {
       trigger.addEventListener("click", (event) => {
         const slug = trigger.dataset.mapSlug ?? "";
         if (!cards[slug]) return; // 没有卡片数据就按普通链接走
@@ -313,20 +323,40 @@ const cards = shops
         // 再点一次就是收起卡片，进店只走卡片上的「进店」按钮
         if (activeSlug === slug) hidePop();
         else showPop(slug);
+        });
       });
-    });
+    };
 
-    viewport?.addEventListener("pointerdown", (event) => {
-      // 点地图空白处才收起小卡；点图钉本身不能收，否则会把刚弹出的收掉
-      if (!pop || pop.hidden) return;
-      const onPin = (event.target as Element)?.closest?.(".map-pin, .map-label");
-      const inPop = pop.contains(event.target as Node);
-      if (!onPin && !inPop) hidePop();
-    });
+    let mapPromise: Promise<void> | null = null;
+
+    const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+    const loadMap = () => {
+      if (mapPromise) return mapPromise;
+      mapPromise = (async () => {
+        try {
+          const response = await fetch(`${base}/map/neighbourhood.svg`, { credentials: "same-origin" });
+          if (!response.ok) throw new Error(String(response.status));
+          const markup = await response.text();
+          if (!canvas) return;
+          canvas.innerHTML = markup.replaceAll("{{base}}", `${base}/`);
+          const svgEl = getSvg();
+          mapMeters = Number(svgEl?.dataset.mapMeters ?? 0);
+          bindPins();
+        } catch {
+          if (canvas) {
+            canvas.innerHTML = '<p class="map-dialog__loading">地图没加载出来，稍后再试</p>';
+          }
+          mapPromise = null;
+        }
+      })();
+      return mapPromise;
+    };
 
     document.querySelectorAll("[data-map-open]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         dialog.showModal();
+        await loadMap();
         requestAnimationFrame(() => {
           fit();
           dialog.querySelector<HTMLElement>("[data-map-panel]")?.focus();
@@ -346,7 +376,7 @@ const cards = shops
 
     dialog.querySelectorAll<HTMLElement>("[data-map-zoom]").forEach((button) => {
       button.addEventListener("click", () => {
-        hidePop();
+        // 缩放时卡片跟着图钉走，不收起
         zoomTo(button.dataset.mapZoom === "in" ? scale * 1.5 : scale / 1.5);
       });
     });

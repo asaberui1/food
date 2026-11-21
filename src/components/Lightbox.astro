@@ -42,7 +42,7 @@
     document.querySelectorAll("[data-lightbox]").forEach((trigger) => {
       trigger.addEventListener("click", () => {
         const isImg = trigger instanceof HTMLImageElement;
-        const thumb = isImg ? trigger.currentSrc || trigger.src : "";
+        const thumb = isImg ? trigger.currentSrc || trigger.src : trigger.dataset.thumb || "";
         const full = trigger.dataset.full || (isImg ? largestSource(trigger) : "");
 
         // 先用缩略图顶上，避免黑屏；大图在后台加载完再替换
