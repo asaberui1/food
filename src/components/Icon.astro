@@ -11,6 +11,7 @@ type IconName =
   | "list"
   | "gear"
   | "download"
+  | "arrow-up"
   | "photo";
 
 type Props = {
@@ -24,6 +25,7 @@ const { name, size = 16, class: className } = Astro.props;
 const paths: Record<IconName, string> = {
   "arrow-right": '<path d="M3.5 10h12.2"/><path d="m11 5.2 4.8 4.8L11 14.8"/>',
   "arrow-left": '<path d="M16.5 10H4.3"/><path d="M9 5.2 4.2 10 9 14.8"/>',
+  "arrow-up": '<path d="M10 16.2V4.4"/><path d="M5.2 9.2 10 4.4l4.8 4.8"/>',
   refresh:
     '<path d="M16.2 10a6.2 6.2 0 1 1-2.1-4.7"/><path d="M16.4 3.6v3.6H12.8"/>',
   chevron: '<path d="m5.4 7.8 4.6 4.6 4.6-4.6"/>',

@@ -198,8 +198,8 @@
   border-color: rgb(251 240 220 / 0.7);
   background: transparent;
   color: var(--cream);
-  padding: 0.7rem 1rem;
 }.button-link--outline:hover{
+  border-color: var(--button-bg);
   background: var(--button-bg);
   color: var(--button-fg);
 }.ember-dot{
@@ -2440,9 +2440,9 @@ body:has(.shop-toc) .site-footer{
 }
 
 .map-button:hover {
-  border-color: var(--ember);
-  background: rgb(251 240 220 / 0.08);
-  color: var(--focus);
+  border-color: var(--button-bg);
+  background: var(--button-bg);
+  color: var(--button-fg);
 }
 
 .map-button:focus-visible {
@@ -2904,7 +2904,6 @@ body:has(.map-dialog[open]) {
   /* 店招多在半身以上，从上往下裁才露得出店名 */
   object-fit: cover;
   object-position: center top;
-  border-radius: 8px;
   background: #241d16;
 }
 
@@ -2972,18 +2971,52 @@ body:has(.map-dialog[open]) {
 
 /* 没有店招照片时的兜底：占位块 + 摘要 */
 .map-pop__empty {
-  display: grid;
-  place-items: center;
-  height: 148px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 148px;
+  padding: 0.9rem 0.75rem;
   background: #241d16;
+}
+
+.map-pop__empty-label {
   color: var(--muted-foreground);
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
 }
 
 .map-pop__summary {
-  margin: 0.55rem 0.15rem 0.1rem;
-  color: rgb(251 240 220 / 0.82);
+  margin: 0;
+  color: rgb(251 240 220 / 0.84);
   font-size: 0.9rem;
   line-height: 1.55;
+}
+
+/* 目录胶囊：滚到底部后切换成「回到顶部」 */
+.shop-toc__top {
+  display: none;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.shop-toc.is-top .shop-toc__brand {
+  display: none;
+}
+
+.shop-toc.is-top .shop-toc__top {
+  display: inline-flex;
+}
+
+.shop-toc__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.shop-toc__totop {
+  margin-bottom: 0.35rem;
+  padding-bottom: 0.6rem !important;
+  border-bottom: 1px solid rgb(117 97 76 / 0.4);
+  color: var(--ember) !important;
 }

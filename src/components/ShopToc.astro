@@ -17,13 +17,23 @@ const { sections } = Astro.props;
   sections.length > 1 && (
     <details class="shop-toc" data-shop-toc>
       <summary class="shop-toc__toggle" aria-label="本页目录">
-        <Icon name="list" size={15} />
-        <span class="shop-toc__now" data-toc-now aria-hidden="true" />
-        <span class="shop-toc__chev" aria-hidden="true">
-          <Icon name="chevron" size={12} />
+        <span class="shop-toc__brand" aria-hidden="true">
+          <Icon name="list" size={15} />
+          <span class="shop-toc__now" data-toc-now />
+          <span class="shop-toc__chev">
+            <Icon name="chevron" size={12} />
+          </span>
+        </span>
+        <span class="shop-toc__top" aria-hidden="true">
+          <Icon name="arrow-up" size={15} />
+          <span>回到顶部</span>
         </span>
       </summary>
       <nav class="shop-toc__panel" aria-label="本页目录">
+        <a class="shop-toc__totop" href="#main" data-toc-top>
+          <Icon name="arrow-up" size={14} />
+          <span>回到顶部</span>
+        </a>
         <ol>
           {sections.map((section, index) => (
             <li>
@@ -62,6 +72,10 @@ const { sections } = Astro.props;
       if (now) now.textContent = entry.label;
     };
 
+    // 滚过最后一节（分享）之后，胶囊本身变成「回到顶部」
+    const lastTarget = entries.length ? entries[entries.length - 1].target : null;
+    let topMode = false;
+
     const update = () => {
       frame = 0;
       const line = window.innerHeight * 0.34;
@@ -70,6 +84,13 @@ const { sections } = Astro.props;
         if (entry.target.getBoundingClientRect().top <= line) active = entry;
       }
       if (active) setActive(active);
+
+      const pastEnd = lastTarget ? lastTarget.getBoundingClientRect().bottom <= 90 : false;
+      if (pastEnd !== topMode) {
+        topMode = pastEnd;
+        toc.classList.toggle("is-top", topMode);
+        if (topMode) toc.open = false;
+      }
     };
 
     const schedule = () => {
@@ -83,6 +104,29 @@ const { sections } = Astro.props;
     links.forEach((link) => {
       link.addEventListener("click", () => {
         toc.open = false;
+      });
+    });
+
+    // 展开时点别处也能收起
+    document.addEventListener("click", (event) => {
+      if (!toc.open) return;
+      if (toc.contains(event.target as Node)) return;
+      toc.open = false;
+    });
+
+    // 回到顶部：胶囊态直接滚到顶，面板里的那一项也一样
+    toc.querySelector("summary")?.addEventListener("click", (event) => {
+      if (!toc.classList.contains("is-top")) return;
+      event.preventDefault();
+      toc.open = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    toc.querySelectorAll<HTMLElement>("[data-toc-top]").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        event.preventDefault();
+        toc.open = false;
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     });
 
