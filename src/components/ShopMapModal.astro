@@ -374,7 +374,9 @@ const cards = shops
     };
 
     document.querySelectorAll("[data-map-open]").forEach((button) => {
-      button.addEventListener("click", async () => {
+      button.addEventListener("click", async (event) => {
+        // 没有 JS 时它就是指向 SVG 的普通链接
+        event.preventDefault();
         dialog.showModal();
         await loadMap();
         requestAnimationFrame(() => {

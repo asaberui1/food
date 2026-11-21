@@ -523,6 +523,7 @@ body:has(.shop-toc) .site-footer{
   font-size: 0.9rem;
   font-weight: 400;
   letter-spacing: 0.3em;
+  white-space: nowrap;
 }.nav-links a, .mobile-nav__panel a{
   position: relative;
 }.nav-links a.is-active, .mobile-nav__panel a.is-active{
@@ -2426,6 +2427,7 @@ body:has(.shop-toc) .site-footer{
 
 .map-button {
   display: inline-flex;
+  text-decoration: none;
   align-items: center;
   gap: 0.45rem;
   padding: 0.6rem 1rem;
@@ -2451,7 +2453,7 @@ body:has(.shop-toc) .site-footer{
 }
 
 .map-button__pin {
-  color: #fbf0dc;
+  color: currentColor;
 }
 
 .map-dialog {
@@ -3019,4 +3021,27 @@ body:has(.map-dialog[open]) {
   padding-bottom: 0.6rem !important;
   border-bottom: 1px solid rgb(117 97 76 / 0.4);
   color: var(--ember) !important;
+}
+
+
+@media (max-width: 480px) {
+  /* 390 宽的机型上，英文副标会折成两行，压一压字距让它保持一行 */
+  .brand-sub {
+    letter-spacing: 0.14em;
+    font-size: 0.85rem;
+  }
+
+  .brand {
+    gap: 0.4rem;
+    letter-spacing: 0.12em;
+  }
+}
+
+.noscript-note {
+  margin: 0.6rem 0 0;
+  padding: 0.6rem 0.8rem;
+  border-left: 2px solid var(--ember);
+  background: rgb(217 138 52 / 0.1);
+  color: rgb(240 231 216 / 0.85);
+  font-size: 0.9rem;
 }
