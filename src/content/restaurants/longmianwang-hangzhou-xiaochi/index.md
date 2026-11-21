@@ -7,10 +7,18 @@ walkMinutes: 8
 address: 华发路 343 号
 summary: 名字叫杭州小吃，卖的其实是嵊州那一路：豆腐小笼包、榨面、年糕，一个人来吃刚好。
 cover: ./door.webp
+gallery:
+  - src: ./room.webp
+    alt: 店堂内景：木桌木凳，右侧是明档和蒸笼，墙上挂着「杭州小笼包」的招牌
+order:
+  qr: ./order-qr.webp
+  note: 店内扫码点单，菜单和价格以扫码页为准。
+  tip: 黄焖鸡米饭、小笼包现做要等十分钟左右，可以在路上先下单，到店跟老板说一声「提前点过了」。
 dishes:
   - name: 黄焖鸡米饭
     price: ¥20
     note: 拿黄豆酱焖出来的，咸鲜微辣，可以拌饭也可以喝汤。
+    image: ./huangmenji.webp
   - name: 豆腐小笼包
     price: ¥10
     note: 嵊州做法，皮薄，馅是豆腐配一点肉末，特色鲜明。
@@ -48,7 +56,9 @@ menu:
       - { name: 青菜瘦肉粥, price: ¥10 }
   - title: 饭类
     items:
-      - { name: 黄焖鸡米饭, price: ¥20 }
+      - name: 黄焖鸡米饭
+        price: ¥20
+        image: ./huangmenji.webp
       - { name: 黄焖牛肉饭, price: ¥35 }
       - { name: 蛋炒饭, price: ¥13 }
       - { name: 咸菜鸡蛋炒饭, price: ¥16 }

@@ -76,7 +76,8 @@ const restaurants = defineCollection({
       /** 店家的扫码点餐入口（微信/支付宝小程序，网页端打不开） */
       order: z
         .object({
-          url: z.string().url(),
+          /** 小程序链接（网页端打不开，有二维码时可以不填） */
+          url: z.string().url().optional(),
           qr: image().optional(),
           note: z.string().optional(),
           tip: z.string().optional(),
