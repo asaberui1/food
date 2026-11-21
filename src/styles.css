@@ -2461,7 +2461,7 @@ body:has(.shop-toc) .site-footer{
   margin: auto;
   padding: 0;
   border: 1px solid rgb(117 97 76 / 0.5);
-  border-radius: 14px;
+  border-radius: 0;
   background: #14100c;
   color: var(--foreground);
   overflow: hidden;
@@ -2967,4 +2967,23 @@ body:has(.map-dialog[open]) {
   margin: 0;
   color: var(--muted-foreground);
   font-size: 1rem;
+}
+
+
+/* 没有店招照片时的兜底：占位块 + 摘要 */
+.map-pop__empty {
+  display: grid;
+  place-items: center;
+  height: 148px;
+  background: #241d16;
+  color: var(--muted-foreground);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
+.map-pop__summary {
+  margin: 0.55rem 0.15rem 0.1rem;
+  color: rgb(251 240 220 / 0.82);
+  font-size: 0.9rem;
+  line-height: 1.55;
 }

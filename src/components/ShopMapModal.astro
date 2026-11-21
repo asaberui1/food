@@ -32,7 +32,7 @@ const cards = shops
     name: shop.data.name,
     cover: shop.data.cover?.src ?? "",
     href: withBase(`/restaurants/${shop.id}/`),
-    meta: shop.data.cuisine,
+    summary: shop.data.summary,
   }));
 ---
 
@@ -69,7 +69,9 @@ const cards = shops
         <div class="map-pop__frame">
           <img class="map-pop__shot" data-map-pop-img alt="" width="320" height="200" loading="eager" decoding="async" />
           <span class="map-pop__loading" data-map-pop-loading>加载中…</span>
+          <div class="map-pop__empty" data-map-pop-empty hidden>照片待补充</div>
         </div>
+        <p class="map-pop__summary" data-map-pop-summary hidden></p>
       </div>
 
       <div class="map-scale" data-map-scale aria-hidden="true">
@@ -113,10 +115,12 @@ const cards = shops
     const popImg = dialog.querySelector<HTMLImageElement>("[data-map-pop-img]");
     const popEnter = dialog.querySelector<HTMLAnchorElement>("[data-map-pop-enter]");
     const popFrame = dialog.querySelector<HTMLElement>(".map-pop__frame");
+    const popEmpty = dialog.querySelector<HTMLElement>("[data-map-pop-empty]");
+    const popSummary = dialog.querySelector<HTMLElement>("[data-map-pop-summary]");
     const scaleBar = dialog.querySelector<HTMLElement>("[data-map-scale-bar]");
     const scaleLabel = dialog.querySelector<HTMLElement>("[data-map-scale-label]");
 
-    let cards: Record<string, { name: string; cover: string; href: string }> = {};
+    let cards: Record<string, { name: string; cover: string; href: string; summary: string }> = {};
     try {
       const raw = document.querySelector("[data-map-cards]")?.textContent ?? "[]";
       for (const card of JSON.parse(raw)) cards[card.id] = card;
@@ -294,14 +298,22 @@ const cards = shops
       if (!card || !pop) return;
 
       activeSlug = slug;
+      const hasCover = Boolean(card.cover);
+      if (popFrame) {
+        popFrame.dataset.state = hasCover ? "photo" : "empty";
+        if (hasCover) popFrame.dataset.loading = "true";
+        else delete popFrame.dataset.loading;
+      }
+      if (popEmpty) popEmpty.hidden = hasCover;
       if (popImg) {
-        const frame = pop.querySelector(".map-pop__frame");
-        if (frame instanceof HTMLElement) {
-          frame.dataset.loading = "true";
-          popImg.removeAttribute("src");
-          popImg.alt = `${card.name} 的店招`;
-          if (card.cover) popImg.src = card.cover;
-        }
+        popImg.hidden = !hasCover;
+        popImg.removeAttribute("src");
+        popImg.alt = `${card.name} 的店招`;
+        if (hasCover) popImg.src = card.cover;
+      }
+      if (popSummary) {
+        popSummary.hidden = hasCover;
+        popSummary.textContent = hasCover ? "" : card.summary;
       }
       if (popEnter) popEnter.href = card.href;
 
