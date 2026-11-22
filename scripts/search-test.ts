@@ -23,7 +23,7 @@ const shops: ShopLike[] = [
           title: "热菜",
           items: [
             { name: "宫保鸡丁", price: "¥28" },
-            { name: "红烧蹄髈", price: "¥58" },
+            { name: "椒盐蹄膀", price: "¥58" },
             { name: "鳜鱼（清蒸）", price: "¥88" },
             { name: "肉末茄子", price: "¥26" },
             { name: "肉末粉丝", price: "¥30" },
@@ -197,8 +197,10 @@ check("具体到「回锅肉盖浇饭」仍然能精确命中", () => {
   assert.equal(hit("回锅肉盖浇饭", "回锅肉盖浇饭")?.score, 100);
 });
 
-check("输入「蹄膀」命中「红烧蹄髈」", () => {
-  assert.equal(hit("蹄膀", "红烧蹄髈")?.score, 80);
+check("输入蹄膀的近义词/错别字命中「椒盐蹄膀」", () => {
+  for (const query of ["蹄髈", "蹄膀", "蹄胖", "蹄旁", "蹄榜", "肘子", "猪肘", "猪肘子"]) {
+    assert.equal(hit(query, "椒盐蹄膀")?.score, 80, query);
+  }
 });
 
 check("输入「白斩鸡」「白切鸡」都命中「白切草鸡」", () => {
@@ -361,7 +363,7 @@ check("输入两个字的具体食材「鸡丁」能命中「宫保鸡丁」", (
   assert.equal(hit("鸡丁", "宫保鸡丁")?.score, 80);
 });
 
-check("两个字以内的普通菜名不出现在结果里", () => {
+check("两个字以内的菜名不出现在结果里", () => {
   for (const query of ["土豆", "鸡丁"]) {
     const outcome = search(query);
     assert.ok(
@@ -473,12 +475,6 @@ if (existsSync(builtPath)) {
       ["松子", "桂鱼（清蒸、红烧，松子、茄汁加 8 元）"],
       ["清蒸鳜鱼", "桂鱼（清蒸、红烧，松子、茄汁加 8 元）"],
       ["白斩鸡", "白切草鸡"],
-      ["蹄髈", "肴蹄"],
-      ["蹄膀", "肴蹄"],
-      ["肘子", "肴蹄"],
-      ["猪肘", "肴蹄"],
-      ["猪蹄", "肴蹄"],
-      ["肴蹄", "肴蹄"],
       ["盖浇饭", "回锅肉盖浇饭"],
     ];
 
@@ -504,7 +500,7 @@ if (existsSync(builtPath)) {
         `${query} 返回了两字以内的菜`,
       );
     }
-    console.log("  ✓ 真实索引：两字内普通菜名不返回");
+    console.log("  ✓ 真实索引：两字以内的菜名不返回");
 
     const many = real.search("土豆");
     assert.ok(many.total > 10, "真实索引「土豆」应超过 10 道");
