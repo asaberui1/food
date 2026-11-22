@@ -62,11 +62,7 @@ function approximationBadge(): HTMLSpanElement {
   return badge;
 }
 
-function shopLink(
-  base: string,
-  hit: SearchHit,
-  shop: SearchHit["shops"][number],
-): HTMLAnchorElement {
+function shopLink(base: string, shop: SearchHit["shops"][number]): HTMLAnchorElement {
   const link = document.createElement("a");
   link.className = "search-result__shop";
   link.dataset.resultLink = "1";
@@ -145,7 +141,7 @@ function buildResult(hit: SearchHit, base: string): HTMLLIElement {
   shops.setAttribute("aria-label", "卖这道菜的店");
   for (const shop of hit.shops) {
     const row = document.createElement("li");
-    row.append(shopLink(base, hit, shop));
+    row.append(shopLink(base, shop));
     shops.append(row);
   }
 

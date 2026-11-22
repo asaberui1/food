@@ -395,6 +395,7 @@ if (existsSync(builtPath)) {
     console.log("  · dist/search-index.json 还是旧格式，先跑 npm run build");
   } else {
     const real = createSearchEngine(built as SearchData);
+    const pinyinTable = built.pinyinTable ?? {};
 
     const realChecks: [string, string][] = [
       ["宫爆鸡丁", "宫保鸡丁盖浇饭"],
@@ -449,7 +450,7 @@ if (existsSync(builtPath)) {
     for (const dish of built.dishes) {
       for (const char of dish.norm) {
         if (/\p{Script=Han}/u.test(char)) {
-          assert.ok(built.pinyinTable[char], `${dish.name} 的「${char}」不在拼音表`);
+          assert.ok(pinyinTable[char], `${dish.name} 的「${char}」不在拼音表`);
         }
       }
     }
