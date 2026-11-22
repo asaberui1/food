@@ -30,7 +30,7 @@ const svg = `
   <text x="${178 * S}" y="${108 * S}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="${36 * S}" letter-spacing="4" fill="#f0e7d8">创智食单</text>
   <text x="${180 * S}" y="${136 * S}" font-family="Menlo, monospace" font-size="${13 * S}" letter-spacing="8" fill="#b2a18d">FOOD AROUND SII</text>
 
-  <text x="${94 * S}" y="${300 * S}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="${96 * S}" letter-spacing="2" fill="#f0e7d8">在创智，</text>
+  <text x="${94 * S}" y="${278 * S}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="${96 * S}" letter-spacing="2" fill="#f0e7d8">在创智，</text>
   <text x="${94 * S}" y="${395 * S}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="${96 * S}" letter-spacing="2" fill="#d98a34">好好吃饭</text>
 
   <text x="${96 * S}" y="${470 * S}" font-family="Noto Sans CJK SC, PingFang SC, sans-serif" font-size="${24 * S}" letter-spacing="2" fill="#b2a18d">环境 · 菜单 · 人均 · 推荐菜</text>
