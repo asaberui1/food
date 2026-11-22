@@ -35,44 +35,129 @@ async function fetchIndex(url: string): Promise<SearchData> {
   return data;
 }
 
+function priceNumber(price: string): number | null {
+  const match = price.match(/\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : null;
+}
+
+function groupPriceLabel(hit: SearchHit): string {
+  const prices = hit.shops
+    .map((shop) => priceNumber(shop.price))
+    .filter((value): value is number => value !== null);
+
+  if (!prices.length) return "时价";
+
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const hasMarketPrice = prices.length < hit.shops.length;
+
+  if (min === max) return hasMarketPrice ? `¥${min} 起` : `¥${min}`;
+  return `¥${min}–${max}`;
+}
+
+function approximationBadge(): HTMLSpanElement {
+  const badge = document.createElement("span");
+  badge.className = "search-result__approx";
+  badge.textContent = "近似";
+  return badge;
+}
+
+function shopLink(
+  base: string,
+  hit: SearchHit,
+  shop: SearchHit["shops"][number],
+): HTMLAnchorElement {
+  const link = document.createElement("a");
+  link.className = "search-result__shop";
+  link.dataset.resultLink = "1";
+  link.href = `${base}restaurants/${shop.shopId}/#menu-title`;
+  link.setAttribute("aria-label", `${shop.name}，${shop.shopName}，${shop.price}`);
+
+  const name = document.createElement("span");
+  name.className = "search-result__shop-name";
+  name.textContent = shop.shopName;
+
+  const price = document.createElement("span");
+  price.className = "search-result__price";
+  price.textContent = shop.price;
+
+  link.append(name, price);
+  return link;
+}
+
 function buildResult(hit: SearchHit, base: string): HTMLLIElement {
   const item = document.createElement("li");
   item.className = "search-result";
+  const approximate = hit.route === "fuzzy" || hit.route === "pinyinTypo";
 
-  const link = document.createElement("a");
-  link.className = "search-result__name";
-  link.href = `${base}restaurants/${hit.shopId}/#menu-title`;
-  link.setAttribute("aria-label", `${hit.name}，${hit.price}，${hit.shopName}`);
+  if (hit.shops.length === 1) {
+    const shop = hit.shops[0];
+
+    const link = document.createElement("a");
+    link.className = "search-result__name";
+    link.dataset.resultLink = "1";
+    link.href = `${base}restaurants/${shop.shopId}/#menu-title`;
+    link.setAttribute("aria-label", `${hit.name}，${shop.price}，${shop.shopName}`);
+
+    const name = document.createElement("span");
+    name.className = "search-result__dish";
+    name.textContent = hit.name;
+
+    const price = document.createElement("span");
+    price.className = "search-result__price";
+    price.textContent = shop.price;
+
+    link.append(name, price);
+
+    const meta = document.createElement("p");
+    meta.className = "search-result__meta";
+    meta.textContent = shop.group ? `${shop.shopName} · ${shop.group}` : shop.shopName;
+    if (approximate) meta.append(" ", approximationBadge());
+
+    item.append(link, meta);
+    return item;
+  }
+
+  const head = document.createElement("div");
+  head.className = "search-result__head";
+
+  const title = document.createElement("span");
+  title.className = "search-result__title";
 
   const name = document.createElement("span");
   name.className = "search-result__dish";
   name.textContent = hit.name;
+  title.append(name);
+
+  if (approximate) title.append(approximationBadge());
+
+  const count = document.createElement("span");
+  count.className = "search-result__same";
+  count.textContent = `${hit.shops.length} 家`;
 
   const price = document.createElement("span");
   price.className = "search-result__price";
-  price.textContent = hit.price;
+  price.textContent = groupPriceLabel(hit);
+  head.append(title, count, price);
 
-  link.append(name, price);
-
-  const meta = document.createElement("p");
-  meta.className = "search-result__meta";
-  meta.textContent = hit.group ? `${hit.shopName} · ${hit.group}` : hit.shopName;
-
-  if (hit.sameName > 1) {
-    const same = document.createElement("span");
-    same.className = "search-result__same";
-    same.textContent = `同款 ${hit.sameName} 家`;
-    meta.append(" ", same);
+  const shops = document.createElement("ul");
+  shops.className = "search-result__shops";
+  shops.setAttribute("aria-label", "卖这道菜的店");
+  for (const shop of hit.shops) {
+    const row = document.createElement("li");
+    row.append(shopLink(base, hit, shop));
+    shops.append(row);
   }
 
-  if (hit.route === "fuzzy" || hit.route === "pinyinTypo") {
-    const approximate = document.createElement("span");
-    approximate.className = "search-result__approx";
-    approximate.textContent = "近似";
-    meta.append(" ", approximate);
+  item.append(head, shops);
+
+  if (hit.aliases.length) {
+    const aliases = document.createElement("p");
+    aliases.className = "search-result__alias";
+    aliases.textContent = `包含${hit.aliases.join("、")}等菜品`;
+    item.append(aliases);
   }
 
-  item.append(link, meta);
   return item;
 }
 
@@ -89,6 +174,7 @@ export function mountSearch(): void {
   const empty = dialog.querySelector<HTMLElement>("[data-search-empty]");
   const status = dialog.querySelector<HTMLElement>("[data-search-status]");
   const closeButton = dialog.querySelector<HTMLButtonElement>("[data-search-close]");
+  const help = dialog.querySelector<HTMLDetailsElement>("details.search-help");
 
   if (!input || !results || !empty || !status || !closeButton) return;
 
@@ -137,8 +223,8 @@ export function mountSearch(): void {
     empty.hidden = true;
     status.textContent =
       outcome.total > hits.length
-        ? `找到 ${outcome.total} 条结果，先看前 ${hits.length} 条。`
-        : `找到 ${outcome.total} 条结果。`;
+        ? `找到 ${outcome.total} 道菜，先看前 ${hits.length} 道。`
+        : `找到 ${outcome.total} 道菜。`;
 
     for (const hit of hits) results.append(buildResult(hit, base));
   };
@@ -196,6 +282,7 @@ export function mountSearch(): void {
 
     window.clearTimeout(timer);
     ticket += 1;
+    if (help) help.open = false;
     input.value = "";
     results.replaceChildren();
     empty.hidden = true;
@@ -223,7 +310,17 @@ export function mountSearch(): void {
   closeButton.addEventListener("click", close);
 
   dialog.addEventListener("click", (event) => {
+    if (help?.open && event.target instanceof Node && !help.contains(event.target)) {
+      help.open = false;
+    }
     if (event.target === dialog) close();
+  });
+
+  dialog.addEventListener("cancel", (event) => {
+    if (!help?.open) return;
+    event.preventDefault();
+    help.open = false;
+    help.querySelector<HTMLElement>("summary")?.focus();
   });
 
   dialog.addEventListener("close", () => {
@@ -245,13 +342,13 @@ export function mountSearch(): void {
 
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
-      const first = results.querySelector<HTMLAnchorElement>(".search-result__name");
+      const first = results.querySelector<HTMLAnchorElement>("[data-result-link]");
       if (first) {
         event.preventDefault();
         first.click();
       }
     } else if (event.key === "ArrowDown") {
-      const first = results.querySelector<HTMLAnchorElement>(".search-result__name");
+      const first = results.querySelector<HTMLAnchorElement>("[data-result-link]");
       if (first) {
         event.preventDefault();
         first.focus();
@@ -262,7 +359,7 @@ export function mountSearch(): void {
   results.addEventListener("keydown", (event) => {
     if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
 
-    const links = [...results.querySelectorAll<HTMLAnchorElement>(".search-result__name")];
+    const links = [...results.querySelectorAll<HTMLAnchorElement>("[data-result-link]")];
     const index = links.indexOf(document.activeElement as HTMLAnchorElement);
     const next = event.key === "ArrowDown" ? index + 1 : index - 1;
 

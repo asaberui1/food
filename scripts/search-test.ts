@@ -80,8 +80,25 @@ const data = prepareSearchData(shops);
 const engine = createSearchEngine(data);
 
 const search = (query: string) => engine.search(query);
-const names = (query: string) => search(query).hits.map((hit) => hit.name);
-const hit = (query: string, name: string) => search(query).hits.find((item) => item.name === name);
+const groupFor = (query: string, name: string, source = engine) =>
+  source
+    .search(query)
+    .hits.find(
+      (item) =>
+        item.name === name ||
+        item.aliases.includes(name) ||
+        item.shops.some((shop) => shop.name === name),
+    );
+const hasDish = (query: string, name: string, source = engine) =>
+  source
+    .search(query)
+    .hits.some(
+      (item) =>
+        item.name === name ||
+        item.aliases.includes(name) ||
+        item.shops.some((shop) => shop.name === name),
+    );
+const hit = (query: string, name: string) => groupFor(query, name);
 
 let passed = 0;
 function check(label: string, callback: () => void): void {
@@ -124,16 +141,14 @@ check("输入「宫保鸡丁」命中「宫爆鸡丁」", () => {
 });
 
 check("输入「gongbaojiding」命中两道宫保鸡丁", () => {
-  const found = names("gongbaojiding");
-  assert.ok(found.includes("宫保鸡丁"));
-  assert.ok(found.includes("宫爆鸡丁"));
+  assert.ok(hasDish("gongbaojiding", "宫保鸡丁"));
+  assert.ok(hasDish("gongbaojiding", "宫爆鸡丁"));
   assert.equal(hit("gongbaojiding", "宫保鸡丁")?.score, 70);
 });
 
 check("输入「gbjd」命中两道宫保鸡丁", () => {
-  const found = names("gbjd");
-  assert.ok(found.includes("宫保鸡丁"));
-  assert.ok(found.includes("宫爆鸡丁"));
+  assert.ok(hasDish("gbjd", "宫保鸡丁"));
+  assert.ok(hasDish("gbjd", "宫爆鸡丁"));
   assert.equal(hit("gbjd", "宫保鸡丁")?.score, 60);
 });
 
@@ -255,13 +270,15 @@ check("「水饺」是具体菜，不是泛类别", () => {
   assert.ok(hit("水饺", "鲜肉水饺"));
 });
 
-check("同名菜跨店按价格从低到高，并带同款数量", () => {
-  const rows = search("番茄炒蛋").hits.filter((item) => item.name === "番茄炒蛋");
+check("同名菜聚合成一张卡，按价格从低到高，并列出别名", () => {
+  const group = groupFor("番茄炒蛋", "番茄炒蛋");
+  assert.ok(group);
   assert.deepEqual(
-    rows.map((item) => item.price),
+    group.shops.map((shop) => shop.price),
     ["¥17", "¥18"],
   );
-  assert.ok(rows.every((item) => item.sameName === 2));
+  assert.equal(group.shops.length, 2);
+  assert.deepEqual(group.aliases, ["西红柿炒鸡蛋"]);
 });
 
 check("输入两个字的具体食材「鸡丁」能命中「宫保鸡丁」", () => {
@@ -295,7 +312,7 @@ check("每条菜用自己的名字都能精确搜到自己", () => {
   const generic = new Set(GENERIC_TERMS);
   for (const dish of data.dishes) {
     if (generic.has(dish.norm)) continue;
-    const found = search(dish.name).hits.find((item) => item.name === dish.name);
+    const found = groupFor(dish.name, dish.name);
     assert.ok(found, dish.name);
     assert.equal(found.score, 100, dish.name);
   }
@@ -303,14 +320,8 @@ check("每条菜用自己的名字都能精确搜到自己", () => {
 
 check("每条菜用自己的全拼和首字母都能搜到自己", () => {
   for (const dish of data.dishes) {
-    assert.ok(
-      search(dish.py).hits.some((item) => item.name === dish.name),
-      `${dish.name} / ${dish.py}`,
-    );
-    assert.ok(
-      search(dish.ini).hits.some((item) => item.name === dish.name),
-      `${dish.name} / ${dish.ini}`,
-    );
+    assert.ok(hasDish(dish.py, dish.name), `${dish.name} / ${dish.py}`);
+    assert.ok(hasDish(dish.ini, dish.name), `${dish.name} / ${dish.ini}`);
   }
 });
 
@@ -372,7 +383,7 @@ if (existsSync(builtPath)) {
         continue;
       }
 
-      const found = real.search(query).hits.find((item) => item.name === expected);
+      const found = groupFor(query, expected, real);
       assert.ok(found, `「${query}」没有命中「${expected}」`);
       console.log(`  ✓ ${query} → ${expected}（${found.score} 分）`);
       passed += 1;

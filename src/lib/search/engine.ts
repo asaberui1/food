@@ -41,10 +41,27 @@ const PINYIN_FUZZY_CANDIDATES = 30;
 
 const GENERIC = new Set(GENERIC_TERMS.map(normalizeText));
 
-type ScoredHit = Omit<SearchHit, "sameName"> & {
+type ScoredHit = {
+  dish: PreparedDish;
+  id: string;
+  name: string;
+  canon: string;
+  norm: string;
+  price: string;
+  group: string;
+  shopId: string;
+  shopName: string;
+  score: number;
+  route: MatchRoute;
   tie: number;
   popularity: number;
   key: string;
+};
+
+type GroupedHit = SearchHit & {
+  tie: number;
+  popularity: number;
+  minPrice: number;
 };
 
 /** 只取价格里的第一个数字：¥18、¥15/22、¥16（小）都按 18 / 15 / 16 排 */
@@ -344,8 +361,11 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
         const shop = shops[dish.shop];
         scored.set(dish, {
+          dish,
           id: dish.id,
           name: dish.name,
+          canon: dish.canon,
+          norm: dish.norm,
           price: dish.price,
           group: dish.group,
           shopId: shop?.id ?? "",
@@ -374,8 +394,11 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
         const shop = shops[dish.shop];
         scored.set(dish, {
+          dish,
           id: dish.id,
           name: dish.name,
+          canon: dish.canon,
+          norm: dish.norm,
           price: dish.price,
           group: dish.group,
           shopId: shop?.id ?? "",
@@ -396,14 +419,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
       if (!previous || hit.score > previous.score) unique.set(hit.key, hit);
     }
 
-    const nameCounts = new Map<string, number>();
-    for (const hit of unique.values()) {
-      nameCounts.set(hit.name, (nameCounts.get(hit.name) ?? 0) + 1);
-    }
-
-    // 同名菜是相邻的（长度、名字都相同），所以价格只在同款内部起作用：
-    // 同款按价格从低到高，再按店名。
-    const sorted = [...unique.values()].sort(
+    const rows = [...unique.values()].sort(
       (a, b) =>
         b.score - a.score ||
         b.tie - a.tie ||
@@ -414,13 +430,94 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         a.shopName.localeCompare(b.shopName, "zh-Hans-CN"),
     );
 
-    const total = sorted.length;
-    const hits = sorted
+    // 同义词和跨店同款合成一张卡：按 canon 分组，组里每个店一行
+    const buckets = new Map<string, ScoredHit[]>();
+    for (const row of rows) {
+      const bucket = buckets.get(row.canon);
+      if (bucket) bucket.push(row);
+      else buckets.set(row.canon, [row]);
+    }
+
+    const groups: GroupedHit[] = [];
+    for (const [canon, bucket] of buckets) {
+      // 展示名：用户输入的字面写法 > 规范写法（norm === canon）> 出现次数 > 短 > 字典序
+      const literal = bucket.find((row) => row.norm === query);
+      const standard = bucket.find((row) => row.norm === row.canon);
+      let display = literal ?? standard;
+      if (!display) {
+        const counts = new Map<string, number>();
+        for (const row of bucket) counts.set(row.name, (counts.get(row.name) ?? 0) + 1);
+        display = [...bucket].sort(
+          (a, b) =>
+            (counts.get(b.name) ?? 0) - (counts.get(a.name) ?? 0) ||
+            a.name.length - b.name.length ||
+            a.name.localeCompare(b.name, "zh-Hans-CN"),
+        )[0];
+      }
+      if (!display) continue;
+
+      // 同一家店同一个 canon 只留一条，取便宜的那条
+      const byShop = new Map<string, ScoredHit>();
+      for (const row of bucket) {
+        const previous = byShop.get(row.shopId);
+        if (!previous || priceRank(row.price) < priceRank(previous.price)) {
+          byShop.set(row.shopId, row);
+        }
+      }
+
+      const shops = [...byShop.values()]
+        .sort(
+          (a, b) =>
+            priceRank(a.price) - priceRank(b.price) ||
+            a.shopName.localeCompare(b.shopName, "zh-Hans-CN"),
+        )
+        .map((row) => ({
+          shopId: row.shopId,
+          shopName: row.shopName,
+          price: row.price,
+          group: row.group,
+          name: row.name,
+        }));
+
+      const aliases = dedupe(
+        bucket.map((row) => row.name).filter((name) => name !== display.name),
+      ).sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
+
+      const best = bucket.reduce((a, b) => (b.score > a.score ? b : a));
+      const minPrice = shops.reduce(
+        (min, shop) => Math.min(min, priceRank(shop.price)),
+        Number.POSITIVE_INFINITY,
+      );
+
+      groups.push({
+        id: canon,
+        name: display.name,
+        canon,
+        score: best.score,
+        route: best.route,
+        shops,
+        aliases,
+        tie: Math.max(...bucket.map((row) => row.tie)),
+        popularity: Math.max(...bucket.map((row) => row.popularity)),
+        minPrice,
+      });
+    }
+
+    groups.sort(
+      (a, b) =>
+        b.score - a.score ||
+        b.tie - a.tie ||
+        b.popularity - a.popularity ||
+        a.name.length - b.name.length ||
+        a.name.localeCompare(b.name, "zh-Hans-CN") ||
+        a.minPrice - b.minPrice ||
+        (a.shops[0]?.shopName ?? "").localeCompare(b.shops[0]?.shopName ?? "", "zh-Hans-CN"),
+    );
+
+    const total = groups.length;
+    const hits = groups
       .slice(0, MAX_RESULTS)
-      .map(({ tie: _tie, popularity: _popularity, key: _key, ...hit }) => ({
-        ...hit,
-        sameName: nameCounts.get(hit.name) ?? 1,
-      }));
+      .map(({ tie: _tie, popularity: _popularity, minPrice: _minPrice, ...hit }) => hit);
 
     const reason: SearchOutcome["reason"] =
       total === 0 && queryLength <= 2 && !knownTerm && !synonymQuery ? "short" : undefined;

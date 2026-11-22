@@ -23,7 +23,27 @@ const {
 >
   <div class="search-dialog__inner">
     <div class="search-dialog__head">
-      <h2 id="search-title" class="search-dialog__title">搜菜名</h2>
+      <div class="search-dialog__heading">
+        <h2 id="search-title" class="search-dialog__title">搜菜名</h2>
+        <details class="search-help">
+          <summary class="search-help__btn" aria-label="搜菜名支持哪些写法">
+            <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="butt" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6.4 6.4a3.5 3.5 0 0 1 6.8 1.2c0 2.1-3.2 2.8-3.2 4.7v1.1"></path>
+              <rect x="8.8" y="15.4" width="2.4" height="2.4" fill="currentColor" stroke="none"></rect>
+            </svg>
+          </summary>
+          <div class="search-help__pop">
+            <p class="search-help__title">搜菜名支持</p>
+            <ul class="search-help__list">
+              <li><strong>别名同义</strong>：番茄 / 西红柿、馄饨 / 云吞、鳜鱼 / 桂鱼</li>
+              <li><strong>错别字</strong>：宫保鸡丁 / 宫爆鸡丁、肉末 / 肉沫</li>
+              <li><strong>拼音</strong>：全拼 gongbaojiding、首字母 gbjd；ü 打 u 或 v 都行</li>
+              <li><strong>读音近似</strong>：读错的音也能找到，结果会标「近似」</li>
+              <li><strong>具体食材</strong>：鸡丁、牛肉、白菜可以直接搜；米饭、面条这类大类词不返回结果</li>
+            </ul>
+          </div>
+        </details>
+      </div>
       <button type="button" class="search-dialog__close" data-search-close aria-label="关闭搜索">关闭</button>
     </div>
 
@@ -44,7 +64,6 @@ const {
       {withMenu >= total && total > 0
         ? "菜名搜索基于已收录菜单，目前全部餐厅均已录入菜单。"
         : `菜名搜索基于已收录菜单，目前覆盖 ${withMenu}/${total} 家餐厅。`}
-      支持错别字、别名、拼音全拼和首字母，比如 gbjd、宫爆鸡丁、番茄炒蛋。
     </p>
 
     <p class="search-status" data-search-status role="status"></p>

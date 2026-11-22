@@ -55,22 +55,33 @@ export type MatchRoute =
   | "fuzzy"
   | "ingredient";
 
-export type SearchHit = {
-  id: string;
-  name: string;
-  price: string;
-  group: string;
+/** 聚合卡片里的一家店 */
+export type SearchShop = {
   shopId: string;
   shopName: string;
+  price: string;
+  group: string;
+  /** 这家店菜单上的原始写法，可能和卡片标题不同（西红柿炒鸡蛋 / 番茄炒蛋） */
+  name: string;
+};
+
+/** 一道菜一张卡：同义词（番茄炒蛋 / 西红柿炒鸡蛋）和跨店同款都收进 shops */
+export type SearchHit = {
+  id: string;
+  /** 展示名，优先用户输入的字面写法，其次是规范写法 */
+  name: string;
+  /** 同义词规范化后的分组键 */
+  canon: string;
   score: number;
   route: MatchRoute;
-  /** 同名菜在结果里出现的条数（跨店同款），UI 用它在第一条上标「同款 N 家」 */
-  sameName: number;
+  shops: SearchShop[];
+  /** 同组里和展示名不同的写法，UI 用「也叫：…」列出来 */
+  aliases: string[];
 };
 
 export type SearchOutcome = {
   hits: SearchHit[];
-  /** 去重后、截断到 10 条之前的总数 */
+  /** 去重后的菜品数（同义词算一道），不是店铺条目数 */
   total: number;
   /** generic：命中“盖浇饭”这类泛词被压制；short：两个字且不是具体名词，没敢做包含召回 */
   reason?: "generic" | "short";
