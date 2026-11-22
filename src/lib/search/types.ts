@@ -25,10 +25,17 @@ export type PreparedDish = {
   ini: string;
   cpy?: string;
   cini?: string;
+  /** pinyin-pro 的错误读音，按“近似”计分，例如鳜鱼的 jueyu */
+  pyTypo?: string[];
+  iniTypo?: string[];
+  cpyTypo?: string[];
+  ciniTypo?: string[];
   aliases: string[];
   aliasCanon: string[];
   aliasPy: string[];
   aliasIni: string[];
+  aliasPyTypo?: string[];
+  aliasIniTypo?: string[];
   ingredients: string[];
   popularity: number;
 };
@@ -39,7 +46,14 @@ export type SearchData = {
   dishes: PreparedDish[];
 };
 
-export type MatchRoute = "name" | "alias" | "pinyin" | "initials" | "fuzzy" | "ingredient";
+export type MatchRoute =
+  | "name"
+  | "alias"
+  | "pinyin"
+  | "initials"
+  | "pinyinTypo"
+  | "fuzzy"
+  | "ingredient";
 
 export type SearchHit = {
   id: string;
@@ -50,6 +64,8 @@ export type SearchHit = {
   shopName: string;
   score: number;
   route: MatchRoute;
+  /** 同名菜在结果里出现的条数（跨店同款），UI 用它在第一条上标「同款 N 家」 */
+  sameName: number;
 };
 
 export type SearchOutcome = {

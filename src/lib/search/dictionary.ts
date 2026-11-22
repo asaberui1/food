@@ -45,6 +45,9 @@ export const SYNONYM_GROUPS: readonly (readonly string[])[] = [
   // 用户给的表：薯类、番茄、粉丝、白菜等
   ["土豆", "洋芋", "马铃薯", "地蛋", "山药蛋", "洋番薯", "馍馍蛋", "洋芋艿"],
   ["番茄", "西红柿", "蕃茄", "洋柿子"],
+  ["番茄炒蛋", "西红柿炒鸡蛋", "番茄炒鸡蛋", "西红柿炒蛋"],
+  ["肉末粉丝", "肉沫粉丝", "蚂蚁上树"],
+  ["阳春面", "光面"],
   ["番薯", "红薯", "白薯", "地瓜", "红苕"],
   ["粉丝", "粉条丝", "冬粉", "春雨", "细粉"],
   ["大白菜", "包心白菜", "黄芽菜", "结球白菜"],
@@ -82,7 +85,6 @@ export const SYNONYM_GROUPS: readonly (readonly string[])[] = [
   ["汉堡", "汉堡包"],
   ["意面", "意大利面", "意粉"],
   ["披萨", "比萨", "匹萨"],
-  ["蛋", "鸡蛋"],
 ];
 
 /**
@@ -90,19 +92,42 @@ export const SYNONYM_GROUPS: readonly (readonly string[])[] = [
  * 键是标准化后的菜名；值会在构建期标准化、去重，并生成拼音。
  */
 export const DISH_ALIASES: Readonly<Record<string, readonly string[]>> = {
-  蚂蚁上树: ["肉末粉丝", "肉沫粉丝"],
-  肉末粉丝: ["蚂蚁上树"],
-  阳春面: ["光面"],
-  光面: ["阳春面"],
+  // 目前别名都能用同义词组表达；保留这个入口给以后没法拆词的整菜别名。
 };
+
+/**
+ * pinyin-pro 读错/多音字纠正表。
+ *
+ * 规范读音写在 correct 里；pinyin-pro 给出的错误读音进 misread，
+ * 搜索时按“近似”计分（低于正确拼音，但高于普通模糊匹配），
+ * 这样既尊重规范读音，也不会让按错读输入的人完全搜不到。
+ *
+ * 例：鳜鱼规范读 guì yú，pinyin-pro 会标成 jué yú。
+ */
+export type PinyinOverride = {
+  term: string;
+  correct: string;
+  correctInitials: string;
+  misread: readonly string[];
+  misreadInitials: readonly string[];
+};
+
+export const PINYIN_OVERRIDES: readonly PinyinOverride[] = [
+  {
+    term: "鳜鱼",
+    correct: "guiyu",
+    correctInitials: "gy",
+    misread: ["jueyu"],
+    misreadInitials: ["jy"],
+  },
+];
 
 /**
  * 泛词：本身是品类，不是具体菜名。
  *
- * 泛词只做两件事：
- *   1. 不作为“菜名包含”召回条件，避免输入「盖浇饭」把 30 家店的盖浇饭全捞出来；
- *   2. 命中时只给一点排序弱加权（tie-break），不改变分数档次。
- * 精确/前缀仍然有效，所以真有店把菜叫「盖浇饭」还是能搜到。
+ * 纯泛词查询直接返回空（精确/前缀也不给），避免「米饭」「面条」「盖浇饭」
+ * 把整本菜单捞出来；只有它作为更长菜名的一部分时（「鱼香肉丝盖浇饭」）
+ * 才保留一点排序弱加权。具体到「蛋炒饭」「牛肉拌面」仍然能搜。
  */
 export const GENERIC_TERMS: readonly string[] = [
   "饭",
@@ -139,4 +164,16 @@ export const GENERIC_TERMS: readonly string[] = [
   "米粉",
   "河粉",
   "粉丝",
+  "米饭",
+  "白饭",
+  "稀饭",
+  "面条",
+  "挂面",
+  "米线",
+  "粉条",
+  "饺子",
+  "包子",
+  "馒头",
+  "花卷",
+  "烧饼",
 ];

@@ -1305,13 +1305,17 @@ body:has(.shop-toc) .site-footer{
   color: var(--muted-foreground);
   font-size: 0.9rem;
   line-height: 1.6;
-}.search-result__approx{
+}.search-result__approx,
+.search-result__same{
   display: inline-block;
   border: 1px solid rgb(217 138 52 / 0.5);
   color: var(--ember);
   font-size: 0.9rem;
   line-height: 1.3;
   padding: 0 0.3rem;
+}.search-result__same{
+  border-color: rgb(117 97 76 / 0.6);
+  color: var(--muted-foreground);
 }.search-dialog .search-status{
   margin: 0;
   color: var(--muted-foreground);

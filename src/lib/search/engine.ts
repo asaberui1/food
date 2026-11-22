@@ -23,6 +23,10 @@ const SCORE = {
   pinyinContains: 65,
   initialsExact: 60,
   initialsPrefix: 58,
+  /** pinyin-pro 读错但确实有人这么读的拼音，按近似处理，压在正确拼音下面 */
+  pinyinTypoExact: 55,
+  pinyinTypoPrefix: 52,
+  initialsTypoExact: 50,
   /** 编辑距离相似度上限，实际按 70 * (1 - 距离/长度) 折算 */
   fuzzyMax: 70,
   /** 食材别称预留位：等 ingredients 真正录入再启用 */
@@ -37,11 +41,17 @@ const PINYIN_FUZZY_CANDIDATES = 30;
 
 const GENERIC = new Set(GENERIC_TERMS.map(normalizeText));
 
-type ScoredHit = SearchHit & {
+type ScoredHit = Omit<SearchHit, "sameName"> & {
   tie: number;
   popularity: number;
   key: string;
 };
+
+/** 只取价格里的第一个数字：¥18、¥15/22、¥16（小）都按 18 / 15 / 16 排 */
+function priceRank(price: string): number {
+  const match = price.match(/\d+(?:\.\d+)?/);
+  return match ? Number(match[0]) : Number.POSITIVE_INFINITY;
+}
 
 function editDistance(a: string, b: string, max: number): number {
   if (a === b) return 0;
@@ -82,12 +92,14 @@ function closest(
   targets: readonly string[],
   max: number,
   sameLengthOnly = false,
+  firstCode?: number,
 ): Closest | null {
   let best: Closest | null = null;
   const queryLength = codePointLength(query);
 
   for (const target of targets) {
     if (!target) continue;
+    if (firstCode !== undefined && target.codePointAt(0) !== firstCode) continue;
     const targetLength = codePointLength(target);
     if (sameLengthOnly && targetLength !== queryLength) continue;
     if (Math.abs(queryLength - targetLength) > max) continue;
@@ -108,6 +120,15 @@ function fuzzyScore(query: string, match: Closest): number {
 
 function dedupe(values: readonly string[]): string[] {
   return [...new Set(values.filter(Boolean))];
+}
+
+/** 拼音里的 v 是 ü 的键盘写法；u 也允许，所以每个拼音都同时给出 v/u 两个形态 */
+function altPinyin(value: string): string {
+  return value.includes("v") ? value.replaceAll("v", "u") : "";
+}
+
+function pinyinVariants(values: readonly string[]): string[] {
+  return dedupe(values.flatMap((value) => [value, altPinyin(value)]));
 }
 
 export type SearchEngine = {
@@ -143,15 +164,17 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
   const fuzzyName = (query: string, queryCanon: string, queryLength: number) => {
     const maxDistance = queryLength <= 4 ? 1 : 2;
-    // 短名字只接受“同长度替换”，避免红烧肉把红烧牛肉也捞进来（那是另一道菜）
+    // 短名字只接受“同长度替换 + 首字相同”，避免红烧肉把红烧牛肉、
+    // 小馄饨把汤馄饨也当成近似（那是另一道菜）
     const sameLengthOnly = queryLength <= 4;
+    const firstCode = queryLength <= 4 ? query.codePointAt(0) : undefined;
     const found = nameFuse.search(queryCanon, { limit: FUZZY_CANDIDATES });
     const results = new Map<PreparedDish, number>();
 
     for (const result of found) {
       const dish = result.item;
       const targets = dedupe([dish.norm, dish.canon, ...dish.aliases, ...dish.aliasCanon]);
-      const match = closest(query, targets, maxDistance, sameLengthOnly);
+      const match = closest(query, targets, maxDistance, sameLengthOnly, firstCode);
       if (!match) continue;
 
       const score = fuzzyScore(query, match);
@@ -165,7 +188,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
   };
 
   const fuzzyPinyin = (query: string, queryLength: number) => {
-    const maxDistance = queryLength >= 10 ? 2 : 1;
+    const maxDistance = queryLength >= 12 ? 2 : 1;
     const found = pinyinFuse.search(query, { limit: PINYIN_FUZZY_CANDIDATES });
     const results = new Map<PreparedDish, number>();
 
@@ -188,18 +211,23 @@ export function createSearchEngine(data: SearchData): SearchEngine {
   const run = (query: string): SearchOutcome => {
     if (!query) return { hits: [], total: 0 };
 
+    // 泛类别本身不返回结果：输入「米饭」「面条」「盖浇饭」是来逛菜单的，
+    // 不是来点名某道菜的。具体到「黄焖鸡米饭」「鱼香肉丝盖浇饭」仍然能搜。
+    if (GENERIC.has(query)) return { hits: [], total: 0, reason: "generic" };
+
     const queryCanon = canonicalize(query);
     const queryLength = codePointLength(query);
     const pinyinQuery = isPinyinQuery(query);
-    const generic = GENERIC.has(query);
     // 1 个字一律不用“包含”；2 个字默认也不用，避免「饭」「面」「鸡丁」把整本菜单捞出来。
     // 例外是词典里的具体名词：「馄饨」「烧卖」「土豆」「洋芋」「花甲」——
     // 它们本身指向明确食材/品类，允许用来包含匹配「鲜肉小馄饨」「香菇糯米烧卖」。
     // 「盖浇饭」这类泛词即使 3 个字也仍然被 generic 拦住。
     const synonymQuery = queryCanon !== query;
     const knownTerm = KNOWN_TERMS.has(query) || KNOWN_TERMS.has(queryCanon);
-    const allowContains =
-      !generic && (queryLength >= 3 || (queryLength >= 2 && (synonymQuery || knownTerm)));
+    const allowContains = queryLength >= 3 || (queryLength >= 2 && (synonymQuery || knownTerm));
+    // 别名的“包含”只对 3 个字以上开放：两个字时同义词已经由 canonicalize 覆盖，
+    // 再拿别名去包含只会把「鸡蛋」扩散成所有「蛋X」的变体。
+    const allowAliasContains = queryLength >= 3;
 
     const scored = new Map<PreparedDish, ScoredHit>();
 
@@ -227,7 +255,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
             route = "alias";
             break;
           }
-          if (allowContains && (alias.includes(query) || aliasCanon.includes(queryCanon))) {
+          if (allowAliasContains && (alias.includes(query) || aliasCanon.includes(queryCanon))) {
             if (score < SCORE.aliasContains) {
               score = SCORE.aliasContains;
               route = "alias";
@@ -238,47 +266,66 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
       // 6) 拼音全拼 / 7) 拼音首字母：只在输入是纯字母时启用
       if (pinyinQuery) {
-        const fullNames = dedupe([dish.py, dish.cpy ?? ""]);
-        const initials = dedupe([dish.ini, dish.cini ?? ""]);
-        const aliasFull = dish.aliasPy;
-        const aliasInitials = dish.aliasIni;
+        const fullNames = pinyinVariants([dish.py, dish.cpy ?? "", ...dish.aliasPy]);
+        const typoFull = pinyinVariants([
+          ...(dish.pyTypo ?? []),
+          ...(dish.cpyTypo ?? []),
+          ...(dish.aliasPyTypo ?? []),
+        ]);
+        const initials = dedupe([dish.ini, dish.cini ?? "", ...dish.aliasIni]);
+        const typoInitials = dedupe([
+          ...(dish.iniTypo ?? []),
+          ...(dish.ciniTypo ?? []),
+          ...(dish.aliasIniTypo ?? []),
+        ]);
 
-        if (fullNames.includes(query) || aliasFull.includes(query)) {
+        if (fullNames.includes(query)) {
           if (score < SCORE.pinyinExact) {
             score = SCORE.pinyinExact;
             route = "pinyin";
           }
-        } else if (queryLength >= 3) {
-          const prefixHit =
-            fullNames.some((value) => value.startsWith(query)) ||
-            aliasFull.some((value) => value.startsWith(query));
-          if (prefixHit && score < SCORE.pinyinPrefix) {
+        } else if (queryLength >= 3 && fullNames.some((value) => value.startsWith(query))) {
+          if (score < SCORE.pinyinPrefix) {
             score = SCORE.pinyinPrefix;
             route = "pinyin";
-          } else if (
-            queryLength >= 5 &&
-            score < SCORE.pinyinContains &&
-            (fullNames.some((value) => value.includes(query)) ||
-              aliasFull.some((value) => value.includes(query)))
-          ) {
-            score = SCORE.pinyinContains;
-            route = "pinyin";
+          }
+        } else if (
+          queryLength >= 5 &&
+          score < SCORE.pinyinContains &&
+          fullNames.some((value) => value.includes(query))
+        ) {
+          score = SCORE.pinyinContains;
+          route = "pinyin";
+        }
+
+        // 错误读音（如鳜鱼的 jueyu）只按近似算，分数一定低于正确拼音
+        if (typoFull.includes(query)) {
+          if (score < SCORE.pinyinTypoExact) {
+            score = SCORE.pinyinTypoExact;
+            route = "pinyinTypo";
+          }
+        } else if (queryLength >= 3 && typoFull.some((value) => value.startsWith(query))) {
+          if (score < SCORE.pinyinTypoPrefix) {
+            score = SCORE.pinyinTypoPrefix;
+            route = "pinyinTypo";
           }
         }
 
-        if (initials.includes(query) || aliasInitials.includes(query)) {
+        if (initials.includes(query)) {
           if (score < SCORE.initialsExact) {
             score = SCORE.initialsExact;
             route = "initials";
           }
-        } else if (queryLength >= 3) {
-          const initialsHit =
-            initials.some((value) => value.startsWith(query)) ||
-            aliasInitials.some((value) => value.startsWith(query));
-          if (initialsHit && score < SCORE.initialsPrefix) {
+        } else if (queryLength >= 3 && initials.some((value) => value.startsWith(query))) {
+          if (score < SCORE.initialsPrefix) {
             score = SCORE.initialsPrefix;
             route = "initials";
           }
+        }
+
+        if (typoInitials.includes(query) && score < SCORE.initialsTypoExact) {
+          score = SCORE.initialsTypoExact;
+          route = "pinyinTypo";
         }
       }
 
@@ -286,7 +333,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         // 泛词只做同分内的弱加权：不改变分数档次，不会把「鱼香肉丝盖浇饭」
         // 抬到「鱼香肉丝」前面去。
         let tie = 0;
-        if (!generic && !pinyinQuery) {
+        if (!pinyinQuery) {
           for (const term of GENERIC) {
             if (query.includes(term) && (dish.norm.includes(term) || dish.canon.includes(term))) {
               tie = 3;
@@ -313,7 +360,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     }
 
     // 8) 编辑距离相似度：只对 Fuse 给出的候选做 Levenshtein
-    if (queryLength >= 3 && !generic) {
+    if (queryLength >= 3) {
       const fuzzy = pinyinQuery
         ? queryLength >= 5
           ? fuzzyPinyin(query, queryLength)
@@ -349,28 +396,34 @@ export function createSearchEngine(data: SearchData): SearchEngine {
       if (!previous || hit.score > previous.score) unique.set(hit.key, hit);
     }
 
+    const nameCounts = new Map<string, number>();
+    for (const hit of unique.values()) {
+      nameCounts.set(hit.name, (nameCounts.get(hit.name) ?? 0) + 1);
+    }
+
+    // 同名菜是相邻的（长度、名字都相同），所以价格只在同款内部起作用：
+    // 同款按价格从低到高，再按店名。
     const sorted = [...unique.values()].sort(
       (a, b) =>
         b.score - a.score ||
         b.tie - a.tie ||
         b.popularity - a.popularity ||
         a.name.length - b.name.length ||
-        a.name.localeCompare(b.name, "zh-Hans-CN"),
+        a.name.localeCompare(b.name, "zh-Hans-CN") ||
+        priceRank(a.price) - priceRank(b.price) ||
+        a.shopName.localeCompare(b.shopName, "zh-Hans-CN"),
     );
 
     const total = sorted.length;
     const hits = sorted
       .slice(0, MAX_RESULTS)
-      .map(({ tie: _tie, popularity: _popularity, key: _key, ...hit }) => hit);
+      .map(({ tie: _tie, popularity: _popularity, key: _key, ...hit }) => ({
+        ...hit,
+        sameName: nameCounts.get(hit.name) ?? 1,
+      }));
 
     const reason: SearchOutcome["reason"] =
-      total > 0
-        ? undefined
-        : generic
-          ? "generic"
-          : queryLength <= 2 && !knownTerm && !synonymQuery
-            ? "short"
-            : undefined;
+      total === 0 && queryLength <= 2 && !knownTerm && !synonymQuery ? "short" : undefined;
 
     return { hits, total, ...(reason ? { reason } : {}) };
   };
@@ -378,7 +431,8 @@ export function createSearchEngine(data: SearchData): SearchEngine {
   return {
     size: dishes.length,
     search(raw: string) {
-      const query = normalizeText(raw);
+      // ü 在拼音输入里通常打成 v，查询侧也统一一下
+      const query = normalizeText(raw).replace(/ü/g, "v");
       if (!query) return { hits: [], total: 0 };
 
       const cached = cache.get(query);

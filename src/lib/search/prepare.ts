@@ -1,5 +1,5 @@
 import { pinyin } from "pinyin-pro";
-import { DISH_ALIASES } from "./dictionary";
+import { DISH_ALIASES, PINYIN_OVERRIDES } from "./dictionary";
 import { normalizeText } from "./normalize";
 import { aliasVariants, canonicalize } from "./synonyms";
 import type { PreparedDish, SearchData } from "./types";
@@ -25,18 +25,69 @@ export type ShopLike = {
 const HAN = /\p{Script=Han}+/gu;
 const MAX_ALIASES = 12;
 
-function pinyinOf(value: string): { full: string; initials: string } {
-  const han = value.match(HAN)?.join("") ?? "";
-  if (!han) return { full: "", initials: "" };
+/** 拼音里的 ü 统一写成 v：用户键盘上只有 v，没有 ü */
+function asciiPinyin(value: string): string {
+  return value
+    .replace(/ü/g, "v")
+    .replace(/Ü/g, "v")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+}
 
-  const full = pinyin(han, { toneType: "none", type: "array" }).join("");
-  const initials = pinyin(han, {
-    pattern: "first",
-    toneType: "none",
-    type: "array",
-  }).join("");
+type PinyinResult = {
+  full: string;
+  initials: string;
+  /** pinyin-pro 读错、但确实有人这么读的拼音，按“近似”计分 */
+  typoFull: string[];
+  typoInitials: string[];
+};
 
-  return { full, initials };
+function pinyinOf(value: string): PinyinResult {
+  const norm = normalizeText(value);
+  const han = norm.match(HAN)?.join("") ?? "";
+  if (!han) return { full: "", initials: "", typoFull: [], typoInitials: [] };
+
+  let full = asciiPinyin(pinyin(han, { toneType: "none", type: "array" }).join(""));
+  let initials = asciiPinyin(
+    pinyin(han, {
+      pattern: "first",
+      toneType: "none",
+      type: "array",
+    }).join(""),
+  );
+
+  const typoFull = new Set<string>();
+  const typoInitials = new Set<string>();
+
+  for (const override of PINYIN_OVERRIDES) {
+    const term = normalizeText(override.term);
+    if (!term || !norm.includes(term)) continue;
+
+    const normalFull = asciiPinyin(pinyin(term, { toneType: "none", type: "array" }).join(""));
+    const normalInitials = asciiPinyin(
+      pinyin(term, { pattern: "first", toneType: "none", type: "array" }).join(""),
+    );
+    if (!normalFull || !full.includes(normalFull)) continue;
+
+    full = full.replaceAll(normalFull, override.correct);
+    if (normalInitials) initials = initials.replaceAll(normalInitials, override.correctInitials);
+
+    override.misread.forEach((misread, index) => {
+      typoFull.add(full.replaceAll(override.correct, misread));
+      const misreadInitials = override.misreadInitials[index];
+      if (misreadInitials) {
+        typoInitials.add(initials.replaceAll(override.correctInitials, misreadInitials));
+      }
+    });
+  }
+
+  return {
+    full,
+    initials,
+    typoFull: [...typoFull].filter((item) => item && item !== full),
+    typoInitials: [...typoInitials].filter((item) => item && item !== initials),
+  };
 }
 
 function aliasesFor(norm: string): string[] {
@@ -68,12 +119,16 @@ export function prepareSearchData(shops: ShopLike[]): SearchData {
         const aliasCanon: string[] = [];
         const aliasPy: string[] = [];
         const aliasIni: string[] = [];
+        const aliasPyTypo: string[] = [];
+        const aliasIniTypo: string[] = [];
 
         for (const alias of aliases) {
           aliasCanon.push(canonicalize(alias));
           const aliasPinyin = pinyinOf(alias);
           aliasPy.push(aliasPinyin.full);
           aliasIni.push(aliasPinyin.initials);
+          aliasPyTypo.push(...aliasPinyin.typoFull);
+          aliasIniTypo.push(...aliasPinyin.typoInitials);
         }
 
         dishes.push({
@@ -86,11 +141,22 @@ export function prepareSearchData(shops: ShopLike[]): SearchData {
           canon,
           py: namePinyin.full,
           ini: namePinyin.initials,
-          ...(canonPinyin ? { cpy: canonPinyin.full, cini: canonPinyin.initials } : {}),
+          ...(namePinyin.typoFull.length ? { pyTypo: namePinyin.typoFull } : {}),
+          ...(namePinyin.typoInitials.length ? { iniTypo: namePinyin.typoInitials } : {}),
+          ...(canonPinyin
+            ? {
+                cpy: canonPinyin.full,
+                cini: canonPinyin.initials,
+                ...(canonPinyin.typoFull.length ? { cpyTypo: canonPinyin.typoFull } : {}),
+                ...(canonPinyin.typoInitials.length ? { ciniTypo: canonPinyin.typoInitials } : {}),
+              }
+            : {}),
           aliases,
           aliasCanon,
           aliasPy,
           aliasIni,
+          ...(aliasPyTypo.length ? { aliasPyTypo } : {}),
+          ...(aliasIniTypo.length ? { aliasIniTypo } : {}),
           ingredients: [],
           popularity: 0,
         });

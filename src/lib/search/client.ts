@@ -58,7 +58,14 @@ function buildResult(hit: SearchHit, base: string): HTMLLIElement {
   meta.className = "search-result__meta";
   meta.textContent = hit.group ? `${hit.shopName} · ${hit.group}` : hit.shopName;
 
-  if (hit.route === "fuzzy") {
+  if (hit.sameName > 1) {
+    const same = document.createElement("span");
+    same.className = "search-result__same";
+    same.textContent = `同款 ${hit.sameName} 家`;
+    meta.append(" ", same);
+  }
+
+  if (hit.route === "fuzzy" || hit.route === "pinyinTypo") {
     const approximate = document.createElement("span");
     approximate.className = "search-result__approx";
     approximate.textContent = "近似";
@@ -75,7 +82,7 @@ export function mountSearch(): void {
   dialog.dataset.mounted = "1";
 
   const base = dialog.dataset.base || "/";
-  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=1`;
+  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=2`;
 
   const input = dialog.querySelector<HTMLInputElement>("[data-search]");
   const results = dialog.querySelector<HTMLUListElement>("[data-results]");
@@ -130,8 +137,8 @@ export function mountSearch(): void {
     empty.hidden = true;
     status.textContent =
       outcome.total > hits.length
-        ? `找到 ${outcome.total} 道，先看前 ${hits.length} 道。`
-        : `找到 ${outcome.total} 道。`;
+        ? `找到 ${outcome.total} 条结果，先看前 ${hits.length} 条。`
+        : `找到 ${outcome.total} 条结果。`;
 
     for (const hit of hits) results.append(buildResult(hit, base));
   };

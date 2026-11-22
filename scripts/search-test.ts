@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { GENERIC_TERMS } from "../src/lib/search/dictionary";
 import { createSearchEngine } from "../src/lib/search/engine";
 import { prepareSearchData, type ShopLike } from "../src/lib/search/prepare";
 import type { SearchData } from "../src/lib/search/types";
@@ -30,6 +31,9 @@ const shops: ShopLike[] = [
             { name: "葱姜花蛤", price: "¥38" },
             { name: "白切鸡", price: "¥48" },
             { name: "鱼香肉丝", price: "¥24" },
+            { name: "蛋饺", price: "¥15" },
+            { name: "蛋炒饭", price: "¥13" },
+            { name: "沙律牛排", price: "¥68" },
           ],
         },
         {
@@ -43,6 +47,10 @@ const shops: ShopLike[] = [
             { name: "鲜肉小馄饨", price: "¥15" },
             { name: "香菇 / 糯米烧卖", price: "¥10" },
             { name: "土豆丝", price: "¥12" },
+            { name: "米饭", price: "¥2" },
+            { name: "面条（生）", price: "¥8" },
+            { name: "鸡蛋炒面", price: "¥12" },
+            { name: "鲜肉水饺", price: "¥15" },
           ],
         },
       ],
@@ -60,6 +68,7 @@ const shops: ShopLike[] = [
             { name: "螺丝粉", price: "¥18" },
             { name: "回锅肉盖浇饭", price: "¥23" },
             { name: "番茄蛋汤", price: "¥12" },
+            { name: "番茄炒蛋", price: "¥17" },
           ],
         },
       ],
@@ -158,7 +167,7 @@ check("输入「肉沫茄子」命中「肉末茄子」", () => {
 });
 
 check("输入「蚂蚁上树」也命中「肉末粉丝」", () => {
-  assert.equal(hit("蚂蚁上树", "肉末粉丝")?.score, 85);
+  assert.equal(hit("蚂蚁上树", "肉末粉丝")?.score, 100);
 });
 
 check("输入「白斩鸡」命中「白切鸡」", () => {
@@ -205,8 +214,58 @@ check("输入「gongbaojidin」（少个 g）仍然命中", () => {
   assert.ok(hit("gongbaojidin", "宫保鸡丁"));
 });
 
-check("输入两个字的普通词「鸡丁」不触发宽泛包含", () => {
-  assert.equal(search("鸡丁").hits.length, 0);
+check("ü 的拼音 u/v 两种写法都命中「沙律牛排」", () => {
+  for (const query of ["shalvniupai", "shaluniupai", "shalüniupai"]) {
+    assert.equal(hit(query, "沙律牛排")?.score, 70, query);
+  }
+});
+
+check("pinyin-pro 读错的「鳜鱼」按近似计分，低于正确拼音", () => {
+  const correct = hit("guiyu", "鳜鱼（清蒸）");
+  const misread = hit("jueyu", "鳜鱼（清蒸）");
+  const misreadFull = hit("jueyuqingzheng", "鳜鱼（清蒸）");
+  assert.ok(correct);
+  assert.ok(misread);
+  assert.ok(misreadFull);
+  assert.ok(correct.score >= 68);
+  assert.ok(misread.score < correct.score);
+  assert.ok(misreadFull.score < correct.score);
+  assert.ok(misreadFull.score >= 40);
+});
+
+check("输入「鸡蛋」时鸡蛋菜排在蛋饺、蛋炒饭前面", () => {
+  const outcome = search("鸡蛋");
+  const top = outcome.hits.filter((item) => item.score === 90);
+  assert.ok(top.length > 0);
+  assert.ok(top.every((item) => item.name.startsWith("鸡蛋")));
+  assert.equal(hit("鸡蛋", "西红柿炒鸡蛋")?.score, 80);
+  assert.equal(hit("鸡蛋", "蛋饺"), undefined);
+  assert.equal(hit("鸡蛋", "蛋炒饭"), undefined);
+});
+
+check("泛类别「米饭」「面条」即使真有同名菜也返回空", () => {
+  for (const query of ["米饭", "面条", "饺子", "包子", "馒头"]) {
+    const outcome = search(query);
+    assert.equal(outcome.hits.length, 0, query);
+    assert.equal(outcome.reason, "generic", query);
+  }
+});
+
+check("「水饺」是具体菜，不是泛类别", () => {
+  assert.ok(hit("水饺", "鲜肉水饺"));
+});
+
+check("同名菜跨店按价格从低到高，并带同款数量", () => {
+  const rows = search("番茄炒蛋").hits.filter((item) => item.name === "番茄炒蛋");
+  assert.deepEqual(
+    rows.map((item) => item.price),
+    ["¥17", "¥18"],
+  );
+  assert.ok(rows.every((item) => item.sameName === 2));
+});
+
+check("输入两个字的具体食材「鸡丁」能命中「宫保鸡丁」", () => {
+  assert.equal(hit("鸡丁", "宫保鸡丁")?.score, 80);
 });
 
 check("泛词「饭」「面」「汤」不返回菜单", () => {
@@ -222,6 +281,37 @@ check("结果最多 10 条", () => {
 
 check("空查询不返回结果", () => {
   assert.equal(search("   ").hits.length, 0);
+});
+
+check("泛词表里的每一个词都返回空", () => {
+  for (const term of GENERIC_TERMS) {
+    const outcome = search(term);
+    assert.equal(outcome.hits.length, 0, term);
+    assert.equal(outcome.reason, "generic", term);
+  }
+});
+
+check("每条菜用自己的名字都能精确搜到自己", () => {
+  const generic = new Set(GENERIC_TERMS);
+  for (const dish of data.dishes) {
+    if (generic.has(dish.norm)) continue;
+    const found = search(dish.name).hits.find((item) => item.name === dish.name);
+    assert.ok(found, dish.name);
+    assert.equal(found.score, 100, dish.name);
+  }
+});
+
+check("每条菜用自己的全拼和首字母都能搜到自己", () => {
+  for (const dish of data.dishes) {
+    assert.ok(
+      search(dish.py).hits.some((item) => item.name === dish.name),
+      `${dish.name} / ${dish.py}`,
+    );
+    assert.ok(
+      search(dish.ini).hits.some((item) => item.name === dish.name),
+      `${dish.name} / ${dish.ini}`,
+    );
+  }
 });
 
 console.log("性能");
@@ -267,6 +357,8 @@ if (existsSync(builtPath)) {
       ["桂鱼", "鳜鱼（茄汁、红烧、干烧）"],
       ["螺丝粉", "螺蛳粉"],
       ["云吞", "鲜肉大馄饨"],
+      ["shalvniupai", "沙律牛排"],
+      ["shaluniupai", "沙律牛排"],
       ["盖浇饭", "回锅肉盖浇饭"],
     ];
 
