@@ -116,12 +116,11 @@ export function mountSearch(): void {
     const hits = outcome.hits;
 
     if (!hits.length) {
-      const length = Array.from(normalizeText(raw)).length;
       empty.hidden = false;
       empty.textContent =
         outcome.reason === "generic"
           ? `「${raw.trim()}」是个大类，范围太大。换具体菜名试试，比如「鱼香肉丝盖浇饭」。`
-          : length <= 2
+          : outcome.reason === "short"
             ? "没有找到。两个字有点短，补全菜名试试，比如「宫保鸡丁」。"
             : "没有找到。可以试试别名、拼音或首字母，比如「gbjd」「番茄炒蛋」。";
       status.textContent = "";

@@ -36,7 +36,8 @@ async function collectChars() {
       if (entry.isDirectory()) {
         if (entry.name === "assets") continue;
         await walk(path);
-      } else if (/\.(md|astro|ts|json)$/.test(entry.name)) {
+      } else if (/\.(md|astro|ts|json)$/.test(entry.name) && entry.name !== "dictionary.ts") {
+        // 搜索同义词词典只参与匹配、不会渲染，不把里面的生僻字塞进字体子集
         const text = (await readFile(path, "utf8")).replace(/<[^>]+>/g, " ").replace(/^---[\s\S]*?---/, "");
         for (const char of text) {
           const code = char.codePointAt(0);

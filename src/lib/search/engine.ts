@@ -363,11 +363,16 @@ export function createSearchEngine(data: SearchData): SearchEngine {
       .slice(0, MAX_RESULTS)
       .map(({ tie: _tie, popularity: _popularity, key: _key, ...hit }) => hit);
 
-    return {
-      hits,
-      total,
-      ...(total === 0 && generic ? { reason: "generic" as const } : {}),
-    };
+    const reason: SearchOutcome["reason"] =
+      total > 0
+        ? undefined
+        : generic
+          ? "generic"
+          : queryLength <= 2 && !knownTerm && !synonymQuery
+            ? "short"
+            : undefined;
+
+    return { hits, total, ...(reason ? { reason } : {}) };
   };
 
   return {

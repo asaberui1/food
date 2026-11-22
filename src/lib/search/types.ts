@@ -56,6 +56,6 @@ export type SearchOutcome = {
   hits: SearchHit[];
   /** 去重后、截断到 10 条之前的总数 */
   total: number;
-  /** 只有命中“盖浇饭”这类泛词、又刻意压制了包含召回时才给提示 */
-  reason?: "generic";
+  /** generic：命中“盖浇饭”这类泛词被压制；short：两个字且不是具体名词，没敢做包含召回 */
+  reason?: "generic" | "short";
 };
