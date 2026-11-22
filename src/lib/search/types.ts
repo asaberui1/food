@@ -54,6 +54,7 @@ export type MatchRoute =
   | "pinyin"
   | "initials"
   | "pinyinTypo"
+  | "wordBag"
   | "fuzzy"
   | "ingredient";
 

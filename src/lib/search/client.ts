@@ -84,7 +84,8 @@ function shopLink(base: string, shop: SearchHit["shops"][number]): HTMLAnchorEle
 function buildResult(hit: SearchHit, base: string): HTMLLIElement {
   const item = document.createElement("li");
   item.className = "search-result";
-  const approximate = hit.route === "fuzzy" || hit.route === "pinyinTypo";
+  const approximate =
+    hit.route === "fuzzy" || hit.route === "pinyinTypo" || hit.route === "wordBag";
 
   if (hit.shops.length === 1) {
     const shop = hit.shops[0];
@@ -163,7 +164,7 @@ export function mountSearch(): void {
   dialog.dataset.mounted = "1";
 
   const base = dialog.dataset.base || "/";
-  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=4`;
+  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=5`;
 
   const input = dialog.querySelector<HTMLInputElement>("[data-search]");
   const results = dialog.querySelector<HTMLUListElement>("[data-results]");
@@ -172,7 +173,9 @@ export function mountSearch(): void {
   const closeButton = dialog.querySelector<HTMLButtonElement>("[data-search-close]");
   const help = dialog.querySelector<HTMLDetailsElement>("details.search-help");
   const inner = dialog.querySelector<HTMLElement>(".search-dialog__inner");
+  const body = dialog.querySelector<HTMLElement>("[data-search-body]");
   const moreButton = dialog.querySelector<HTMLButtonElement>("[data-search-more]");
+  const topButton = dialog.querySelector<HTMLButtonElement>("[data-search-top]");
 
   if (!input || !results || !empty || !status || !closeButton) return;
 
@@ -226,7 +229,7 @@ export function mountSearch(): void {
         return engine;
       })().catch((error: unknown) => {
         enginePromise = null;
-        status.textContent = "菜单没载入成功，稍后再试。";
+        status.textContent = "菜单未成功载入，请稍后再试。";
         throw error;
       });
     }
@@ -256,10 +259,10 @@ export function mountSearch(): void {
       empty.hidden = false;
       empty.textContent =
         outcome.reason === "generic"
-          ? `「${raw.trim()}」是个大类，范围太大。换具体菜名试试，比如「黄焖鸡米饭」「牛肉面」。`
+          ? `「${raw.trim()}」是个大类，范围太大。换具体菜名试试，比如「鱼香肉丝」「回锅肉」。`
           : outcome.reason === "short"
-            ? "没有找到。输入的字数有点少，补全菜名试试，比如「宫保鸡丁」。"
-            : "没有找到。可以试试别名、拼音或首字母，比如「gbjd」「番茄炒蛋」。";
+            ? "输入字数较少，暂时没有置信度高的结果，多写两个字试试吧。"
+            : "没有搜到这道菜，换个关键词试试吧。";
       status.textContent = "";
       return;
     }
@@ -396,6 +399,11 @@ export function mountSearch(): void {
     document.documentElement.classList.remove("search-open");
     resetDialogHeight();
     if (opener && typeof opener.focus === "function") opener.focus();
+  });
+
+  topButton?.addEventListener("click", () => {
+    if (!body) return;
+    body.scrollTo({ top: 0, behavior: "auto" });
   });
 
   moreButton?.addEventListener("click", () => {

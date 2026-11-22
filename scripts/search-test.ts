@@ -23,7 +23,7 @@ const shops: ShopLike[] = [
           title: "热菜",
           items: [
             { name: "宫保鸡丁", price: "¥28" },
-            { name: "蹄髈", price: "¥58" },
+            { name: "红烧蹄髈", price: "¥58" },
             { name: "鳜鱼（清蒸）", price: "¥88" },
             { name: "肉末茄子", price: "¥26" },
             { name: "肉末粉丝", price: "¥30" },
@@ -37,9 +37,11 @@ const shops: ShopLike[] = [
             { name: "牙鲆鱼", price: "¥88" },
             { name: "黄颡鱼", price: "¥68" },
             { name: "龙头鱼", price: "¥48" },
-            { name: "鳊鱼", price: "¥38" },
-            { name: "鲳鱼", price: "¥58" },
+            { name: "红烧鳊鱼", price: "¥38" },
+            { name: "清蒸鲳鱼", price: "¥58" },
             { name: "小炒肉", price: "¥26" },
+            { name: "白切草鸡", price: "¥52" },
+            { name: "土豆", price: "¥8" },
           ],
         },
         {
@@ -181,8 +183,8 @@ check("鱼类各地叫法互搜", () => {
   assert.equal(hit("昂刺鱼", "黄颡鱼")?.score, 100);
   assert.equal(hit("九肚鱼", "龙头鱼")?.score, 100);
   assert.equal(hit("豆腐鱼", "龙头鱼")?.score, 100);
-  assert.equal(hit("扁鱼", "鳊鱼")?.score, 100);
-  assert.equal(hit("昌鱼", "鲳鱼")?.score, 100);
+  assert.equal(hit("扁鱼", "红烧鳊鱼")?.score, 80);
+  assert.equal(hit("昌鱼", "清蒸鲳鱼")?.score, 80);
 });
 
 check("输入「盖浇饭」不返回一堆 xxx 盖浇饭", () => {
@@ -195,8 +197,21 @@ check("具体到「回锅肉盖浇饭」仍然能精确命中", () => {
   assert.equal(hit("回锅肉盖浇饭", "回锅肉盖浇饭")?.score, 100);
 });
 
-check("输入「蹄膀」命中「蹄髈」", () => {
-  assert.equal(hit("蹄膀", "蹄髈")?.score, 100);
+check("输入「蹄膀」命中「红烧蹄髈」", () => {
+  assert.equal(hit("蹄膀", "红烧蹄髈")?.score, 80);
+});
+
+check("输入「白斩鸡」「白切鸡」都命中「白切草鸡」", () => {
+  assert.equal(hit("白斩鸡", "白切草鸡")?.score, 100);
+  assert.equal(hit("白切鸡", "白切草鸡")?.score, 100);
+});
+
+check("做法的两个字也能搜：清蒸", () => {
+  assert.equal(hit("清蒸", "鳜鱼（清蒸）")?.score, 80);
+});
+
+check("做法 + 鱼顺序不同也能搜：清蒸鳜鱼", () => {
+  assert.equal(hit("清蒸鳜鱼", "鳜鱼（清蒸）")?.score, 66);
 });
 
 check("输入「桂鱼」命中「鳜鱼（清蒸）」", () => {
@@ -346,6 +361,16 @@ check("输入两个字的具体食材「鸡丁」能命中「宫保鸡丁」", (
   assert.equal(hit("鸡丁", "宫保鸡丁")?.score, 80);
 });
 
+check("两个字以内的菜名不出现在结果里", () => {
+  for (const query of ["土豆", "鸡丁"]) {
+    const outcome = search(query);
+    assert.ok(
+      outcome.hits.every((item) => [...item.name].length > 2),
+      query,
+    );
+  }
+});
+
 check("泛词「饭」「面」「汤」不返回菜单", () => {
   for (const query of ["饭", "面", "汤"]) {
     assert.equal(search(query).hits.length, 0, query);
@@ -373,6 +398,7 @@ check("每条菜用自己的名字都能精确搜到自己", () => {
   const generic = new Set(GENERIC_TERMS);
   for (const dish of data.dishes) {
     if (generic.has(dish.norm)) continue;
+    if ([...dish.name].length <= 2) continue;
     const found = groupFor(dish.name, dish.name);
     assert.ok(found, dish.name);
     assert.equal(found.score, 100, dish.name);
@@ -381,6 +407,7 @@ check("每条菜用自己的名字都能精确搜到自己", () => {
 
 check("每条菜用自己的全拼和首字母都能搜到自己", () => {
   for (const dish of data.dishes) {
+    if ([...dish.name].length <= 2) continue;
     assert.ok(hasDish(dish.py, dish.name), `${dish.name} / ${dish.py}`);
     assert.ok(hasDish(dish.ini, dish.name), `${dish.name} / ${dish.ini}`);
   }
@@ -439,6 +466,13 @@ if (existsSync(builtPath)) {
       ["鳊鱼", "红烧扁鱼"],
       ["辣椒炒肉", "农家小炒肉"],
       ["肉沫粉条", "肉沫粉丝煲"],
+      ["锅仔", "农家咸鸭锅仔"],
+      ["鲜肉包", "鲜肉小笼包"],
+      ["肉包", "鲜肉小笼包"],
+      ["清蒸", "桂鱼（清蒸、红烧，松子、茄汁加 8 元）"],
+      ["松子", "桂鱼（清蒸、红烧，松子、茄汁加 8 元）"],
+      ["清蒸鳜鱼", "桂鱼（清蒸、红烧，松子、茄汁加 8 元）"],
+      ["白斩鸡", "白切草鸡"],
       ["盖浇饭", "回锅肉盖浇饭"],
     ];
 
@@ -458,6 +492,14 @@ if (existsSync(builtPath)) {
       passed += 1;
     }
 
+    for (const query of ["土豆", "白菜", "鸡蛋"]) {
+      assert.ok(
+        real.search(query).hits.every((item) => [...item.name].length > 2),
+        `${query} 返回了两字以内的菜`,
+      );
+    }
+    console.log("  ✓ 真实索引：两字以内的菜名不返回");
+
     const many = real.search("土豆");
     assert.ok(many.total > 10, "真实索引「土豆」应超过 10 道");
     assert.equal(many.hits.length, many.total);
@@ -469,6 +511,7 @@ if (existsSync(builtPath)) {
     const pinyinMisses: string[] = [];
     const initialsMisses: string[] = [];
     for (const dish of built.dishes) {
+      if ([...dish.name].length <= 2) continue;
       if (!genericNames.has(dish.norm) && !hasDish(dish.name, dish.name, real)) {
         exactMisses.push(dish.name);
       }

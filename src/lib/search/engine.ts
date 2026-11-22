@@ -30,6 +30,8 @@ const SCORE = {
   pinyinTypoExact: 55,
   pinyinTypoPrefix: 52,
   initialsTypoExact: 50,
+  /** 词袋匹配：清蒸 + 鳜鱼 这种顺序不同的组合，按近似处理 */
+  wordBag: 66,
   /** 编辑距离相似度上限，实际按 70 * (1 - 距离/长度) 折算 */
   fuzzyMax: 70,
   /** 食材别称预留位：等 ingredients 真正录入再启用 */
@@ -176,6 +178,30 @@ function queryPinyinVariants(query: string, table: Record<string, string[]>): st
   return dedupe(variants);
 }
 
+/** 把查询按已知词做最长切分，用于「清蒸鳜鱼」这种顺序不同的词袋匹配 */
+function tokenizeKnown(query: string, terms: readonly string[]): string[] {
+  const tokens: string[] = [];
+  let index = 0;
+
+  while (index < query.length) {
+    let matched = "";
+    for (const term of terms) {
+      if (query.startsWith(term, index)) {
+        matched = term;
+        break;
+      }
+    }
+    if (matched) {
+      tokens.push(matched);
+      index += matched.length;
+    } else {
+      index += 1;
+    }
+  }
+
+  return dedupe(tokens);
+}
+
 export type SearchEngine = {
   search: (raw: string) => SearchOutcome;
   size: number;
@@ -185,6 +211,9 @@ export function createSearchEngine(data: SearchData): SearchEngine {
   const shops = data.shops;
   const dishes = data.dishes;
   const pinyinTable = data.pinyinTable ?? {};
+  const knownTermList = [...KNOWN_TERMS]
+    .filter((term) => codePointLength(term) >= 2)
+    .sort((a, b) => codePointLength(b) - codePointLength(a));
 
   // 两套 Fuse 索引：中文模糊走菜名，英文模糊走拼音。
   // 它们只负责“产生候选”，真正的接受/拒绝和打分用上面的 editDistance。
@@ -277,6 +306,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     // 汉字查询转拼音：觉鱼 / 绝鱼 → jueyu，再去匹配鳜鱼的错误读音
     const queryPinyin =
       !pinyinQuery && queryLength >= 2 ? queryPinyinVariants(query, pinyinTable) : [];
+    const queryTokens = queryLength >= 3 ? tokenizeKnown(queryCanon, knownTermList) : [];
 
     const scored = new Map<PreparedDish, ScoredHit>();
 
@@ -397,6 +427,15 @@ export function createSearchEngine(data: SearchData): SearchEngine {
               route = "pinyinTypo";
             }
           }
+        }
+      }
+
+      // 8.5) 词袋：清蒸鳜鱼 / 松子鳜鱼 / 清蒸桂鱼，顺序和原文不同也能命中
+      if (queryTokens.length >= 2 && score < SCORE.wordBag) {
+        const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
+        if (queryTokens.every((token) => targets.some((value) => value.includes(token)))) {
+          score = SCORE.wordBag;
+          route = "wordBag";
         }
       }
 
@@ -568,8 +607,12 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         (a.shops[0]?.shopName ?? "").localeCompare(b.shops[0]?.shopName ?? "", "zh-Hans-CN"),
     );
 
-    const total = groups.length;
-    const hits = groups.map(
+    // 两个字以内的菜（土豆、白菜、卤蛋、米饭…）不返回：它们要么是涮菜/浇头，
+    // 要么是主食，搜出来没有决策价值；这条规则在搜索框注释里向用户说明。
+    const visibleGroups = groups.filter((group) => codePointLength(group.name) > 2);
+
+    const total = visibleGroups.length;
+    const hits = visibleGroups.map(
       ({ tie: _tie, popularity: _popularity, minPrice: _minPrice, ...hit }) => hit,
     );
 

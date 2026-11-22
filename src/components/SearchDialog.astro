@@ -8,7 +8,7 @@ type Props = {
 
 const {
   // ?v= 用来在索引结构变化时绕开旧缓存，改 schema 时记得加一
-  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=4`,
+  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=5`,
   withMenu = 0,
   total = 0,
 } = Astro.props;
@@ -44,9 +44,22 @@ const {
           </div>
         </details>
       </div>
-      <button type="button" class="search-dialog__close" data-search-close aria-label="关闭搜索">关闭</button>
+      <div class="search-dialog__actions">
+        <button type="button" class="search-dialog__top" data-search-top aria-label="回到顶部">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10 16V5"></path>
+            <path d="M5.5 9.5L10 5l4.5 4.5"></path>
+          </svg>
+        </button>
+        <button type="button" class="search-dialog__close" data-search-close aria-label="关闭搜索">
+          <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M5 5l10 10M15 5L5 15"></path>
+          </svg>
+        </button>
+      </div>
     </div>
 
+    <div class="search-dialog__body" data-search-body>
     <label class="search-field">
       <span class="label-eyebrow">菜名</span>
       <input
@@ -62,14 +75,15 @@ const {
     </label>
     <p class="search-hint" id="search-hint">
       {withMenu >= total && total > 0
-        ? "菜名搜索基于已收录菜单，目前全部餐厅均已录入菜单。"
-        : `菜名搜索基于已收录菜单，目前覆盖 ${withMenu}/${total} 家餐厅。`}
+        ? "菜名搜索基于已收录菜单，只返回超过 2 个字的结果，目前全部餐厅均已录入菜单。"
+        : `菜名搜索基于已收录菜单，只返回超过 2 个字的结果，目前覆盖 ${withMenu}/${total} 家餐厅。`}
     </p>
 
     <p class="search-status" data-search-status role="status"></p>
     <ul class="search-results" data-results id="search-results" aria-describedby="search-hint"></ul>
     <button type="button" class="search-more" data-search-more hidden>显示剩余结果</button>
     <p class="search-hint" data-search-empty role="status" hidden>没有找到。换个菜名试试，或者用标签筛。</p>
+    </div>
   </div>
 </dialog>
 
