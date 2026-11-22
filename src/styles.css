@@ -1334,6 +1334,22 @@ body:has(.shop-toc) .site-footer{
   margin: 0;
   padding: 0;
   list-style: none;
+}.search-more{
+  justify-self: start;
+  border: 1px solid var(--button-bg);
+  background: transparent;
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.95rem;
+  padding: 0.55rem 0.95rem;
+  cursor: pointer;
+  transition: border-color 160ms ease, color 160ms ease;
+}.search-more:hover,
+.search-more:focus-visible{
+  border-color: var(--ember);
+  color: var(--ember);
+}.search-more[hidden]{
+  display: none;
 }.search-result{
   display: grid;
   gap: 0.25rem;

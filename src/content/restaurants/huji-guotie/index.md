@@ -91,13 +91,13 @@ menu:
     items:
       - { name: 胡记锅贴（锅贴）, price: ¥8/两 }
       - { name: 胡记锅贴（生煎）, price: ¥8/两 }
-      - { name: 胡记锅贴（单个）, price: ¥2/个 }
+      - { name: 胡记锅贴（单个）, price: ¥2 }
   - title: 馄饨
     items:
-      - { name: 荠菜大馄饨, price: ¥13/10只 }
-      - { name: 鲜肉大馄饨, price: ¥15/10只 }
-      - { name: 荠菜小馄饨, price: ¥9/20只 }
-      - { name: 鲜肉小馄饨, price: ¥9/20只 }
+      - { name: 荠菜大馄饨（10只）, price: ¥13 }
+      - { name: 鲜肉大馄饨（10只）, price: ¥15 }
+      - { name: 荠菜小馄饨（20只）, price: ¥9 }
+      - { name: 鲜肉小馄饨（20只）, price: ¥9 }
   - title: 加类
     items:
       - { name: 荷包蛋, price: ¥2.5 }

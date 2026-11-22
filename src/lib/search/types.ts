@@ -82,6 +82,7 @@ export type SearchHit = {
 };
 
 export type SearchOutcome = {
+  /** 所有结果；UI 默认只渲染前 10 条，可展开剩余 */
   hits: SearchHit[];
   /** 去重后的菜品数（同义词算一道），不是店铺条目数 */
   total: number;

@@ -93,7 +93,7 @@ menu:
       - { name: 蛋饺, price: ¥15 }
       - { name: 鱼豆腐, price: ¥18 }
       - { name: 草虾, price: ¥38 }
-      - { name: 小鲍鱼, price: ¥12/只 }
+      - { name: 小鲍鱼, price: ¥12 }
       - { name: 上脑, price: ¥38/78 }
       - { name: 吊龙, price: ¥38/78 }
       - { name: 雪花牛肉, price: ¥58/108 }
@@ -101,7 +101,7 @@ menu:
       - { name: 熟牛舌, price: ¥49/98 }
       - { name: 熟牛筋, price: ¥49/98 }
       - { name: 熟牛腱, price: ¥60/120 }
-      - { name: 熟牛肋骨, price: ¥20/根 }
+      - { name: 熟牛肋骨, price: ¥20 }
       - { name: 熟牛蝎子, price: ¥48 }
       - { name: 熟牛杂, price: ¥48 }
       - { name: 熟牛排, price: ¥68 }

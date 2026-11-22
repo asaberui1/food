@@ -37,7 +37,6 @@ const SCORE = {
 } as const;
 
 const MIN_SCORE = 40;
-const MAX_RESULTS = 10;
 const CACHE_SIZE = 50;
 const FUZZY_CANDIDATES = 40;
 const PINYIN_FUZZY_CANDIDATES = 30;
@@ -570,9 +569,9 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     );
 
     const total = groups.length;
-    const hits = groups
-      .slice(0, MAX_RESULTS)
-      .map(({ tie: _tie, popularity: _popularity, minPrice: _minPrice, ...hit }) => hit);
+    const hits = groups.map(
+      ({ tie: _tie, popularity: _popularity, minPrice: _minPrice, ...hit }) => hit,
+    );
 
     const reason: SearchOutcome["reason"] =
       total === 0 && queryLength <= 2 && !knownTerm && !synonymQuery ? "short" : undefined;

@@ -34,6 +34,12 @@ const shops: ShopLike[] = [
             { name: "蛋饺", price: "¥15" },
             { name: "蛋炒饭", price: "¥13" },
             { name: "沙律牛排", price: "¥68" },
+            { name: "牙鲆鱼", price: "¥88" },
+            { name: "黄颡鱼", price: "¥68" },
+            { name: "龙头鱼", price: "¥48" },
+            { name: "鳊鱼", price: "¥38" },
+            { name: "鲳鱼", price: "¥58" },
+            { name: "小炒肉", price: "¥26" },
           ],
         },
         {
@@ -156,6 +162,27 @@ check("输入「gbjd」命中两道宫保鸡丁", () => {
 check("输入「番茄炒蛋」命中「西红柿炒鸡蛋」", () => {
   assert.equal(hit("番茄炒蛋", "西红柿炒鸡蛋")?.score, 100);
   assert.equal(hit("西红柿炒鸡蛋", "番茄炒蛋")?.score, 100);
+});
+
+check("肉沫粉条 / 肉末粉条 命中肉末粉丝和蚂蚁上树", () => {
+  for (const query of ["肉沫粉条", "肉末粉条"]) {
+    assert.equal(hit(query, "肉末粉丝")?.score, 100, query);
+    assert.equal(hit(query, "蚂蚁上树")?.score, 100, query);
+  }
+});
+
+check("辣椒炒肉命中小炒肉", () => {
+  assert.equal(hit("辣椒炒肉", "小炒肉")?.score, 100);
+});
+
+check("鱼类各地叫法互搜", () => {
+  assert.equal(hit("鸦片鱼", "牙鲆鱼")?.score, 100);
+  assert.equal(hit("黄辣丁", "黄颡鱼")?.score, 100);
+  assert.equal(hit("昂刺鱼", "黄颡鱼")?.score, 100);
+  assert.equal(hit("九肚鱼", "龙头鱼")?.score, 100);
+  assert.equal(hit("豆腐鱼", "龙头鱼")?.score, 100);
+  assert.equal(hit("扁鱼", "鳊鱼")?.score, 100);
+  assert.equal(hit("昌鱼", "鲳鱼")?.score, 100);
 });
 
 check("输入「盖浇饭」不返回一堆 xxx 盖浇饭", () => {
@@ -325,9 +352,9 @@ check("泛词「饭」「面」「汤」不返回菜单", () => {
   }
 });
 
-check("结果最多 10 条", () => {
+check("引擎返回全部结果，total 与 hits 一致", () => {
   const outcome = search("鸡");
-  assert.ok(outcome.hits.length <= 10);
+  assert.equal(outcome.hits.length, outcome.total);
 });
 
 check("空查询不返回结果", () => {
@@ -402,12 +429,16 @@ if (existsSync(builtPath)) {
       ["番茄炒蛋", "西红柿炒鸡蛋"],
       ["桂鱼", "鳜鱼（茄汁、红烧、干烧）"],
       ["螺丝粉", "螺蛳粉"],
-      ["云吞", "鲜肉大馄饨"],
+      ["云吞", "鲜肉大馄饨（10只）"],
       ["shalvniupai", "沙律牛排"],
       ["shaluniupai", "沙律牛排"],
       ["觉鱼", "鳜鱼（茄汁、红烧、干烧）"],
       ["绝鱼", "鳜鱼（茄汁、红烧、干烧）"],
       ["鱼香肉私", "鱼香肉丝"],
+      ["黄颡鱼", "昂刺鱼（红烧、雪菜烧、烧汤）"],
+      ["鳊鱼", "红烧扁鱼"],
+      ["辣椒炒肉", "农家小炒肉"],
+      ["肉沫粉条", "肉沫粉丝煲"],
       ["盖浇饭", "回锅肉盖浇饭"],
     ];
 
@@ -426,6 +457,11 @@ if (existsSync(builtPath)) {
       console.log(`  ✓ ${query} → ${expected}（${found.score} 分）`);
       passed += 1;
     }
+
+    const many = real.search("土豆");
+    assert.ok(many.total > 10, "真实索引「土豆」应超过 10 道");
+    assert.equal(many.hits.length, many.total);
+    console.log(`  ✓ 「土豆」返回 ${many.total} 道，引擎未截断`);
 
     // 菜单更新后的自检：每条菜名、拼音、首字母都应能搜到自己
     const genericNames = new Set(GENERIC_TERMS);

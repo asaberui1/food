@@ -33,19 +33,19 @@ menu:
   - title: 羊肉（按重量）
     note: 按 500 克计价，也可以按两要，2 两起售。
     items:
-      - { name: 白切羊肉, price: ¥110/500克 }
-      - { name: 红烧羊肉（带骨）, price: ¥100/500克 }
-      - { name: 羊糕, price: ¥100/500克 }
-      - { name: 羊心, price: ¥110/500克 }
-      - { name: 羊肚, price: ¥110/500克 }
-      - { name: 羊丸, price: ¥120/500克 }
-      - { name: 羊舌, price: ¥110/500克 }
-      - { name: 羊肺/肝/羊头肉, price: ¥90/500克 }
-      - { name: 羊脚, price: ¥60/500克 }
-      - { name: 羊鞭, price: ¥30/根 }
-      - { name: 羊脑, price: ¥16/副 }
-      - { name: 羊腰, price: ¥12/个 }
-      - { name: 羊眼, price: ¥10/个 }
+      - { name: 白切羊肉, price: ¥110/斤 }
+      - { name: 红烧羊肉（带骨）, price: ¥100/斤 }
+      - { name: 羊糕, price: ¥100/斤 }
+      - { name: 羊心, price: ¥110/斤 }
+      - { name: 羊肚, price: ¥110/斤 }
+      - { name: 羊丸, price: ¥120/斤 }
+      - { name: 羊舌, price: ¥110/斤 }
+      - { name: 羊肺/肝/羊头肉, price: ¥90/斤 }
+      - { name: 羊脚, price: ¥60/斤 }
+      - { name: 羊鞭, price: ¥30 }
+      - { name: 羊脑, price: ¥16 }
+      - { name: 羊腰, price: ¥12 }
+      - { name: 羊眼, price: ¥10 }
   - title: 锅仔类
     note: 2–3 人点小份，4–6 人点大份，可以配两个炒菜。
     items:

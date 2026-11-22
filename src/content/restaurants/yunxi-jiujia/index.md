@@ -99,7 +99,7 @@ menu:
       - { name: 芹菜炒小鲍鱼, price: ¥78 }
       - { name: 丁汤脆三丝, price: ¥58 }
       - { name: 红烧肉, price: ¥48 }
-      - { name: 特色蒜香骨, price: ¥10/根 }
+      - { name: 特色蒜香骨, price: ¥10 }
       - { name: 金汤肥牛, price: ¥58 }
       - { name: 水晶虾仁, price: ¥98 }
       - { name: 葱姜腰蛤, price: ¥48 }

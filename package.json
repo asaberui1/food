@@ -26,7 +26,8 @@
     "fonts": "node scripts/font-subset.mjs",
     "share": "node scripts/share-cards.mjs",
     "prebuild": "astro check",
-    "test:search": "tsx scripts/search-test.ts"
+    "test:search": "tsx scripts/search-test.ts",
+    "postbuild": "npm run test:search"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

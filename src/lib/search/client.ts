@@ -163,7 +163,7 @@ export function mountSearch(): void {
   dialog.dataset.mounted = "1";
 
   const base = dialog.dataset.base || "/";
-  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=3`;
+  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=4`;
 
   const input = dialog.querySelector<HTMLInputElement>("[data-search]");
   const results = dialog.querySelector<HTMLUListElement>("[data-results]");
@@ -172,6 +172,7 @@ export function mountSearch(): void {
   const closeButton = dialog.querySelector<HTMLButtonElement>("[data-search-close]");
   const help = dialog.querySelector<HTMLDetailsElement>("details.search-help");
   const inner = dialog.querySelector<HTMLElement>(".search-dialog__inner");
+  const moreButton = dialog.querySelector<HTMLButtonElement>("[data-search-more]");
 
   if (!input || !results || !empty || !status || !closeButton) return;
 
@@ -181,6 +182,8 @@ export function mountSearch(): void {
   let composing = false;
   let timer = 0;
   let ticket = 0;
+  let currentHits: SearchHit[] = [];
+  let visibleCount = 0;
 
   const resetDialogHeight = (): void => {
     if (!inner) return;
@@ -230,29 +233,41 @@ export function mountSearch(): void {
     return enginePromise;
   };
 
+  const updateMore = (): void => {
+    if (!moreButton) return;
+    const remaining = currentHits.length - visibleCount;
+    moreButton.hidden = remaining <= 0;
+    if (remaining > 0) moreButton.textContent = `显示剩余 ${remaining} 道`;
+  };
+
+  const appendHits = (start: number): void => {
+    for (const hit of currentHits.slice(start, visibleCount)) {
+      results.append(buildResult(hit, base));
+    }
+  };
+
   const render = (outcome: SearchOutcome, raw: string): void => {
     results.replaceChildren();
-    const hits = outcome.hits;
+    currentHits = outcome.hits;
+    visibleCount = Math.min(10, currentHits.length);
 
-    if (!hits.length) {
+    if (!currentHits.length) {
+      if (moreButton) moreButton.hidden = true;
       empty.hidden = false;
       empty.textContent =
         outcome.reason === "generic"
-          ? `「${raw.trim()}」是个大类，范围太大。换具体菜名试试，比如「鱼香肉丝盖浇饭」。`
+          ? `「${raw.trim()}」是个大类，范围太大。换具体菜名试试，比如「黄焖鸡米饭」「牛肉面」。`
           : outcome.reason === "short"
-            ? "没有找到。两个字有点短，补全菜名试试，比如「宫保鸡丁」。"
+            ? "没有找到。输入的字数有点少，补全菜名试试，比如「宫保鸡丁」。"
             : "没有找到。可以试试别名、拼音或首字母，比如「gbjd」「番茄炒蛋」。";
       status.textContent = "";
       return;
     }
 
     empty.hidden = true;
-    status.textContent =
-      outcome.total > hits.length
-        ? `找到 ${outcome.total} 道菜，先看前 ${hits.length} 道。`
-        : `找到 ${outcome.total} 道菜。`;
-
-    for (const hit of hits) results.append(buildResult(hit, base));
+    status.textContent = `找到 ${outcome.total} 道菜。`;
+    appendHits(0);
+    updateMore();
   };
 
   const runSearch = async (): Promise<void> => {
@@ -262,6 +277,9 @@ export function mountSearch(): void {
 
     if (!query) {
       results.replaceChildren();
+      currentHits = [];
+      visibleCount = 0;
+      if (moreButton) moreButton.hidden = true;
       empty.hidden = true;
       status.textContent = "";
       results.removeAttribute("aria-busy");
@@ -313,6 +331,9 @@ export function mountSearch(): void {
     resetDialogHeight();
     input.value = "";
     results.replaceChildren();
+    currentHits = [];
+    visibleCount = 0;
+    if (moreButton) moreButton.hidden = true;
     empty.hidden = true;
     results.removeAttribute("aria-busy");
     status.textContent = ready ? "" : "正在载入菜单…";
@@ -375,6 +396,18 @@ export function mountSearch(): void {
     document.documentElement.classList.remove("search-open");
     resetDialogHeight();
     if (opener && typeof opener.focus === "function") opener.focus();
+  });
+
+  moreButton?.addEventListener("click", () => {
+    if (visibleCount >= currentHits.length) return;
+    const start = visibleCount;
+    const previousLinks = results.querySelectorAll("[data-result-link]").length;
+    visibleCount = currentHits.length;
+    appendHits(start);
+    updateMore();
+
+    const links = results.querySelectorAll<HTMLAnchorElement>("[data-result-link]");
+    links[previousLinks]?.focus();
   });
 
   input.addEventListener("compositionstart", () => {

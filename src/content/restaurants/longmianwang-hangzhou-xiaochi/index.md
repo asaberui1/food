@@ -40,7 +40,7 @@ menu:
       - { name: 韭菜鸡蛋小笼包, price: ¥10 }
       - { name: 香辣粉丝小笼包, price: ¥10 }
       - { name: 牛肉小笼包, price: ¥12 }
-      - { name: 香菇 / 糯米烧卖, price: ¥3/个 }
+      - { name: 香菇 / 糯米烧卖, price: ¥3 }
   - title: 汤 / 粥类
     items:
       - { name: 豆浆, price: ¥3 }

@@ -87,20 +87,20 @@ menu:
       - { name: 羊肉清汤, price: ¥5 }
   - title: 另加浇头
     items:
-      - { name: 红烧牛肚, price: ¥20/份 }
-      - { name: 红烧牛肉, price: ¥20/份 }
-      - { name: 红烧牛筋, price: ¥20/份 }
-      - { name: 白切牛肉, price: ¥10/份 }
-      - { name: 白切牛杂, price: ¥10/份 }
-      - { name: 红烧羊肉, price: ¥20/份 }
-      - { name: 白切羊肉, price: ¥15/份 }
-      - { name: 狮子头, price: ¥5/个 }
-      - { name: 辣酱, price: ¥5/份 }
-      - { name: 酸菜, price: ¥3/份 }
-      - { name: 荷包蛋, price: ¥2/个 }
-      - { name: 素鸡, price: ¥2/个 }
-      - { name: 卤蛋, price: ¥2/个 }
-      - { name: 羊杂, price: ¥10/份 }
+      - { name: 红烧牛肚, price: ¥20 }
+      - { name: 红烧牛肉, price: ¥20 }
+      - { name: 红烧牛筋, price: ¥20 }
+      - { name: 白切牛肉, price: ¥10 }
+      - { name: 白切牛杂, price: ¥10 }
+      - { name: 红烧羊肉, price: ¥20 }
+      - { name: 白切羊肉, price: ¥15 }
+      - { name: 狮子头, price: ¥5 }
+      - { name: 辣酱, price: ¥5 }
+      - { name: 酸菜, price: ¥3 }
+      - { name: 荷包蛋, price: ¥2 }
+      - { name: 素鸡, price: ¥2 }
+      - { name: 卤蛋, price: ¥2 }
+      - { name: 羊杂, price: ¥10 }
   - title: 家常小炒
     note: 人多时可以当炒菜馆用，一个人点一份配面也行。
     items:
@@ -128,10 +128,10 @@ menu:
   - title: 凉拌 / 加料
     note: 凉拌菜按分量 20–50 元，点的时候问一句。
     items:
-      - { name: 现切羊肉, price: ¥38/份 }
-      - { name: 现切牛肉, price: ¥38/份 }
-      - { name: 粉丝/豆皮, price: ¥8/份 }
-      - { name: 蔬菜/豆芽, price: ¥8/份 }
+      - { name: 现切羊肉, price: ¥38 }
+      - { name: 现切牛肉, price: ¥38 }
+      - { name: 粉丝/豆皮, price: ¥8 }
+      - { name: 蔬菜/豆芽, price: ¥8 }
       - { name: 凉拌牛肉, price: ¥20–50 }
       - { name: 凉拌牛杂, price: ¥20–50 }
       - { name: 凉拌羊肉, price: ¥20–50 }

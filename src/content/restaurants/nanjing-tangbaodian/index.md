@@ -12,7 +12,7 @@ gallery:
     alt: 店堂内景：白瓷砖墙、两张不锈钢面桌配红色塑料凳，尽头是通向后厨的玻璃门
 dishes:
   - name: 鲜肉小笼包
-    price: ¥8/笼
+    price: ¥8
     note: 一笼 8 个；卖到后面只剩几个，就按 1 元 1 个散卖。
     image: ./xiaolongbao.webp
   - name: 老鸭粉丝汤
@@ -22,16 +22,16 @@ dishes:
 menu:
   - title: 包子 / 点心
     items:
-      - { name: 鲜肉小笼包, price: ¥8/笼 }
-      - { name: 鲜肉汤包, price: ¥9/笼 }
-      - { name: 烧麦, price: ¥7/笼 }
-      - { name: 小馄饨, price: ¥7/碗 }
+      - { name: 鲜肉小笼包, price: ¥8 }
+      - { name: 鲜肉汤包, price: ¥9 }
+      - { name: 烧麦, price: ¥7 }
+      - { name: 小馄饨, price: ¥7 }
   - title: 饼类
     items:
       - { name: 千层饼, price: ¥12/斤 }
       - { name: 炝饼, price: ¥10/斤 }
-      - { name: 韭菜饼, price: ¥2/个 }
-      - { name: 胡辣汤, price: ¥3.5/碗 }
+      - { name: 韭菜饼, price: ¥2 }
+      - { name: 胡辣汤, price: ¥3.5 }
   - title: 面条
     items:
       - { name: 素鸡面, price: ¥8 }

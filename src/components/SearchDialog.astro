@@ -8,7 +8,7 @@ type Props = {
 
 const {
   // ?v= 用来在索引结构变化时绕开旧缓存，改 schema 时记得加一
-  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=3`,
+  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=4`,
   withMenu = 0,
   total = 0,
 } = Astro.props;
@@ -53,7 +53,7 @@ const {
         type="search"
         name="dish"
         data-search
-        placeholder="宫爆鸡丁、番茄炒蛋、gbjd…"
+        placeholder="宫保鸡丁、番茄炒蛋、酒香草头……"
         autocomplete="off"
         spellcheck="false"
         aria-controls="search-results"
@@ -68,6 +68,7 @@ const {
 
     <p class="search-status" data-search-status role="status"></p>
     <ul class="search-results" data-results id="search-results" aria-describedby="search-hint"></ul>
+    <button type="button" class="search-more" data-search-more hidden>显示剩余结果</button>
     <p class="search-hint" data-search-empty role="status" hidden>没有找到。换个菜名试试，或者用标签筛。</p>
   </div>
 </dialog>
