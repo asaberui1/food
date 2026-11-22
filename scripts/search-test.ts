@@ -426,6 +426,36 @@ if (existsSync(builtPath)) {
       passed += 1;
     }
 
+    // 菜单更新后的自检：每条菜名、拼音、首字母都应能搜到自己
+    const genericNames = new Set(GENERIC_TERMS);
+    const exactMisses: string[] = [];
+    const pinyinMisses: string[] = [];
+    const initialsMisses: string[] = [];
+    for (const dish of built.dishes) {
+      if (!genericNames.has(dish.norm) && !hasDish(dish.name, dish.name, real)) {
+        exactMisses.push(dish.name);
+      }
+      if (dish.py && !hasDish(dish.py, dish.name, real)) pinyinMisses.push(dish.name);
+      if (dish.ini && !hasDish(dish.ini, dish.name, real)) initialsMisses.push(dish.name);
+    }
+    assert.equal(exactMisses.length, 0, `菜名自检失败：${exactMisses.slice(0, 5).join("、")}`);
+    assert.equal(pinyinMisses.length, 0, `拼音自检失败：${pinyinMisses.slice(0, 5).join("、")}`);
+    assert.equal(
+      initialsMisses.length,
+      0,
+      `首字母自检失败：${initialsMisses.slice(0, 5).join("、")}`,
+    );
+
+    for (const dish of built.dishes) {
+      for (const char of dish.norm) {
+        if (/\p{Script=Han}/u.test(char)) {
+          assert.ok(built.pinyinTable[char], `${dish.name} 的「${char}」不在拼音表`);
+        }
+      }
+    }
+    console.log(`  ✓ 真实索引自检：${built.dishes.length} 条菜名 / 拼音 / 首字母 / 拼音表覆盖`);
+    passed += 1;
+
     const bench = [
       "宫保鸡丁",
       "gbjd",
