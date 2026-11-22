@@ -291,14 +291,14 @@ const structuredData = {
                     </div>
                     <button type="button" class="gallery__edge gallery__edge--prev" data-gallery-prev aria-label="上一张照片">
                       <span class="gallery__arrow">
-                        <svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <svg viewBox="0 0 20 20" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                           <path d="M12.5 4.5 7 10l5.5 5.5"></path>
                         </svg>
                       </span>
                     </button>
                     <button type="button" class="gallery__edge gallery__edge--next" data-gallery-next aria-label="下一张照片">
                       <span class="gallery__arrow">
-                        <svg viewBox="0 0 20 20" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <svg viewBox="0 0 20 20" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                           <path d="M7.5 4.5 13 10l-5.5 5.5"></path>
                         </svg>
                       </span>
@@ -646,31 +646,101 @@ const structuredData = {
 
       const viewport = gallery.querySelector<HTMLElement>("[data-gallery-viewport]");
       const track = gallery.querySelector<HTMLElement>("[data-gallery-track]");
-      const slides = [...gallery.querySelectorAll<HTMLElement>("[data-gallery-slide]")];
+      const realSlides = [...gallery.querySelectorAll<HTMLElement>("[data-gallery-slide]")];
       const dots = [...gallery.querySelectorAll<HTMLButtonElement>("[data-gallery-dot]")];
       const prev = gallery.querySelector<HTMLButtonElement>("[data-gallery-prev]");
       const next = gallery.querySelector<HTMLButtonElement>("[data-gallery-next]");
 
-      if (!viewport || !track || slides.length < 2) return;
+      if (!viewport || !track || realSlides.length < 2) return;
 
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let index = 0;
+      const count = realSlides.length;
+
+      // 首尾各克隆一张：最后一张继续下一张、第一张继续上一张时，
+      // 先滑到克隆图，再瞬时跳回真图，视觉上方向始终一致。
+      const firstClone = realSlides[0].cloneNode(true) as HTMLElement;
+      const lastClone = realSlides[count - 1].cloneNode(true) as HTMLElement;
+      for (const clone of [firstClone, lastClone]) {
+        clone.dataset.galleryClone = "1";
+        clone.setAttribute("aria-hidden", "true");
+        clone.setAttribute("inert", "");
+        clone.querySelectorAll<HTMLAnchorElement>("a").forEach((link) => {
+          link.tabIndex = -1;
+        });
+      }
+      track.append(firstClone);
+      track.prepend(lastClone);
+
+      let position = 1;
+      let animating = false;
       let timer = 0;
+      let settleTimer = 0;
       let paused = false;
 
-      const apply = (): void => {
-        track.style.transform = `translateX(-${index * 100}%)`;
-        slides.forEach((slide, i) => {
-          const active = i === index;
+      const setTransform = (animate: boolean): void => {
+        track.style.transition =
+          animate && !reduced ? "transform 420ms ease" : "none";
+        track.style.transform = `translateX(-${position * 100}%)`;
+      };
+
+      const updateUi = (): void => {
+        const activeIndex = (position - 1 + count) % count;
+
+        realSlides.forEach((slide, i) => {
+          const active = i === activeIndex;
           slide.toggleAttribute("inert", !active);
           slide.setAttribute("aria-hidden", String(!active));
           const link = slide.querySelector<HTMLAnchorElement>("a");
           if (link) link.tabIndex = active ? 0 : -1;
         });
+
         dots.forEach((dot, i) => {
-          if (i === index) dot.setAttribute("aria-current", "true");
+          if (i === activeIndex) dot.setAttribute("aria-current", "true");
           else dot.removeAttribute("aria-current");
         });
+      };
+
+      const settle = (): void => {
+        if (!animating) return;
+        window.clearTimeout(settleTimer);
+
+        if (position === count + 1) {
+          position = 1;
+          setTransform(false);
+        } else if (position === 0) {
+          position = count;
+          setTransform(false);
+        }
+
+        animating = false;
+        updateUi();
+      };
+
+      const afterMove = (): void => {
+        window.clearTimeout(settleTimer);
+        if (reduced) {
+          settle();
+          return;
+        }
+        setTransform(true);
+        settleTimer = window.setTimeout(settle, 600);
+      };
+
+      const move = (delta: number): void => {
+        if (animating) return;
+        animating = true;
+        position += delta;
+        updateUi();
+        afterMove();
+      };
+
+      const goTo = (target: number): void => {
+        const current = (position - 1 + count) % count;
+        if (animating || target === current) return;
+        animating = true;
+        position = target + 1;
+        updateUi();
+        afterMove();
       };
 
       const stop = (): void => {
@@ -681,25 +751,22 @@ const structuredData = {
       const start = (): void => {
         stop();
         if (reduced || paused) return;
-        timer = window.setInterval(() => {
-          index = (index + 1) % slides.length;
-          apply();
-        }, 5000);
+        timer = window.setInterval(() => move(1), 5000);
       };
 
-      const go = (nextIndex: number): void => {
-        index = (nextIndex + slides.length) % slides.length;
-        apply();
-        start();
-      };
+      track.addEventListener("transitionend", (event) => {
+        if (event.propertyName !== "transform") return;
+        settle();
+      });
 
       gallery.classList.add("is-ready");
-      apply();
+      setTransform(false);
+      updateUi();
       start();
 
-      prev?.addEventListener("click", () => go(index - 1));
-      next?.addEventListener("click", () => go(index + 1));
-      dots.forEach((dot, i) => dot.addEventListener("click", () => go(i)));
+      prev?.addEventListener("click", () => move(-1));
+      next?.addEventListener("click", () => move(1));
+      dots.forEach((dot, i) => dot.addEventListener("click", () => goTo(i)));
 
       gallery.addEventListener("mouseenter", () => {
         paused = true;
@@ -745,7 +812,7 @@ const structuredData = {
         const dy = event.clientY - startY;
         if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
           swiped = true;
-          go(index + (dx < 0 ? 1 : -1));
+          move(dx < 0 ? 1 : -1);
           window.setTimeout(() => {
             swiped = false;
           }, 0);

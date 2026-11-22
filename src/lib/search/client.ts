@@ -170,6 +170,8 @@ export function mountSearch(): void {
   const results = dialog.querySelector<HTMLUListElement>("[data-results]");
   const empty = dialog.querySelector<HTMLElement>("[data-search-empty]");
   const status = dialog.querySelector<HTMLElement>("[data-search-status]");
+  const errorBox = dialog.querySelector<HTMLElement>("[data-search-error]");
+  const reload = dialog.querySelector<HTMLAnchorElement>("[data-search-reload]");
   const closeButton = dialog.querySelector<HTMLButtonElement>("[data-search-close]");
   const help = dialog.querySelector<HTMLDetailsElement>("details.search-help");
   const inner = dialog.querySelector<HTMLElement>(".search-dialog__inner");
@@ -229,7 +231,8 @@ export function mountSearch(): void {
         return engine;
       })().catch((error: unknown) => {
         enginePromise = null;
-        status.textContent = "菜单未成功载入，请稍后再试。";
+        status.textContent = "";
+        if (errorBox) errorBox.hidden = false;
         throw error;
       });
     }
@@ -250,6 +253,7 @@ export function mountSearch(): void {
   };
 
   const render = (outcome: SearchOutcome, raw: string): void => {
+    if (errorBox) errorBox.hidden = true;
     results.replaceChildren();
     currentHits = outcome.hits;
     visibleCount = Math.min(10, currentHits.length);
@@ -283,6 +287,7 @@ export function mountSearch(): void {
       currentHits = [];
       visibleCount = 0;
       if (moreButton) moreButton.hidden = true;
+      if (errorBox) errorBox.hidden = true;
       empty.hidden = true;
       status.textContent = "";
       results.removeAttribute("aria-busy");
@@ -331,6 +336,7 @@ export function mountSearch(): void {
     window.clearTimeout(timer);
     ticket += 1;
     if (help) help.open = false;
+    if (errorBox) errorBox.hidden = true;
     resetDialogHeight();
     input.value = "";
     results.replaceChildren();
@@ -399,6 +405,11 @@ export function mountSearch(): void {
     document.documentElement.classList.remove("search-open");
     resetDialogHeight();
     if (opener && typeof opener.focus === "function") opener.focus();
+  });
+
+  reload?.addEventListener("click", (event) => {
+    event.preventDefault();
+    window.location.reload();
   });
 
   topButton?.addEventListener("click", () => {

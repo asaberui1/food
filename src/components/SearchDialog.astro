@@ -80,6 +80,9 @@ const {
     </p>
 
     <p class="search-status" data-search-status role="status"></p>
+    <p class="search-status search-status--error" data-search-error role="status" hidden>
+      菜单未成功载入，请点此<a class="search-status__reload" href="" data-search-reload>刷新</a>重试。
+    </p>
     <ul class="search-results" data-results id="search-results" aria-describedby="search-hint"></ul>
     <button type="button" class="search-more" data-search-more hidden>显示剩余结果</button>
     <p class="search-hint" data-search-empty role="status" hidden>没有找到。换个菜名试试，或者用标签筛。</p>
