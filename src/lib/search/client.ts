@@ -164,7 +164,7 @@ export function mountSearch(): void {
   dialog.dataset.mounted = "1";
 
   const base = dialog.dataset.base || "/";
-  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=5`;
+  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=6`;
 
   const input = dialog.querySelector<HTMLInputElement>("[data-search]");
   const results = dialog.querySelector<HTMLUListElement>("[data-results]");

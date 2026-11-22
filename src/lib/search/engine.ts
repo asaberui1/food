@@ -609,7 +609,12 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
     // 两个字以内的菜（土豆、白菜、卤蛋、米饭…）不返回：它们要么是涮菜/浇头，
     // 要么是主食，搜出来没有决策价值；这条规则在搜索框注释里向用户说明。
-    const visibleGroups = groups.filter((group) => codePointLength(group.name) > 2);
+    // 例外是「肴蹄 / 蹄髈 / 肘子 / 猪蹄」这类两字主菜：它们本身就是一道菜，
+    // 不是涮菜/浇头，按同菜异名搜索时应该能出现。
+    const twoCharMainDishes = new Set(["肴蹄", "蹄髈", "蹄膀", "肘子", "猪蹄", "猪肘"]);
+    const visibleGroups = groups.filter(
+      (group) => codePointLength(group.name) > 2 || twoCharMainDishes.has(group.name),
+    );
 
     const total = visibleGroups.length;
     const hits = visibleGroups.map(
