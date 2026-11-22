@@ -1,5 +1,6 @@
 import { pinyin } from "pinyin-pro";
-import { DISH_ALIASES, PINYIN_OVERRIDES } from "./dictionary";
+import { COMMON_HANZI, RARE_HANZI } from "./common-hanzi";
+import { DISH_ALIASES, PINYIN_OVERRIDES, SYNONYM_GROUPS } from "./dictionary";
 import { normalizeText } from "./normalize";
 import { aliasVariants, canonicalize } from "./synonyms";
 import type { PreparedDish, SearchData } from "./types";
@@ -101,6 +102,33 @@ function aliasesFor(norm: string): string[] {
   return [...found].slice(0, MAX_ALIASES);
 }
 
+const HAN_CHAR = /\p{Script=Han}/u;
+
+function buildPinyinTable(dishes: PreparedDish[]): Record<string, string[]> {
+  const chars = new Set<string>([...COMMON_HANZI, ...RARE_HANZI]);
+
+  for (const dish of dishes) {
+    for (const value of [dish.norm, dish.canon, ...dish.aliases]) {
+      for (const char of value) if (HAN_CHAR.test(char)) chars.add(char);
+    }
+  }
+  for (const group of SYNONYM_GROUPS) {
+    for (const term of group) {
+      for (const char of normalizeText(term)) if (HAN_CHAR.test(char)) chars.add(char);
+    }
+  }
+
+  const table: Record<string, string[]> = {};
+  for (const char of chars) {
+    const readings = pinyin(char, { multiple: true, toneType: "none", type: "array" })
+      .map((reading) => asciiPinyin(reading))
+      .filter((reading) => /^[a-z]+$/.test(reading));
+    const unique = [...new Set(readings)].slice(0, 4);
+    if (unique.length) table[char] = unique;
+  }
+  return table;
+}
+
 export function prepareSearchData(shops: ShopLike[]): SearchData {
   const dishes: PreparedDish[] = [];
   let counter = 0;
@@ -170,5 +198,6 @@ export function prepareSearchData(shops: ShopLike[]): SearchData {
     version: 1,
     shops: shops.map((shop) => ({ id: shop.id, name: shop.data.name })),
     dishes,
+    pinyinTable: buildPinyinTable(dishes),
   };
 }

@@ -167,7 +167,7 @@ export function mountSearch(): void {
   dialog.dataset.mounted = "1";
 
   const base = dialog.dataset.base || "/";
-  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=2`;
+  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=3`;
 
   const input = dialog.querySelector<HTMLInputElement>("[data-search]");
   const results = dialog.querySelector<HTMLUListElement>("[data-results]");
@@ -175,6 +175,7 @@ export function mountSearch(): void {
   const status = dialog.querySelector<HTMLElement>("[data-search-status]");
   const closeButton = dialog.querySelector<HTMLButtonElement>("[data-search-close]");
   const help = dialog.querySelector<HTMLDetailsElement>("details.search-help");
+  const inner = dialog.querySelector<HTMLElement>(".search-dialog__inner");
 
   if (!input || !results || !empty || !status || !closeButton) return;
 
@@ -184,6 +185,35 @@ export function mountSearch(): void {
   let composing = false;
   let timer = 0;
   let ticket = 0;
+
+  const resetDialogHeight = (): void => {
+    if (!inner) return;
+    inner.style.minHeight = "";
+    inner.style.maxHeight = "";
+    dialog.style.maxHeight = "";
+  };
+
+  // tooltip 比对话框高时，把对话框撑到 tooltip 底部 + 20px，并留出视口上限。
+  // 收起时清掉内联高度，对话框回到原来的 82vh。
+  const fitDialogToHelp = (): void => {
+    if (!inner || !help) return;
+    const pop = help.querySelector<HTMLElement>(".search-help__pop");
+    if (!pop) return;
+
+    window.setTimeout(() => {
+      if (!help.open) return;
+      const popRect = pop.getBoundingClientRect();
+      const innerRect = inner.getBoundingClientRect();
+      const required = Math.ceil(popRect.bottom - innerRect.top + 20);
+      if (required <= innerRect.height + 1) return;
+
+      const cap = Math.max(320, window.innerHeight - 32);
+      const height = Math.min(required, cap);
+      dialog.style.maxHeight = `${cap}px`;
+      inner.style.maxHeight = `${cap}px`;
+      inner.style.minHeight = `${height}px`;
+    }, 0);
+  };
 
   const ensureEngine = (): Promise<SearchEngine> => {
     if (!enginePromise) {
@@ -279,10 +309,12 @@ export function mountSearch(): void {
       if (typeof dialog.showModal === "function") dialog.showModal();
       else dialog.setAttribute("open", "");
     }
+    document.documentElement.classList.add("search-open");
 
     window.clearTimeout(timer);
     ticket += 1;
     if (help) help.open = false;
+    resetDialogHeight();
     input.value = "";
     results.replaceChildren();
     empty.hidden = true;
@@ -296,6 +328,8 @@ export function mountSearch(): void {
   const close = (): void => {
     window.clearTimeout(timer);
     ticket += 1;
+    if (help) help.open = false;
+    resetDialogHeight();
     if (typeof dialog.close === "function") dialog.close();
     else dialog.removeAttribute("open");
   };
@@ -309,11 +343,29 @@ export function mountSearch(): void {
 
   closeButton.addEventListener("click", close);
 
+  help?.addEventListener("toggle", () => {
+    if (help.open) fitDialogToHelp();
+    else resetDialogHeight();
+  });
+
+  window.addEventListener("resize", () => {
+    if (!help?.open) return;
+    resetDialogHeight();
+    fitDialogToHelp();
+  });
+
   dialog.addEventListener("click", (event) => {
-    if (help?.open && event.target instanceof Node && !help.contains(event.target)) {
-      help.open = false;
+    const target = event.target;
+
+    if (help?.open) {
+      // 第一次点浮层外只收浮层；点关闭按钮除外
+      if (target instanceof Node && !help.contains(target) && target !== closeButton) {
+        help.open = false;
+        if (target === dialog) return;
+      }
     }
-    if (event.target === dialog) close();
+
+    if (target === dialog) close();
   });
 
   dialog.addEventListener("cancel", (event) => {
@@ -324,6 +376,8 @@ export function mountSearch(): void {
   });
 
   dialog.addEventListener("close", () => {
+    document.documentElement.classList.remove("search-open");
+    resetDialogHeight();
     if (opener && typeof opener.focus === "function") opener.focus();
   });
 

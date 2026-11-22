@@ -120,6 +120,13 @@ export const PINYIN_OVERRIDES: readonly PinyinOverride[] = [
     misread: ["jueyu"],
     misreadInitials: ["jy"],
   },
+  {
+    term: "饸饹",
+    correct: "hele",
+    correctInitials: "hl",
+    misread: ["hege"],
+    misreadInitials: ["hg"],
+  },
 ];
 
 /**

@@ -1236,9 +1236,12 @@ body:has(.shop-toc) .site-footer{
   margin: 1.5rem 0 0;
   color: var(--muted-foreground);
   font-size: 0.95rem;
+}html.search-open{
+  overflow: hidden;
 }.search-dialog{
   width: min(40rem, calc(100vw - 2rem));
   max-height: 82vh;
+  overflow: hidden;
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--foreground);
@@ -1295,8 +1298,6 @@ body:has(.shop-toc) .site-footer{
   z-index: 30;
   width: max-content;
   max-width: min(24rem, calc(100vw - 4rem));
-  max-height: min(24rem, 60vh);
-  overflow: auto;
   margin: 0;
   padding: 0.8rem 0.95rem;
   border: 1px solid rgb(117 97 76 / 0.7);

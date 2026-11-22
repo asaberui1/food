@@ -23,6 +23,9 @@ const SCORE = {
   pinyinContains: 65,
   initialsExact: 60,
   initialsPrefix: 58,
+  /** 汉字查询转拼音后的同音命中，低于直接输入正确拼音，高于模糊匹配 */
+  homophoneExact: 62,
+  homophonePrefix: 58,
   /** pinyin-pro 读错但确实有人这么读的拼音，按近似处理，压在正确拼音下面 */
   pinyinTypoExact: 55,
   pinyinTypoPrefix: 52,
@@ -148,6 +151,32 @@ function pinyinVariants(values: readonly string[]): string[] {
   return dedupe(values.flatMap((value) => [value, altPinyin(value)]));
 }
 
+/**
+ * 汉字查询 → 拼音变体。
+ * 多音字会展开，最多 32 种；表里没有的字直接放弃这条召回，避免半截拼音误伤。
+ */
+function queryPinyinVariants(query: string, table: Record<string, string[]>): string[] {
+  const chars = Array.from(query).filter((char) => /\p{Script=Han}/u.test(char));
+  if (!chars.length) return [];
+
+  let variants = [""];
+  for (const char of chars) {
+    const readings = table[char];
+    if (!readings?.length) return [];
+
+    const next = new Set<string>();
+    for (const prefix of variants) {
+      for (const reading of readings) {
+        if (next.size >= 32) break;
+        next.add(prefix + reading);
+        next.add((prefix + reading).replaceAll("v", "u"));
+      }
+    }
+    variants = [...next].slice(0, 32);
+  }
+  return dedupe(variants);
+}
+
 export type SearchEngine = {
   search: (raw: string) => SearchOutcome;
   size: number;
@@ -156,6 +185,7 @@ export type SearchEngine = {
 export function createSearchEngine(data: SearchData): SearchEngine {
   const shops = data.shops;
   const dishes = data.dishes;
+  const pinyinTable = data.pinyinTable ?? {};
 
   // 两套 Fuse 索引：中文模糊走菜名，英文模糊走拼音。
   // 它们只负责“产生候选”，真正的接受/拒绝和打分用上面的 editDistance。
@@ -245,6 +275,9 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     // 别名的“包含”只对 3 个字以上开放：两个字时同义词已经由 canonicalize 覆盖，
     // 再拿别名去包含只会把「鸡蛋」扩散成所有「蛋X」的变体。
     const allowAliasContains = queryLength >= 3;
+    // 汉字查询转拼音：觉鱼 / 绝鱼 → jueyu，再去匹配鳜鱼的错误读音
+    const queryPinyin =
+      !pinyinQuery && queryLength >= 2 ? queryPinyinVariants(query, pinyinTable) : [];
 
     const scored = new Map<PreparedDish, ScoredHit>();
 
@@ -281,8 +314,10 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         }
       }
 
-      // 6) 拼音全拼 / 7) 拼音首字母：只在输入是纯字母时启用
-      if (pinyinQuery) {
+      // 6) 拼音全拼 / 7) 拼音首字母
+      // 纯字母输入直接按拼音；汉字输入先转拼音，再按同音/近音算（结果标「近似」）
+      const pinyinCandidates = pinyinQuery ? [query] : queryPinyin;
+      if (pinyinCandidates.length) {
         const fullNames = pinyinVariants([dish.py, dish.cpy ?? "", ...dish.aliasPy]);
         const typoFull = pinyinVariants([
           ...(dish.pyTypo ?? []),
@@ -296,53 +331,73 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           ...(dish.aliasIniTypo ?? []),
         ]);
 
-        if (fullNames.includes(query)) {
-          if (score < SCORE.pinyinExact) {
-            score = SCORE.pinyinExact;
-            route = "pinyin";
-          }
-        } else if (queryLength >= 3 && fullNames.some((value) => value.startsWith(query))) {
-          if (score < SCORE.pinyinPrefix) {
-            score = SCORE.pinyinPrefix;
-            route = "pinyin";
-          }
-        } else if (
-          queryLength >= 5 &&
-          score < SCORE.pinyinContains &&
-          fullNames.some((value) => value.includes(query))
-        ) {
-          score = SCORE.pinyinContains;
-          route = "pinyin";
-        }
+        for (const candidate of pinyinCandidates) {
+          const exactScore = pinyinQuery ? SCORE.pinyinExact : SCORE.homophoneExact;
+          const prefixScore = pinyinQuery ? SCORE.pinyinPrefix : SCORE.homophonePrefix;
+          const pinyinRoute: MatchRoute = pinyinQuery ? "pinyin" : "pinyinTypo";
 
-        // 错误读音（如鳜鱼的 jueyu）只按近似算，分数一定低于正确拼音
-        if (typoFull.includes(query)) {
-          if (score < SCORE.pinyinTypoExact) {
-            score = SCORE.pinyinTypoExact;
-            route = "pinyinTypo";
+          if (fullNames.includes(candidate)) {
+            if (score < exactScore) {
+              score = exactScore;
+              route = pinyinRoute;
+            }
+          } else if (
+            candidate.length >= 3 &&
+            fullNames.some((value) => value.startsWith(candidate))
+          ) {
+            if (score < prefixScore) {
+              score = prefixScore;
+              route = pinyinRoute;
+            }
+          } else if (
+            pinyinQuery &&
+            candidate.length >= 5 &&
+            score < SCORE.pinyinContains &&
+            fullNames.some((value) => value.includes(candidate))
+          ) {
+            // 中文转拼音后只做精确/前缀：contains 会把「觉鱼」(jiaoyu) 误伤到「剁椒鱼头」
+            score = SCORE.pinyinContains;
+            route = pinyinRoute;
           }
-        } else if (queryLength >= 3 && typoFull.some((value) => value.startsWith(query))) {
-          if (score < SCORE.pinyinTypoPrefix) {
-            score = SCORE.pinyinTypoPrefix;
-            route = "pinyinTypo";
-          }
-        }
 
-        if (initials.includes(query)) {
-          if (score < SCORE.initialsExact) {
-            score = SCORE.initialsExact;
-            route = "initials";
+          // 错误读音（如鳜鱼的 jueyu）只按近似算，分数一定低于正确拼音
+          if (typoFull.includes(candidate)) {
+            if (score < SCORE.pinyinTypoExact) {
+              score = SCORE.pinyinTypoExact;
+              route = "pinyinTypo";
+            }
+          } else if (
+            candidate.length >= 3 &&
+            typoFull.some((value) => value.startsWith(candidate))
+          ) {
+            if (score < SCORE.pinyinTypoPrefix) {
+              score = SCORE.pinyinTypoPrefix;
+              route = "pinyinTypo";
+            }
           }
-        } else if (queryLength >= 3 && initials.some((value) => value.startsWith(query))) {
-          if (score < SCORE.initialsPrefix) {
-            score = SCORE.initialsPrefix;
-            route = "initials";
-          }
-        }
 
-        if (typoInitials.includes(query) && score < SCORE.initialsTypoExact) {
-          score = SCORE.initialsTypoExact;
-          route = "pinyinTypo";
+          // 首字母只对纯字母输入有意义；汉字转出来的拼音不参与首字母
+          if (pinyinQuery) {
+            if (initials.includes(candidate)) {
+              if (score < SCORE.initialsExact) {
+                score = SCORE.initialsExact;
+                route = "initials";
+              }
+            } else if (
+              candidate.length >= 3 &&
+              initials.some((value) => value.startsWith(candidate))
+            ) {
+              if (score < SCORE.initialsPrefix) {
+                score = SCORE.initialsPrefix;
+                route = "initials";
+              }
+            }
+
+            if (typoInitials.includes(candidate) && score < SCORE.initialsTypoExact) {
+              score = SCORE.initialsTypoExact;
+              route = "pinyinTypo";
+            }
+          }
         }
       }
 

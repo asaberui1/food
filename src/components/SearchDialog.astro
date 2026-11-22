@@ -8,7 +8,7 @@ type Props = {
 
 const {
   // ?v= 用来在索引结构变化时绕开旧缓存，改 schema 时记得加一
-  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=2`,
+  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=3`,
   withMenu = 0,
   total = 0,
 } = Astro.props;
@@ -38,7 +38,7 @@ const {
               <li><strong>别名同义</strong>：番茄 / 西红柿、馄饨 / 云吞、鳜鱼 / 桂鱼</li>
               <li><strong>错别字</strong>：宫保鸡丁 / 宫爆鸡丁、肉末 / 肉沫</li>
               <li><strong>拼音</strong>：全拼 gongbaojiding、首字母 gbjd；ü 打 u 或 v 都行</li>
-              <li><strong>读音近似</strong>：读错的音也能找到，结果会标「近似」</li>
+              <li><strong>读音近似</strong>：同音字、读错的音也能找到，结果会标「近似」</li>
               <li><strong>具体食材</strong>：鸡丁、牛肉、白菜可以直接搜；米饭、面条这类大类词不返回结果</li>
             </ul>
           </div>

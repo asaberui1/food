@@ -69,6 +69,7 @@ const shops: ShopLike[] = [
             { name: "回锅肉盖浇饭", price: "¥23" },
             { name: "番茄蛋汤", price: "¥12" },
             { name: "番茄炒蛋", price: "¥17" },
+            { name: "饸饹面", price: "¥15" },
           ],
         },
       ],
@@ -235,6 +236,39 @@ check("ü 的拼音 u/v 两种写法都命中「沙律牛排」", () => {
   }
 });
 
+check("中文同音字「觉鱼」「绝鱼」「厥鱼」都能命中「鳜鱼」", () => {
+  for (const query of ["觉鱼", "绝鱼", "厥鱼"]) {
+    assert.ok(hasDish(query, "鳜鱼（清蒸）"), query);
+  }
+});
+
+check("中文同音字「鱼香肉私」按拼音命中「鱼香肉丝」", () => {
+  assert.equal(hit("鱼香肉私", "鱼香肉丝")?.score, 62);
+});
+
+check("汉字查询表包含多音字", () => {
+  assert.ok(data.pinyinTable["觉"]?.includes("jue"));
+  assert.ok(data.pinyinTable["鳜"]?.includes("gui"));
+});
+
+check("拼音表覆盖菜单里出现的所有汉字", () => {
+  for (const dish of data.dishes) {
+    for (const char of dish.norm) {
+      if (/\p{Script=Han}/u.test(char)) {
+        assert.ok(data.pinyinTable[char], `${dish.name} 缺 ${char}`);
+      }
+    }
+  }
+});
+
+check("pinyin-pro 读错的「饸饹」按 he-le 纠正，he-ge 算近似", () => {
+  assert.equal(hit("helemian", "饸饹面")?.score, 70);
+  assert.equal(hit("hele", "饸饹面")?.score, 68);
+  const typo = hit("hege", "饸饹面");
+  assert.ok(typo);
+  assert.ok(typo.score < 68);
+});
+
 check("pinyin-pro 读错的「鳜鱼」按近似计分，低于正确拼音", () => {
   const correct = hit("guiyu", "鳜鱼（清蒸）");
   const misread = hit("jueyu", "鳜鱼（清蒸）");
@@ -370,6 +404,9 @@ if (existsSync(builtPath)) {
       ["云吞", "鲜肉大馄饨"],
       ["shalvniupai", "沙律牛排"],
       ["shaluniupai", "沙律牛排"],
+      ["觉鱼", "鳜鱼（茄汁、红烧、干烧）"],
+      ["绝鱼", "鳜鱼（茄汁、红烧、干烧）"],
+      ["鱼香肉私", "鱼香肉丝"],
       ["盖浇饭", "回锅肉盖浇饭"],
     ];
 

@@ -44,6 +44,8 @@ export type SearchData = {
   version: 1;
   shops: ShopRef[];
   dishes: PreparedDish[];
+  /** 汉字 → 拼音（可能多音），用于把中文查询转成拼音后做同音/近音召回 */
+  pinyinTable: Record<string, string[]>;
 };
 
 export type MatchRoute =
