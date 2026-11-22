@@ -4,7 +4,7 @@ export const siteConfig = {
   description:
     "上海创智学院周边的餐馆指南：一家一家吃过去，记下环境、菜单、人均和值得点的那一道菜。",
   locale: "zh_CN",
-  defaultImage: "/og.png",
+  defaultImage: "/og.jpg",
   nav: [
     { label: "首页", href: "/" },
     { label: "全部餐馆", href: "/restaurants/" },
