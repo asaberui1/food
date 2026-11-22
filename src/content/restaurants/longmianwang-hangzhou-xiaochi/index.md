@@ -11,8 +11,8 @@ gallery:
   - src: ./room.webp
     alt: 店堂内景：木桌木凳，右侧是明档和蒸笼，墙上挂着「杭州小笼包」的招牌
 order:
-  qr: ./order-qr.webp
-  note: 店内扫码点单，菜单和价格以扫码页为准。
+  qr: ./order-qr.png
+  note: 店内扫码点单，菜单和价格以扫码页为准。点炒面、炒饭这种没汤的会赠送一碗紫菜清汤。
   tip: 黄焖鸡米饭、小笼包现做要等十分钟左右，可以在路上先下单，到店跟老板说一声「提前点过了」。
 dishes:
   - name: 黄焖鸡米饭
@@ -29,31 +29,34 @@ menu:
   - title: 包子类
     items:
       - { name: 招牌鲜肉小笼包, price: ¥10 }
-      - { name: 薄皮鲜肉小笼包, price: ¥12 }
-      - { name: 梅干菜鲜肉小笼包, price: ¥10 }
-      - { name: 火锅小笼包, price: ¥10 }
+      - { name: 薄皮灌汤小笼包, price: ¥12 }
       - { name: 豆腐小笼包, price: ¥10 }
-      - { name: 鲜肉蒸饺, price: ¥10 }
-      - { name: 烧卖, price: ¥3 }
-      - { name: 鸡蛋煎包, price: ¥15 }
-      - { name: 鸡蛋煎饺, price: ¥15 }
+      - { name: 鲜肉蒸饺（8 个）, price: ¥10 }
+      - { name: 鸡蛋煎饺（8 个）, price: ¥15 }
+      - { name: 鸡蛋鲜肉煎包, price: ¥15 }
       - { name: 鲜肉水饺, price: ¥15 }
-      - { name: 鲜肉小馄饨, price: ¥10 }
-      - { name: 黑芝麻汤圆, price: ¥10 }
+      - { name: 梅干菜小笼包, price: ¥10 }
+      - { name: 火锅小笼包, price: ¥10 }
+      - { name: 韭菜鸡蛋小笼包, price: ¥10 }
+      - { name: 香辣粉丝小笼包, price: ¥10 }
+      - { name: 牛肉小笼包, price: ¥12 }
+      - { name: 香菇 / 糯米烧卖, price: ¥3/个 }
   - title: 汤 / 粥类
     items:
       - { name: 豆浆, price: ¥3 }
-      - { name: 胡辣汤, price: ¥8 }
-      - { name: 西红柿蛋汤, price: ¥8 }
+      - { name: 胡辣汤（微辣）, price: ¥8 }
       - { name: 榨菜肉丝汤, price: ¥8 }
+      - { name: 西红柿蛋汤, price: ¥8 }
       - { name: 紫菜蛋花汤, price: ¥6 }
+      - { name: 黑芝麻汤圆, price: ¥10 }
+      - { name: 小馄饨, price: ¥10 }
       - { name: 银耳羹, price: ¥5 }
-      - { name: 白米粥, price: ¥3 }
-      - { name: 小米粥, price: ¥3 }
-      - { name: 八宝粥, price: ¥5 }
-      - { name: 黑米粥, price: ¥5 }
-      - { name: 皮蛋瘦肉粥, price: ¥10 }
+      - { name: 白粥, price: ¥3 }
+      - { name: 八宝粥（甜味）, price: ¥5 }
+      - { name: 黑米粥（甜味）, price: ¥5 }
+      - { name: 小米粥（甜味）, price: ¥3 }
       - { name: 青菜瘦肉粥, price: ¥10 }
+      - { name: 皮蛋肉丝粥, price: ¥10 }
   - title: 饭类
     items:
       - name: 黄焖鸡米饭
@@ -61,33 +64,34 @@ menu:
         image: ./huangmenji.webp
       - { name: 黄焖牛肉饭, price: ¥35 }
       - { name: 蛋炒饭, price: ¥13 }
-      - { name: 咸菜鸡蛋炒饭, price: ¥16 }
-      - { name: 外婆菜炒饭, price: ¥16 }
-      - { name: 香肠鸡蛋炒饭, price: ¥16 }
-      - { name: 扬州炒饭, price: ¥16 }
-      - { name: 腊肠炒饭, price: ¥16 }
-      - { name: 老干妈炒饭, price: ¥16 }
-      - { name: 油渣炒饭, price: ¥18 }
       - { name: 牛肉炒饭, price: ¥25 }
-      - { name: 西红柿鸡蛋盖饭, price: ¥18 }
+      - { name: 老干妈鸡蛋炒饭, price: ¥16 }
+      - { name: 油渣炒饭, price: ¥18 }
+      - { name: 腊肠炒饭, price: ¥16 }
+      - { name: 咸菜鸡蛋炒饭, price: ¥16 }
+      - { name: 酸豆角炒饭, price: ¥16 }
+      - { name: 扬州炒饭, price: ¥16 }
+      - { name: 香肠鸡蛋炒饭, price: ¥16 }
+      - { name: 外婆菜炒饭, price: ¥16 }
       - { name: 青椒肉丝盖饭, price: ¥18 }
+      - { name: 西红柿鸡蛋盖饭, price: ¥18 }
   - title: 面类
     items:
-      - { name: 招牌牛肉炒米粉/面/河粉, price: ¥25 }
-      - { name: 香肠鸡蛋炒米粉/面/河粉, price: ¥18 }
-      - { name: 肉丝鸡蛋炒米粉/面/河粉, price: ¥18 }
-      - { name: 咸菜肉丝汤米粉/面, price: ¥16 }
-      - { name: 笋干菜肉丝汤米粉/面, price: ¥16 }
-      - { name: 笋干菜鸡蛋汤米粉/面, price: ¥16 }
-      - { name: 西红柿鸡蛋汤米粉/面, price: ¥16 }
-      - { name: 青菜肉丝汤米粉/面, price: ¥16 }
-      - { name: 青椒肉丝汤米粉/面, price: ¥16 }
-      - { name: 红烧牛肉汤米粉/面, price: ¥25 }
+      - { name: 招牌牛肉炒米粉（榨面）/面/河粉, price: ¥25 }
+      - { name: 香肠鸡蛋炒米粉（榨面）/面/河粉, price: ¥18 }
+      - { name: 肉丝鸡蛋炒米粉（榨面）/面/河粉, price: ¥18 }
+      - { name: 咸菜肉丝汤米粉（榨面）/面, price: ¥16 }
+      - { name: 笋干菜肉丝汤米粉（榨面）/面, price: ¥16 }
+      - { name: 笋干菜鸡蛋汤米粉（榨面）/面, price: ¥16 }
+      - { name: 西红柿鸡蛋汤米粉（榨面）/面, price: ¥16 }
+      - { name: 青菜肉丝汤米粉（榨面）/面, price: ¥16 }
+      - { name: 青椒肉丝汤米粉（榨面）/面, price: ¥16 }
+      - { name: 红烧牛肉汤米粉（榨面）/面, price: ¥25 }
       - { name: 方便面加蛋, price: ¥10 }
       - { name: 热干面, price: ¥15 }
       - { name: 酸辣粉, price: ¥16 }
       - { name: 重庆小面, price: ¥16 }
-      - { name: 杂酱面, price: ¥16 }
+      - { name: 炸酱面, price: ¥16 }
       - { name: 螺蛳粉, price: ¥18 }
   - title: 年糕类
     items:
