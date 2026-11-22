@@ -53,6 +53,9 @@ const {
       type={type}
       structuredData={structuredData}
     />
+    <noscript>
+      <style is:inline>[data-search-open] { display: none; }</style>
+    </noscript>
     {
       siteConfig.analytics.goatcounter && (
         <script

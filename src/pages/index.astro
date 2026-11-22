@@ -13,6 +13,7 @@ import heroImage from "../assets/hero.jpg";
 import Icon from "../components/Icon.astro";
 
 const shops = (await getCollection("restaurants")).sort((a, b) => a.data.name.localeCompare(b.data.name, "zh"));
+const withMenu = shops.filter((shop) => shop.data.menu.length > 0).length;
 
 // 跑马灯直接用站内标签，点一下就能跳到对应的筛选结果
 const marqueeItems = allTagsOf(shops);
@@ -198,7 +199,7 @@ const structuredData = {
 
   <Footer />
 
-  <SearchDialog />
+  <SearchDialog withMenu={withMenu} total={shops.length} />
 
   <script is:inline>
     (() => {

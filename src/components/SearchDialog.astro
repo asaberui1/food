@@ -1,7 +1,4 @@
 ---
-type MenuItem = { name: string; price: string; group: string };
-type ShopIndex = { id: string; name: string; menu: MenuItem[] };
-
 type Props = {
   indexUrl?: string;
   /** 已录入菜单的店 / 全部店，用于说明搜索覆盖范围 */
@@ -10,7 +7,8 @@ type Props = {
 };
 
 const {
-  indexUrl = `${import.meta.env.BASE_URL}search-index.json`,
+  // ?v= 用来在索引结构变化时绕开旧缓存，改 schema 时记得加一
+  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=1`,
   withMenu = 0,
   total = 0,
 } = Astro.props;
@@ -35,143 +33,28 @@ const {
         type="search"
         name="dish"
         data-search
-        placeholder="椒盐排条、牛蛙、盖浇饭…"
+        placeholder="宫爆鸡丁、番茄炒蛋、gbjd…"
         autocomplete="off"
         spellcheck="false"
+        aria-controls="search-results"
+        aria-describedby="search-hint"
       />
     </label>
-    <p class="search-hint">
+    <p class="search-hint" id="search-hint">
       {withMenu >= total && total > 0
         ? "菜名搜索基于已收录菜单，目前全部餐厅均已录入菜单。"
         : `菜名搜索基于已收录菜单，目前覆盖 ${withMenu}/${total} 家餐厅。`}
+      支持错别字、别名、拼音全拼和首字母，比如 gbjd、宫爆鸡丁、番茄炒蛋。
     </p>
 
-    <ul class="search-results" data-results></ul>
-    <p class="search-hint" data-search-empty hidden>没有找到。换个菜名试试，或者用标签筛。</p>
+    <p class="search-status" data-search-status role="status"></p>
+    <ul class="search-results" data-results id="search-results" aria-describedby="search-hint"></ul>
+    <p class="search-hint" data-search-empty role="status" hidden>没有找到。换个菜名试试，或者用标签筛。</p>
   </div>
 </dialog>
 
-<script is:inline>
-  (() => {
-    const dialog = document.querySelector("[data-search-dialog]");
-    if (!dialog) return;
+<script>
+  import { mountSearch } from "../lib/search/client";
 
-    const base = dialog.dataset.base || "/";
-    const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json`;
-    let shops = null;
-    let loading = null;
-
-    // 打开搜索框时才去取索引，首页不再内联这几十 KB
-    const loadIndex = () => {
-      if (!loading) {
-        loading = fetch(indexUrl)
-          .then((response) => (response.ok ? response.json() : []))
-          .then((data) => {
-            shops = Array.isArray(data) ? data : [];
-            return shops;
-          })
-          .catch(() => {
-            shops = [];
-            return shops;
-          });
-      }
-      return loading;
-    };
-    const input = dialog.querySelector("[data-search]");
-    const results = dialog.querySelector("[data-results]");
-    const noResult = dialog.querySelector("[data-search-empty]");
-
-    const normalize = (value) => (value || "").toLowerCase().replace(/\s+/g, "");
-
-    // 先按子串命中；再把查询当成按顺序出现的字，允许中间隔字
-    const matches = (text, query) => {
-      const target = normalize(text);
-      if (!query) return false;
-      if (target.includes(query)) return true;
-      let cursor = 0;
-      for (const char of target) {
-        if (char === query[cursor]) cursor += 1;
-        if (cursor === query.length) return true;
-      }
-      return false;
-    };
-
-    const render = () => {
-      const query = normalize(input.value);
-      results.replaceChildren();
-      noResult.hidden = true;
-      if (!query || !shops) return;
-
-      let count = 0;
-      shops.forEach((shop) => {
-        // 只认菜名，不拿店名和分类名凑数
-        const hits = shop.menu.filter((item) => matches(item.name, query));
-        if (!hits.length) return;
-        count += 1;
-
-        const li = document.createElement("li");
-        li.className = "search-result";
-
-        const link = document.createElement("a");
-        link.href = `${base}restaurants/${shop.id}/`;
-        link.className = "search-result__name";
-        link.textContent = shop.name;
-        li.append(link);
-
-        const unique = [...new Set(hits.map((item) => `${item.name} ${item.price}`))].slice(0, 6);
-        if (unique.length) {
-          const detail = document.createElement("p");
-          detail.className = "search-result__dishes";
-          detail.textContent = unique.join("、") + (hits.length > 6 ? " 等" : "");
-          li.append(detail);
-        }
-
-        results.append(li);
-      });
-
-      noResult.hidden = count > 0;
-    };
-
-    let opener = null;
-
-    const open = async (trigger) => {
-      opener = trigger || document.activeElement;
-      await loadIndex();
-      if (typeof dialog.showModal === "function") dialog.showModal();
-      else dialog.setAttribute("open", "");
-      input.value = "";
-      results.replaceChildren();
-      noResult.hidden = true;
-      window.setTimeout(() => input.focus(), 30);
-    };
-
-    const close = () => {
-      if (typeof dialog.close === "function") dialog.close();
-      else dialog.removeAttribute("open");
-      window.setTimeout(() => {
-        if (opener && typeof opener.focus === "function") opener.focus();
-      }, 20);
-    };
-
-    document.querySelectorAll("[data-search-open]").forEach((button) => {
-      button.addEventListener("click", (event) => {
-        event.preventDefault();
-        open(button);
-      });
-    });
-
-    dialog.querySelector("[data-search-close]").addEventListener("click", close);
-    dialog.addEventListener("click", (event) => {
-      if (event.target === dialog) close();
-    });
-    input.addEventListener("input", () => {
-      if (!shops) {
-        loadIndex().then(render);
-        return;
-      }
-      render();
-    });
-
-    if (new URLSearchParams(window.location.search).get("search") === "1") open();
-  })();
+  mountSearch();
 </script>

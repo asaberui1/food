@@ -25,18 +25,22 @@
     "og": "node scripts/og.mjs",
     "fonts": "node scripts/font-subset.mjs",
     "share": "node scripts/share-cards.mjs",
-    "prebuild": "astro check"
+    "prebuild": "astro check",
+    "test:search": "tsx scripts/search-test.ts"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.1.0",
+    "fuse.js": "^7.5.0",
+    "pinyin-pro": "^3.29.5",
     "sharp": "^0.35.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "prettier": "^3.8.4",
     "qrcode": "^1.5.4",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.3"
   },
   "overrides": {
