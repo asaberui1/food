@@ -91,4 +91,6 @@ export type SearchOutcome = {
   total: number;
   /** generic：命中“盖浇饭”这类泛词被压制；short：两个字且不是具体名词，没敢做包含召回 */
   reason?: "generic" | "short";
+  /** 零结果时最多 3 个可点击的菜名建议 */
+  suggestions?: string[];
 };
