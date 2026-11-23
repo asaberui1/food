@@ -526,6 +526,26 @@ if (existsSync(builtPath)) {
       ["柿子椒", "青椒"],
       ["包心菜", "包菜"],
       ["豌豆苗", "豆苗"],
+      ["拍黄瓜", "凉拌黄瓜"],
+      ["豆腐干", "香干炒肉"],
+      ["香干", "香干炒肉"],
+      ["豆干", "香干炒肉"],
+      ["素鸡", "香菜拌素鸡"],
+      ["豆腐皮", "豆腐皮"],
+      ["豆腐丝", "豆腐皮"],
+      ["煎鸡蛋", "荷包蛋"],
+      ["酒酿圆子", "酒酿小圆子"],
+      ["猪排面", "大排面"],
+      ["清远鸡锅仔", "清远鸡锅"],
+      ["生菜蚝油", "蚝油生菜"],
+      ["玉米松仁", "松仁玉米"],
+      ["武昌鱼", "红烧扁鱼"],
+      ["团头鲂", "红烧扁鱼"],
+      ["汤包", "鲜肉汤包"],
+      ["灌汤包", "鲜肉汤包"],
+      ["花菇", "香菇"],
+      ["蚬子", "花蛤"],
+      ["粿条", "河粉"],
     ];
 
     for (const [query, fragment] of realAliasChecks) {
@@ -533,6 +553,12 @@ if (existsSync(builtPath)) {
       passed += 1;
     }
     console.log(`  ✓ 同菜异名/近义修订：${realAliasChecks.length} 组`);
+
+    assert.equal(real.search("煎鸡蛋").hits[0]?.route, "nearAlias");
+    assert.equal(real.search("生菜蚝油").hits[0]?.route, "anagram");
+    const tofuFuzzy = real.search("豆腐干").hits.find((item) => item.name === "豆腐皮");
+    assert.equal(tofuFuzzy?.score, 47);
+    assert.equal(tofuFuzzy?.route, "fuzzy");
 
     for (const query of ["土豆", "白菜", "鸡蛋"]) {
       assert.ok(

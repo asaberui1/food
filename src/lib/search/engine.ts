@@ -34,6 +34,8 @@ const SCORE = {
   wordBag: 66,
   /** 不是严格同义词、但菜单里指向同一道菜的写法，标近似 */
   nearAlias: 62,
+  /** 语序变体：字符相同、顺序不同，标近似 */
+  anagram: 58,
   /** 编辑距离相似度上限，实际按 70 * (1 - 距离/长度) 折算 */
   fuzzyMax: 70,
   /** 食材别称预留位：等 ingredients 真正录入再启用 */
@@ -239,13 +241,13 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
   const cache = new Map<string, SearchOutcome>();
 
-  const fuzzyName = (query: string, queryCanon: string, queryLength: number) => {
+  const fuzzyName = (query: string, queryLength: number) => {
     const maxDistance = queryLength <= 4 ? 1 : 2;
     // 短名字只接受“同长度替换 + 首字相同”，避免红烧肉把红烧牛肉、
     // 小馄饨把汤馄饨也当成近似（那是另一道菜）
     const sameLengthOnly = queryLength <= 4;
     const firstCode = queryLength <= 4 ? query.codePointAt(0) : undefined;
-    const found = nameFuse.search(queryCanon, { limit: FUZZY_CANDIDATES });
+    const found = nameFuse.search(query, { limit: FUZZY_CANDIDATES });
     const results = new Map<PreparedDish, number>();
 
     for (const result of found) {
@@ -442,6 +444,16 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         }
       }
 
+      // 8.45) 语序变体：生菜蚝油 / 蚝油生菜、玉米松仁 / 松仁玉米
+      if (queryLength >= 4 && score < SCORE.anagram) {
+        const sortedQuery = [...queryCanon].sort().join("");
+        const sortedName = [...dish.norm].sort().join("");
+        if (sortedQuery === sortedName) {
+          score = SCORE.anagram;
+          route = "anagram";
+        }
+      }
+
       // 8.5) 词袋：清蒸鳜鱼 / 松子鳜鱼 / 清蒸桂鱼，顺序和原文不同也能命中
       if (queryTokens.length >= 2 && score < SCORE.wordBag) {
         const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
@@ -490,7 +502,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         ? queryLength >= 5
           ? fuzzyPinyin(query, queryLength)
           : new Map<PreparedDish, number>()
-        : fuzzyName(query, queryCanon, queryLength);
+        : fuzzyName(query, queryLength);
 
       for (const [dish, score] of fuzzy) {
         if (score < MIN_SCORE) continue;
