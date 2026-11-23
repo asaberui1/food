@@ -1,0 +1,1542 @@
+{
+  "version": 1,
+  "exact": [
+    {
+      "canonical": "肉末",
+      "members": [
+        "肉沫",
+        "肉糜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "蒜末",
+      "members": [
+        "蒜沫"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "蒜蓉",
+      "members": [
+        "蒜茸"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "宫保",
+      "members": [
+        "宫爆"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "小炒肉",
+      "members": [
+        "辣椒炒肉",
+        "青椒炒肉",
+        "尖椒炒肉",
+        "农家小炒肉"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "干煸",
+      "members": [
+        "干扁"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "里脊",
+      "members": [
+        "里肌"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "豆腐",
+      "members": [
+        "豆付"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "腐竹",
+      "members": [
+        "付竹"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鱿鱼",
+      "members": [
+        "尤鱼",
+        "柔鱼",
+        "枪乌贼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲈鱼",
+      "members": [
+        "卢鱼",
+        "花鲈",
+        "海鲈",
+        "寨花"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "馄饨",
+      "members": [
+        "云吞",
+        "抄手",
+        "扁食",
+        "扁肉",
+        "包面",
+        "包袱",
+        "混沌",
+        "混饨"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "烧卖",
+      "members": [
+        "烧麦",
+        "稍麦",
+        "捎卖",
+        "稍美",
+        "烧梅",
+        "肖米",
+        "鬼蓬头",
+        "干蒸"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "螺蛳粉",
+      "members": [
+        "螺丝粉",
+        "螺狮粉"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "四喜烤麸",
+      "members": [
+        "四喜烤夫"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "烤麸",
+      "members": [
+        "烤夫"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "牛百叶",
+      "members": [
+        "牛百页"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "千页豆腐",
+      "members": [
+        "千叶豆腐"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "牙鲆鱼",
+      "members": [
+        "鸦片鱼",
+        "牙片鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "蹄髈",
+      "members": [
+        "蹄膀",
+        "蹄胖",
+        "蹄旁",
+        "蹄榜",
+        "肘子",
+        "猪肘",
+        "猪肘子"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳜鱼",
+      "members": [
+        "桂鱼",
+        "桂花鱼",
+        "鳌花鱼",
+        "季花鱼",
+        "花鲫鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "黄颡鱼",
+      "members": [
+        "黄辣丁",
+        "昂刺鱼",
+        "黄骨鱼",
+        "嘎鱼",
+        "黄鸭叫",
+        "黄角丁",
+        "昂公鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "龙头鱼",
+      "members": [
+        "九肚鱼",
+        "豆腐鱼",
+        "水潺",
+        "龙头烤",
+        "鼻涕鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳊鱼",
+      "members": [
+        "扁鱼",
+        "边鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "武昌鱼",
+      "members": [],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "黄鱼",
+      "members": [
+        "黄花鱼",
+        "大黄鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "银鱼",
+      "members": [
+        "面条鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲳鱼",
+      "members": [
+        "平鱼",
+        "银鲳",
+        "白鲳",
+        "昌鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲅鱼",
+      "members": [
+        "马鲛鱼",
+        "燕鱼",
+        "巴鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲐鱼",
+      "members": [
+        "青占鱼",
+        "鲭鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳕鱼",
+      "members": [
+        "雪鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲑鱼",
+      "members": [
+        "三文鱼",
+        "大马哈鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "金枪鱼",
+      "members": [
+        "吞拿鱼",
+        "鲔鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲷鱼",
+      "members": [
+        "加吉鱼",
+        "真鲷",
+        "雕鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲽鱼",
+      "members": [
+        "比目鱼",
+        "偏口鱼",
+        "蝶鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳎目鱼",
+      "members": [
+        "龙利鱼",
+        "踏板鱼",
+        "舌鳎",
+        "塔鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲟鱼",
+      "members": [
+        "鲟龙鱼",
+        "寻鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳇鱼",
+      "members": [
+        "鲟鳇鱼",
+        "皇鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳗鱼",
+      "members": [
+        "鳗鲡",
+        "白鳝",
+        "曼鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳝鱼",
+      "members": [
+        "黄鳝",
+        "长鱼",
+        "善鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "泥鳅",
+      "members": [
+        "鳅鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲶鱼",
+      "members": [
+        "鲇鱼",
+        "塘鲺",
+        "胡子鲶",
+        "念鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "黑鱼",
+      "members": [
+        "乌鳢",
+        "财鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "草鱼",
+      "members": [
+        "鲩鱼",
+        "草鲩"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "青鱼",
+      "members": [
+        "青鲩"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳙鱼",
+      "members": [
+        "胖头鱼",
+        "花鲢",
+        "拥鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲢鱼",
+      "members": [
+        "白鲢",
+        "连鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲫鱼",
+      "members": [
+        "即鱼",
+        "鲫瓜子"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲤鱼",
+      "members": [
+        "里鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲚鱼",
+      "members": [
+        "凤尾鱼",
+        "刀鲚",
+        "济鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲥鱼",
+      "members": [
+        "三黎鱼",
+        "时鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鮰鱼",
+      "members": [
+        "江团",
+        "肥沱",
+        "长吻鮠"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲦鱼",
+      "members": [
+        "白条鱼",
+        "餐条"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鲴鱼",
+      "members": [
+        "黄尾鱼",
+        "固鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "鳡鱼",
+      "members": [
+        "水老虎",
+        "敢鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "虾蛄",
+      "members": [
+        "皮皮虾",
+        "濑尿虾",
+        "爬虾",
+        "虾爬子",
+        "螳螂虾"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "牡蛎",
+      "members": [
+        "生蚝",
+        "海蛎子",
+        "蛎黄"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "扇贝",
+      "members": [
+        "带子"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "海参",
+      "members": [
+        "刺参",
+        "辽参"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "甲鱼",
+      "members": [
+        "鳖",
+        "团鱼"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "章鱼",
+      "members": [
+        "八爪鱼",
+        "望潮"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "墨鱼",
+      "members": [
+        "乌贼",
+        "花枝"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "花蛤",
+      "members": [
+        "花甲",
+        "蛤蜊",
+        "嘎啦"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "白切鸡",
+      "members": [
+        "白斩鸡",
+        "白切草鸡",
+        "白斩草鸡"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "小笼包",
+      "members": [
+        "小笼馒头",
+        "鲜肉包",
+        "肉包"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "生煎包",
+      "members": [
+        "生煎馒头"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "锅包肉",
+      "members": [
+        "锅爆肉"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "凉皮",
+      "members": [
+        "酿皮"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "油麦菜",
+      "members": [
+        "莜麦菜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "凉拌黄瓜",
+      "members": [
+        "拍黄瓜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "香干",
+      "members": [
+        "豆干",
+        "豆腐干"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "酒酿小圆子",
+      "members": [
+        "酒酿圆子"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "大排面",
+      "members": [
+        "猪排面"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "土豆",
+      "members": [
+        "洋芋",
+        "马铃薯",
+        "地蛋",
+        "山药蛋",
+        "洋番薯",
+        "馍馍蛋",
+        "洋芋艿"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "番茄",
+      "members": [
+        "西红柿",
+        "蕃茄",
+        "洋柿子"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "番茄炒蛋",
+      "members": [
+        "西红柿炒鸡蛋",
+        "番茄炒鸡蛋",
+        "西红柿炒蛋"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "肉末粉丝",
+      "members": [
+        "肉沫粉丝",
+        "蚂蚁上树"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "阳春面",
+      "members": [
+        "光面"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "番薯",
+      "members": [
+        "红薯",
+        "白薯",
+        "地瓜",
+        "红苕"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "粉丝",
+      "members": [
+        "粉条丝",
+        "冬粉",
+        "春雨",
+        "细粉",
+        "粉条"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "大白菜",
+      "members": [
+        "包心白菜",
+        "黄芽菜",
+        "结球白菜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "榨菜",
+      "members": [
+        "青菜头",
+        "菜头",
+        "羊角菜",
+        "菱角菜",
+        "茎瘤芥"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "菠菜",
+      "members": [
+        "菠薐菜",
+        "赤根菜",
+        "波斯草"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "莴苣",
+      "members": [
+        "莴笋",
+        "窝笋",
+        "千金菜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "黄花菜",
+      "members": [
+        "金针菜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "草石蚕",
+      "members": [
+        "地蚕",
+        "土蛹",
+        "甘露子"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "萝卜",
+      "members": [
+        "罗卜",
+        "萝葡",
+        "莱菔",
+        "芦菔",
+        "土酥"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "雪菜",
+      "members": [
+        "雪里蕻",
+        "雪里红"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "青椒",
+      "members": [
+        "柿子椒"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "豆苗",
+      "members": [
+        "豌豆苗"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "炒蛋",
+      "members": [
+        "炒鸡蛋",
+        "跑蛋"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "蒸蛋",
+      "members": [
+        "炖蛋",
+        "蒸水蛋"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "狮子头",
+      "members": [
+        "四喜丸子",
+        "红烧狮子头"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "白米粥",
+      "members": [
+        "大米粥"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "小米粥",
+      "members": [
+        "小米稀饭"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "羊杂",
+      "members": [
+        "羊杂碎"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "牛肉火锅",
+      "members": [
+        "牛肉锅"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "牛杂火锅",
+      "members": [
+        "牛杂锅"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "清远鸡煲",
+      "members": [
+        "清远鸡锅",
+        "清远鸡锅仔"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "老鹅煲",
+      "members": [
+        "老鹅锅"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "花菜",
+      "members": [
+        "菜花",
+        "花椰菜",
+        "椰菜花"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "西兰花",
+      "members": [
+        "青花菜",
+        "绿花菜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "卷心菜",
+      "members": [
+        "包菜",
+        "圆白菜",
+        "包心菜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "空心菜",
+      "members": [
+        "蕹菜",
+        "通菜"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "四季豆",
+      "members": [
+        "豆角",
+        "芸豆"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "豇豆",
+      "members": [
+        "长豆角"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "酸豆角",
+      "members": [
+        "酸豇豆"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "蒜苔",
+      "members": [
+        "蒜薹"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "茨菇",
+      "members": [
+        "慈姑"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "香菜",
+      "members": [
+        "芫荽"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "山药",
+      "members": [
+        "淮山"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "莲藕",
+      "members": [
+        "藕"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "荸荠",
+      "members": [
+        "马蹄"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "玉米",
+      "members": [
+        "苞米",
+        "包谷",
+        "玉蜀黍"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "皮蛋",
+      "members": [
+        "松花蛋",
+        "变蛋"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "咸蛋",
+      "members": [
+        "咸鸭蛋"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "木耳",
+      "members": [
+        "黑木耳",
+        "云耳"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "银耳",
+      "members": [
+        "白木耳",
+        "雪耳"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "香菇",
+      "members": [
+        "冬菇"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "金针菇",
+      "members": [
+        "金菇"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "芋头",
+      "members": [
+        "芋艿",
+        "毛芋"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "河粉",
+      "members": [
+        "沙河粉"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "汤圆",
+      "members": [
+        "元宵"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "芝士",
+      "members": [
+        "奶酪",
+        "起司",
+        "干酪"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "咖喱",
+      "members": [
+        "咖哩"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "沙拉",
+      "members": [
+        "色拉"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "三明治",
+      "members": [
+        "三文治"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "汉堡",
+      "members": [
+        "汉堡包"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "意面",
+      "members": [
+        "意大利面",
+        "意粉"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "披萨",
+      "members": [
+        "比萨",
+        "匹萨"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认的同菜异名/地域叫法/错别字"
+    }
+  ],
+  "near": [
+    {
+      "from": "海带骨头汤",
+      "targets": [
+        "海带排骨汤"
+      ],
+      "confidence": 0.62,
+      "note": "骨头汤与排骨汤是相近写法"
+    },
+    {
+      "from": "尖椒肉丝",
+      "targets": [
+        "青椒肉丝"
+      ],
+      "confidence": 0.58,
+      "note": "尖椒肉丝与青椒肉丝相近，不是严格同一道菜"
+    },
+    {
+      "from": "皮蛋瘦肉粥",
+      "targets": [
+        "皮蛋肉丝粥"
+      ],
+      "confidence": 0.6,
+      "note": "瘦肉粥与肉丝粥相近"
+    },
+    {
+      "from": "煎鸡蛋",
+      "targets": [
+        "荷包蛋"
+      ],
+      "confidence": 0.78,
+      "note": "煎鸡蛋与荷包蛋是相近做法，菜单常混用"
+    },
+    {
+      "from": "豆腐皮",
+      "targets": [
+        "豆腐皮",
+        "豆腐丝",
+        "干丝",
+        "千张",
+        "百叶"
+      ],
+      "confidence": 0.58,
+      "note": "相近写法，不是严格同义词"
+    },
+    {
+      "from": "豆腐丝",
+      "targets": [
+        "豆腐丝",
+        "干丝",
+        "豆腐皮",
+        "千张",
+        "百叶"
+      ],
+      "confidence": 0.58,
+      "note": "相近写法，不是严格同义词"
+    },
+    {
+      "from": "干丝",
+      "targets": [
+        "干丝",
+        "豆腐丝",
+        "豆腐皮",
+        "千张",
+        "百叶"
+      ],
+      "confidence": 0.58,
+      "note": "相近写法，不是严格同义词"
+    },
+    {
+      "from": "千张",
+      "targets": [
+        "千张",
+        "百叶",
+        "豆腐丝",
+        "干丝",
+        "豆腐皮"
+      ],
+      "confidence": 0.58,
+      "note": "相近写法，不是严格同义词"
+    },
+    {
+      "from": "百叶",
+      "targets": [
+        "百叶",
+        "千张",
+        "豆腐丝",
+        "干丝",
+        "豆腐皮"
+      ],
+      "confidence": 0.58,
+      "note": "相近写法，不是严格同义词"
+    },
+    {
+      "from": "素鸡",
+      "targets": [
+        "素鸡",
+        "香干",
+        "豆腐干",
+        "豆干",
+        "豆腐皮",
+        "豆腐丝"
+      ],
+      "confidence": 0.6,
+      "note": "素鸡与香干同属豆制品，口感相近，不是同一食材"
+    },
+    {
+      "from": "油豆腐",
+      "targets": [
+        "油豆腐",
+        "豆泡",
+        "豆腐泡"
+      ],
+      "confidence": 0.58,
+      "note": "相近写法，不是严格同义词"
+    },
+    {
+      "from": "豆泡",
+      "targets": [
+        "豆泡",
+        "油豆腐",
+        "豆腐泡"
+      ],
+      "confidence": 0.58,
+      "note": "相近写法，不是严格同义词"
+    },
+    {
+      "from": "豆腐泡",
+      "targets": [
+        "豆腐泡",
+        "油豆腐",
+        "豆泡"
+      ],
+      "confidence": 0.58,
+      "note": "相近写法，不是严格同义词"
+    },
+    {
+      "from": "武昌鱼",
+      "targets": [
+        "鳊鱼"
+      ],
+      "confidence": 0.62,
+      "note": "武昌鱼（团头鲂）与鳊鱼相近，但不是同一种鱼"
+    },
+    {
+      "from": "团头鲂",
+      "targets": [
+        "鳊鱼"
+      ],
+      "confidence": 0.62,
+      "note": "团头鲂（武昌鱼）与鳊鱼相近，但不是同一种鱼"
+    },
+    {
+      "from": "花菇",
+      "targets": [
+        "香菇"
+      ],
+      "confidence": 0.6,
+      "note": "花菇是香菇的一类，不是严格同义词"
+    },
+    {
+      "from": "蚬子",
+      "targets": [
+        "花蛤"
+      ],
+      "confidence": 0.55,
+      "note": "蚬子与花蛤同属小型贝类，但不是同一种"
+    },
+    {
+      "from": "蚶仔",
+      "targets": [
+        "花蛤"
+      ],
+      "confidence": 0.55,
+      "note": "蚶仔与花蛤同属小型贝类，但不是同一种"
+    },
+    {
+      "from": "青娥",
+      "targets": [
+        "花蛤"
+      ],
+      "confidence": 0.55,
+      "note": "青娥与花蛤同属小型贝类，但不是同一种"
+    },
+    {
+      "from": "粿条",
+      "targets": [
+        "河粉"
+      ],
+      "confidence": 0.6,
+      "note": "粿条与河粉相近，但不是同一种粉"
+    },
+    {
+      "from": "汤包",
+      "targets": [
+        "汤包",
+        "小笼包"
+      ],
+      "confidence": 0.65,
+      "note": "汤包与小笼包相近，但不是同一式样"
+    },
+    {
+      "from": "灌汤包",
+      "targets": [
+        "小笼包",
+        "汤包"
+      ],
+      "confidence": 0.65,
+      "note": "灌汤包与小笼包相近，但不是同一式样"
+    }
+  ]
+}

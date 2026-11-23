@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import { GENERIC_TERMS, NEAR_ALIASES } from "./dictionary";
+import { GENERIC_TERMS, NEAR_RELATIONS } from "./dictionary";
 import { codePointLength, isPinyinQuery, normalizeText } from "./normalize";
 import { KNOWN_TERMS, canonicalize } from "./synonyms";
 import type { MatchRoute, PreparedDish, SearchData, SearchHit, SearchOutcome } from "./types";
@@ -61,6 +61,7 @@ type ScoredHit = {
   shopName: string;
   score: number;
   route: MatchRoute;
+  explain?: string;
   tie: number;
   popularity: number;
   key: string;
@@ -317,6 +318,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     for (const dish of dishes) {
       let score = 0;
       let route: MatchRoute = "name";
+      let matchExplain: string | undefined;
 
       // 1) 菜名精确 / 2) 前缀 / 3) 包含（规范化后比较，别名差异已在 canon 里抹平）
       if (dish.norm === query || dish.canon === queryCanon) {
@@ -434,13 +436,17 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         }
       }
 
-      // 8.4) 近义写法：海带骨头汤 / 尖椒肉丝 / 皮蛋瘦肉粥，命中后标「近似」
-      const nearTargets = NEAR_ALIASES[queryCanon] ?? [];
-      if (nearTargets.length > 0 && score < SCORE.nearAlias) {
+      // 8.4) 近义写法：confidence 决定近似分数，note 作为可解释说明
+      const nearRelation = NEAR_RELATIONS[queryCanon];
+      if (nearRelation && score < SCORE.nearAlias) {
+        const nearScore = Math.round(50 + nearRelation.confidence * 20);
         const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
-        if (nearTargets.some((target) => targets.some((value) => value.includes(target)))) {
-          score = SCORE.nearAlias;
+        if (
+          nearRelation.targets.some((target) => targets.some((value) => value.includes(target)))
+        ) {
+          score = nearScore;
           route = "nearAlias";
+          matchExplain = nearRelation.note;
         }
       }
 
@@ -489,6 +495,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           shopName: shop?.name ?? "",
           score,
           route,
+          explain: matchExplain,
           tie,
           popularity: dish.popularity,
           key: `${dish.shop}:${dish.norm}`,
@@ -522,6 +529,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           shopName: shop?.name ?? "",
           score,
           route: "fuzzy",
+          explain: existing?.explain,
           tie: existing?.tie ?? 0,
           popularity: dish.popularity,
           key: `${dish.shop}:${dish.norm}`,
@@ -612,6 +620,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         canon,
         score: best.score,
         route: best.route,
+        explain: best.explain,
         shops,
         aliases,
         tie: Math.max(...bucket.map((row) => row.tie)),

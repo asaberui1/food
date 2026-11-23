@@ -79,6 +79,7 @@ export type SearchHit = {
   canon: string;
   score: number;
   route: MatchRoute;
+  explain?: string;
   shops: SearchShop[];
   /** 同组里和展示名不同的写法，UI 用「也叫：…」列出来 */
   aliases: string[];

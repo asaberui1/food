@@ -55,12 +55,20 @@ function groupPriceLabel(hit: SearchHit): string {
   return `¥${min}–${max}`;
 }
 
-function approximationBadge(): HTMLSpanElement {
+function approximationBadge(explain?: string): HTMLSpanElement {
   const badge = document.createElement("span");
   badge.className = "search-result__approx";
   badge.textContent = "近似";
+  if (explain) {
+    badge.title = explain;
+    badge.setAttribute("aria-label", `近似：${explain}`);
+  }
   return badge;
 }
+
+const APPROXIMATE_ROUTES = new Set(["fuzzy", "pinyinTypo", "wordBag", "nearAlias", "anagram"]);
+
+const isApproximate = (hit: SearchHit): boolean => APPROXIMATE_ROUTES.has(hit.route);
 
 function shopLink(base: string, shop: SearchHit["shops"][number]): HTMLAnchorElement {
   const link = document.createElement("a");
@@ -84,12 +92,7 @@ function shopLink(base: string, shop: SearchHit["shops"][number]): HTMLAnchorEle
 function buildResult(hit: SearchHit, base: string): HTMLLIElement {
   const item = document.createElement("li");
   item.className = "search-result";
-  const approximate =
-    hit.route === "fuzzy" ||
-    hit.route === "pinyinTypo" ||
-    hit.route === "wordBag" ||
-    hit.route === "nearAlias" ||
-    hit.route === "anagram";
+  const approximate = isApproximate(hit);
 
   if (hit.shops.length === 1) {
     const shop = hit.shops[0];
@@ -113,7 +116,7 @@ function buildResult(hit: SearchHit, base: string): HTMLLIElement {
     const meta = document.createElement("p");
     meta.className = "search-result__meta";
     meta.textContent = shop.group ? `${shop.shopName} · ${shop.group}` : shop.shopName;
-    if (approximate) meta.append(" ", approximationBadge());
+    if (approximate) meta.append(" ", approximationBadge(hit.explain));
 
     item.append(link, meta);
     return item;
@@ -130,7 +133,7 @@ function buildResult(hit: SearchHit, base: string): HTMLLIElement {
   name.textContent = hit.name;
   title.append(name);
 
-  if (approximate) title.append(approximationBadge());
+  if (approximate) title.append(approximationBadge(hit.explain));
 
   const count = document.createElement("span");
   count.className = "search-result__same";
@@ -259,8 +262,13 @@ export function mountSearch(): void {
   const render = (outcome: SearchOutcome, raw: string): void => {
     if (errorBox) errorBox.hidden = true;
     results.replaceChildren();
-    currentHits = outcome.hits;
-    visibleCount = Math.min(10, currentHits.length);
+
+    // 近似结果默认折叠：先显示非近似结果，近似结果留在「显示剩余」后面。
+    const primary = outcome.hits.filter((hit) => !isApproximate(hit));
+    const approximate = outcome.hits.filter(isApproximate);
+    currentHits = [...primary, ...approximate];
+    visibleCount =
+      primary.length > 0 ? Math.min(10, primary.length) : Math.min(10, currentHits.length);
 
     if (!currentHits.length) {
       if (moreButton) moreButton.hidden = true;
