@@ -158,11 +158,27 @@ async function buildCard(dir) {
   ${dishes
     .map((dish, index) => {
       const price = dishPrice(prices, dish);
-      return `<text x="88" y="${1226 + index * 54}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="34" fill="rgba(236,226,206,0.94)">· ${escapeXml(dish)}${price ? `  ${escapeXml(price)}` : ""}</text>`;
+      const y = 1226 + index * 54;
+      const units = [...dish].reduce(
+        (sum, char) => sum + (/[\u3000-\u9fff\uff00-\uffef]/.test(char) ? 1 : 0.58),
+        0,
+      );
+      const leaderStart = 88 + 44 + units * 28 + 12;
+      const leaderEnd = 630;
+      const dotCount = Math.max(0, Math.floor((leaderEnd - leaderStart) / 16) + 1);
+      const dots = price
+        ? Array.from({ length: dotCount }, (_, i) =>
+            `<circle cx="${(leaderEnd - i * 16).toFixed(1)}" cy="${y - 11}" r="2.2" fill="rgba(236,226,206,0.5)"/>`,
+          ).join("")
+        : "";
+      const priceText = price
+        ? `${dots}<text x="700" y="${y}" text-anchor="end" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="31" fill="rgba(236,226,206,0.94)">${escapeXml(price)}</text>`
+        : "";
+      return `<text x="88" y="${y}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="34" fill="rgba(236,226,206,0.94)">· ${escapeXml(dish)}</text>${priceText}`;
     })
     .join("")}
 
-  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="30" font-weight="600" fill="#ffffff" letter-spacing="1">创智食单</text>
+  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="30" font-weight="600" fill="#f9f2e6" letter-spacing="1">创智食单</text>
 </svg>`;
 
   const overlay = Buffer.from(svg);

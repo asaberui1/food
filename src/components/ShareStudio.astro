@@ -181,11 +181,29 @@ const payload = {
       ctx.fillText(fitted(data.address, 640), 88, 1164);
 
       if (showDishes) {
-        ctx.font = '34px "Noto Serif SC", serif';
         selected.slice(0, MAX).forEach((dish, index) => {
           const price = findPrice(dish);
+          const y = 1226 + index * 54;
           ctx.fillStyle = "rgba(236,226,206,0.94)";
-          ctx.fillText(fitted(`· ${dish}${price ? "  " + price : ""}`, 620), 88, 1226 + index * 54);
+          ctx.font = '34px "Noto Serif SC", serif';
+          const dishText = fitted(`· ${dish}`, 560);
+          ctx.fillText(dishText, 88, y);
+          if (price) {
+            const priceFont = '31px system-ui, -apple-system, "PingFang SC", "Noto Sans SC", sans-serif';
+            const start = 88 + ctx.measureText(dishText).width + 12;
+            ctx.font = priceFont;
+            const end = 700 - ctx.measureText(price).width - 20;
+            ctx.fillStyle = "rgba(236,226,206,0.5)";
+            for (let x = end; x >= start; x -= 16) {
+              ctx.beginPath();
+              ctx.arc(x, y - 11, 2.2, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.fillStyle = "rgba(236,226,206,0.94)";
+            ctx.textAlign = "right";
+            ctx.fillText(price, 700, y);
+            ctx.textAlign = "left";
+          }
         });
       }
 
@@ -204,7 +222,7 @@ const payload = {
         ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
       }
 
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#f9f2e6";
       ctx.font = '600 30px "Noto Serif SC", serif';
       ctx.textAlign = "right";
       ctx.fillText("创智食单", 1080 - 88, qrY + qrSize + 46);
@@ -270,17 +288,36 @@ const payload = {
       }
 
       data.menu.forEach((group) => {
-        const title = document.createElement("p");
-        title.className = "label-eyebrow studio__group";
-        title.textContent = group.title;
-        pickerBody.append(title);
+        const details = document.createElement("details");
+        details.className = "studio__group";
 
+        const summary = document.createElement("summary");
+        summary.className = "studio__group-head";
+
+        const title = document.createElement("span");
+        title.className = "label-eyebrow studio__group-title";
+        title.textContent = group.title;
+
+        const count = document.createElement("span");
+        count.className = "studio__group-count";
+        count.textContent = `${group.items.length} 道`;
+
+        const chev = document.createElement("span");
+        chev.className = "studio__group-chev";
+        chev.textContent = "+";
+        chev.setAttribute("aria-hidden", "true");
+
+        summary.append(title, count, chev);
+        details.append(summary);
+
+        const list = document.createElement("div");
+        list.className = "studio__group-list";
         group.items.forEach((item) => {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "studio__pick";
           if (selected.includes(item.name)) button.classList.add("is-on");
-          button.innerHTML = `<span>${item.name}</span><span class="studio__pick-price">${item.price}</span>`;
+          button.innerHTML = `<span class="studio__pick-name">${item.name}</span><span class="studio__pick-leader" aria-hidden="true"></span><span class="studio__pick-price">${item.price}</span>`;
           button.addEventListener("click", () => {
             const existing = selected.indexOf(item.name);
             if (existing >= 0) {
@@ -297,8 +334,11 @@ const payload = {
             renderSlots();
             draw();
           });
-          pickerBody.append(button);
+          list.append(button);
         });
+
+        details.append(list);
+        pickerBody.append(details);
       });
     };
 
@@ -462,6 +502,10 @@ const payload = {
 
     dialog.querySelector("[data-picker-close]").addEventListener("click", closePicker);
     dialog.querySelector("[data-studio-close]").addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (event) => {
+      // 点卡片外的遮罩关闭；点卡片内部不关
+      if (event.target === dialog) dialog.close();
+    });
 
     const open = async () => {
       renderSlots();

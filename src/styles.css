@@ -1210,13 +1210,13 @@ body:has(.shop-toc) .site-footer{
   font-size: 1rem;
 }.menu-item__leader{
   flex: 1;
-  min-width: 1.25rem;
-  height: 0.7em;
-  background-image: radial-gradient(circle, rgb(117 97 76 / 0.7) 1.2px, transparent 1.45px);
-  background-size: 8px 100%;
-  background-position: 0 50%;
-  background-repeat: repeat-x;
-  transform: translateY(-0.18em);
+  min-width: 1.5rem;
+  height: 0.55em;
+  align-self: center;
+  background-image: radial-gradient(circle, rgb(117 97 76 / 0.72) 1.5px, transparent 1.8px);
+  background-size: 10px 100%;
+  background-position: center;
+  background-repeat: space;
 }.menu-item__price{
   flex: none;
   color: var(--cream);
@@ -2209,6 +2209,13 @@ body:has(.shop-toc) .site-footer{
   padding: 0.55rem 0.9rem;
   font-size: 0.95rem;
   cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+
+.studio__close:hover {
+  border-color: var(--ember);
+  background: rgb(217 138 52 / 0.12);
+  color: var(--cream);
 }
 
 .studio__picker {
@@ -2246,18 +2253,60 @@ body:has(.shop-toc) .site-footer{
 }
 
 .studio__group {
-  margin: 1rem 0 0.35rem;
+  border-bottom: 1px solid rgb(117 97 76 / 0.35);
+}
+
+.studio__group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 0.6rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.studio__group-head::-webkit-details-marker {
+  display: none;
+}
+
+.studio__group-title {
+  flex: 1;
+  margin: 0;
+}
+
+.studio__group-count {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.studio__group-chev {
+  color: var(--muted-foreground);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.studio__group[open] .studio__group-chev {
+  transform: rotate(45deg);
+}
+
+.studio__group-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0 0.9rem;
+  padding: 0.1rem 0 0.8rem;
 }
 
 .studio__pick {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  align-items: baseline;
+  gap: 0.5rem;
   border: 1px solid transparent;
   background: transparent;
   color: rgb(240 231 216 / 0.9);
   font: inherit;
-  padding: 0.55rem 0.6rem;
+  padding: 0.5rem 0.6rem;
   text-align: left;
   cursor: pointer;
 }
@@ -2271,10 +2320,29 @@ body:has(.shop-toc) .site-footer{
   color: var(--ember);
 }
 
+.studio__pick-name {
+  min-width: 0;
+}
+
+.studio__pick-leader {
+  flex: 1;
+  min-width: 1.25rem;
+  height: 0.55em;
+  align-self: center;
+  background-image: radial-gradient(circle, rgb(117 97 76 / 0.72) 1.5px, transparent 1.8px);
+  background-size: 10px 100%;
+  background-position: center;
+  background-repeat: space;
+}
+
 .studio__pick-price {
+  flex: none;
   color: var(--muted-foreground);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .studio__empty {
@@ -2654,6 +2722,13 @@ body:has(.shop-toc) .site-footer{
   padding: 0.55rem 0.9rem;
   font-size: 0.95rem;
   cursor: pointer;
+  transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+}
+
+.studio__close:hover {
+  border-color: var(--ember);
+  background: rgb(217 138 52 / 0.12);
+  color: var(--cream);
 }
 
 .studio__picker {
@@ -2691,18 +2766,60 @@ body:has(.shop-toc) .site-footer{
 }
 
 .studio__group {
-  margin: 1rem 0 0.35rem;
+  border-bottom: 1px solid rgb(117 97 76 / 0.35);
+}
+
+.studio__group-head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 0.6rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.studio__group-head::-webkit-details-marker {
+  display: none;
+}
+
+.studio__group-title {
+  flex: 1;
+  margin: 0;
+}
+
+.studio__group-count {
+  color: var(--muted-foreground);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.studio__group-chev {
+  color: var(--muted-foreground);
+  font-size: 1.1rem;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.studio__group[open] .studio__group-chev {
+  transform: rotate(45deg);
+}
+
+.studio__group-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0 0.9rem;
+  padding: 0.1rem 0 0.8rem;
 }
 
 .studio__pick {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
+  align-items: baseline;
+  gap: 0.5rem;
   border: 1px solid transparent;
   background: transparent;
   color: rgb(240 231 216 / 0.9);
   font: inherit;
-  padding: 0.55rem 0.6rem;
+  padding: 0.5rem 0.6rem;
   text-align: left;
   cursor: pointer;
 }
@@ -2716,10 +2833,29 @@ body:has(.shop-toc) .site-footer{
   color: var(--ember);
 }
 
+.studio__pick-name {
+  min-width: 0;
+}
+
+.studio__pick-leader {
+  flex: 1;
+  min-width: 1.25rem;
+  height: 0.55em;
+  align-self: center;
+  background-image: radial-gradient(circle, rgb(117 97 76 / 0.72) 1.5px, transparent 1.8px);
+  background-size: 10px 100%;
+  background-position: center;
+  background-repeat: space;
+}
+
 .studio__pick-price {
+  flex: none;
   color: var(--muted-foreground);
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .studio__empty {
