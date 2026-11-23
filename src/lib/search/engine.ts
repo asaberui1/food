@@ -12,6 +12,24 @@ import type { MatchRoute, PreparedDish, SearchData, SearchHit, SearchOutcome } f
  * 同一道菜多路命中取最高分，不累加。
  */
 
+/** 最长公共子串长度，用来在同一个 canon 组里挑更贴近用户原话的展示名 */
+function longestCommonSubstring(a: string, b: string): number {
+  if (!a || !b) return 0;
+  let best = 0;
+  const previous = new Array<number>(b.length + 1).fill(0);
+  for (let i = 1; i <= a.length; i += 1) {
+    const current = new Array<number>(b.length + 1).fill(0);
+    for (let j = 1; j <= b.length; j += 1) {
+      if (a[i - 1] === b[j - 1]) {
+        current[j] = previous[j - 1] + 1;
+        if (current[j] > best) best = current[j];
+      }
+    }
+    for (let j = 0; j <= b.length; j += 1) previous[j] = current[j];
+  }
+  return best;
+}
+
 const SCORE = {
   nameExact: 100,
   namePrefix: 90,
@@ -61,8 +79,8 @@ type ScoredHit = {
   shopName: string;
   score: number;
   route: MatchRoute;
-  explain?: string;
   tie: number;
+  overlap: number;
   popularity: number;
   key: string;
 };
@@ -71,6 +89,7 @@ type GroupedHit = SearchHit & {
   tie: number;
   popularity: number;
   minPrice: number;
+  overlap: number;
 };
 
 /** 只取价格里的第一个数字：¥18、¥15/22、¥16（小）都按 18 / 15 / 16 排 */
@@ -288,6 +307,48 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     return results;
   };
 
+  /** 零结果时给 2–3 个可直接点击的菜名建议；只在默认无结果时使用 */
+  const suggestNames = (query: string, queryCanon: string): string[] => {
+    if (!/[\u4e00-\u9fff]/.test(query) || codePointLength(query) < 2) return [];
+    const ranked = new Map<string, number>();
+
+    const add = (name: string, score: number): void => {
+      if (codePointLength(name) <= 2 || GENERIC.has(normalizeText(name))) return;
+      if (name === query) return;
+      ranked.set(name, Math.max(ranked.get(name) ?? 0, score));
+    };
+
+    const relation = NEAR_RELATIONS[queryCanon];
+    if (relation) {
+      for (const dish of dishes) {
+        const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
+        if (relation.targets.some((target) => targets.some((value) => value.includes(target)))) {
+          add(dish.name, 100);
+        }
+      }
+    }
+
+    const found = nameFuse.search(query, { limit: 15 });
+    for (const result of found) {
+      const dish = result.item;
+      const targets = dedupe([dish.norm, dish.canon, ...dish.aliases, ...dish.aliasCanon]);
+      const direct = targets.find((target) => target.includes(query));
+      if (direct) {
+        add(dish.name, 80);
+        continue;
+      }
+      const match = closest(query, targets, 2);
+      if (!match) continue;
+      const score = fuzzyScore(query, match);
+      if (score >= 45) add(dish.name, score);
+    }
+
+    return [...ranked.entries()]
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], "zh-Hans-CN"))
+      .slice(0, 3)
+      .map(([name]) => name);
+  };
+
   const run = (query: string): SearchOutcome => {
     if (!query) return { hits: [], total: 0 };
 
@@ -318,7 +379,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     for (const dish of dishes) {
       let score = 0;
       let route: MatchRoute = "name";
-      let matchExplain: string | undefined;
+      const overlap = longestCommonSubstring(query, dish.norm);
 
       // 1) 菜名精确 / 2) 前缀 / 3) 包含（规范化后比较，别名差异已在 canon 里抹平）
       if (dish.norm === query || dish.canon === queryCanon) {
@@ -446,7 +507,6 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         ) {
           score = nearScore;
           route = "nearAlias";
-          matchExplain = nearRelation.note;
         }
       }
 
@@ -495,8 +555,8 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           shopName: shop?.name ?? "",
           score,
           route,
-          explain: matchExplain,
           tie,
+          overlap,
           popularity: dish.popularity,
           key: `${dish.shop}:${dish.norm}`,
         });
@@ -529,8 +589,8 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           shopName: shop?.name ?? "",
           score,
           route: "fuzzy",
-          explain: existing?.explain,
           tie: existing?.tie ?? 0,
+          overlap: existing?.overlap ?? 0,
           popularity: dish.popularity,
           key: `${dish.shop}:${dish.norm}`,
         });
@@ -547,6 +607,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     const rows = [...unique.values()].sort(
       (a, b) =>
         b.score - a.score ||
+        b.overlap - a.overlap ||
         b.tie - a.tie ||
         b.popularity - a.popularity ||
         a.name.length - b.name.length ||
@@ -565,20 +626,21 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
     const groups: GroupedHit[] = [];
     for (const [canon, bucket] of buckets) {
-      // 展示名：用户输入的字面写法 > 规范写法（norm === canon）> 出现次数 > 短 > 字典序
+      // 展示名：用户输入的字面写法 > 与原话重合最多（鲜肉包优先鲜肉小笼包）
+      // > 规范写法（norm === canon）> 出现次数 > 短 > 字典序
       const literal = bucket.find((row) => row.norm === query);
-      const standard = bucket.find((row) => row.norm === row.canon);
-      let display = literal ?? standard;
-      if (!display) {
-        const counts = new Map<string, number>();
-        for (const row of bucket) counts.set(row.name, (counts.get(row.name) ?? 0) + 1);
-        display = [...bucket].sort(
+      const counts = new Map<string, number>();
+      for (const row of bucket) counts.set(row.name, (counts.get(row.name) ?? 0) + 1);
+      const display =
+        literal ??
+        [...bucket].sort(
           (a, b) =>
+            b.overlap - a.overlap ||
+            Number(b.norm === b.canon) - Number(a.norm === a.canon) ||
             (counts.get(b.name) ?? 0) - (counts.get(a.name) ?? 0) ||
             a.name.length - b.name.length ||
             a.name.localeCompare(b.name, "zh-Hans-CN"),
         )[0];
-      }
       if (!display) continue;
 
       // 同一家店同一个 canon 只留一条，取便宜的那条
@@ -593,6 +655,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
       const shops = [...byShop.values()]
         .sort(
           (a, b) =>
+            b.overlap - a.overlap ||
             priceRank(a.price) - priceRank(b.price) ||
             a.shopName.localeCompare(b.shopName, "zh-Hans-CN"),
         )
@@ -620,18 +683,19 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         canon,
         score: best.score,
         route: best.route,
-        explain: best.explain,
         shops,
         aliases,
         tie: Math.max(...bucket.map((row) => row.tie)),
         popularity: Math.max(...bucket.map((row) => row.popularity)),
         minPrice,
+        overlap: Math.max(...bucket.map((row) => row.overlap)),
       });
     }
 
     groups.sort(
       (a, b) =>
         b.score - a.score ||
+        b.overlap - a.overlap ||
         b.tie - a.tie ||
         b.popularity - a.popularity ||
         a.name.length - b.name.length ||
@@ -646,13 +710,21 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
     const total = visibleGroups.length;
     const hits = visibleGroups.map(
-      ({ tie: _tie, popularity: _popularity, minPrice: _minPrice, ...hit }) => hit,
+      ({ tie: _tie, popularity: _popularity, minPrice: _minPrice, overlap: _overlap, ...hit }) =>
+        hit,
     );
 
     const reason: SearchOutcome["reason"] =
       total === 0 && queryLength <= 2 && !knownTerm && !synonymQuery ? "short" : undefined;
 
-    return { hits, total, ...(reason ? { reason } : {}) };
+    const suggestions = total === 0 && reason === undefined ? suggestNames(query, queryCanon) : [];
+
+    return {
+      hits,
+      total,
+      ...(reason ? { reason } : {}),
+      ...(suggestions.length > 0 ? { suggestions } : {}),
+    };
   };
 
   return {

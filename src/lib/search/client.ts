@@ -55,14 +55,10 @@ function groupPriceLabel(hit: SearchHit): string {
   return `¥${min}–${max}`;
 }
 
-function approximationBadge(explain?: string): HTMLSpanElement {
+function approximationBadge(): HTMLSpanElement {
   const badge = document.createElement("span");
   badge.className = "search-result__approx";
   badge.textContent = "近似";
-  if (explain) {
-    badge.title = explain;
-    badge.setAttribute("aria-label", `近似：${explain}`);
-  }
   return badge;
 }
 
@@ -116,7 +112,7 @@ function buildResult(hit: SearchHit, base: string): HTMLLIElement {
     const meta = document.createElement("p");
     meta.className = "search-result__meta";
     meta.textContent = shop.group ? `${shop.shopName} · ${shop.group}` : shop.shopName;
-    if (approximate) meta.append(" ", approximationBadge(hit.explain));
+    if (approximate) meta.append(" ", approximationBadge());
 
     item.append(link, meta);
     return item;
@@ -133,7 +129,7 @@ function buildResult(hit: SearchHit, base: string): HTMLLIElement {
   name.textContent = hit.name;
   title.append(name);
 
-  if (approximate) title.append(approximationBadge(hit.explain));
+  if (approximate) title.append(approximationBadge());
 
   const count = document.createElement("span");
   count.className = "search-result__same";
@@ -273,12 +269,33 @@ export function mountSearch(): void {
     if (!currentHits.length) {
       if (moreButton) moreButton.hidden = true;
       empty.hidden = false;
-      empty.textContent =
-        outcome.reason === "generic"
-          ? `「${raw.trim()}」是个大类，范围太大。换具体菜名试试，比如「鱼香肉丝」「回锅肉」。`
-          : outcome.reason === "short"
-            ? "输入字数较少，暂时没有置信度高的结果，多写两个字试试吧。"
-            : "没有搜到这道菜，换个关键词试试吧。";
+      empty.replaceChildren();
+
+      if (outcome.reason === "generic") {
+        empty.textContent = `「${raw.trim()}」是个大类，范围太大。换具体菜名试试，比如「鱼香肉丝」「回锅肉」。`;
+      } else if (outcome.reason === "short") {
+        empty.textContent = "输入字数较少，暂时没有置信度高的结果，多写两个字试试吧。";
+      } else {
+        empty.append("没有搜到这道菜，换个关键词试试吧。");
+        const suggestions = outcome.suggestions ?? [];
+        if (suggestions.length > 0) {
+          empty.append("你可能想找：");
+          suggestions.forEach((name, i) => {
+            if (i > 0) empty.append("、");
+            const chip = document.createElement("button");
+            chip.type = "button";
+            chip.className = "search-suggestion";
+            chip.textContent = name;
+            chip.addEventListener("click", () => {
+              input.value = name;
+              input.focus();
+              input.dispatchEvent(new Event("input", { bubbles: true }));
+            });
+            empty.append(chip);
+          });
+        }
+      }
+
       status.textContent = "";
       return;
     }

@@ -1295,6 +1295,22 @@ body:has(.shop-toc) .site-footer{
   color: var(--muted-foreground);
   font-size: 0.95rem;
   line-height: 1.6;
+}.search-suggestion{
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--ember);
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}.search-suggestion:hover,
+.search-suggestion:focus-visible{
+  color: var(--cream);
+}.search-suggestion:focus-visible{
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
 }.search-status{
   margin: 0 0 1.25rem;
   color: var(--ember);

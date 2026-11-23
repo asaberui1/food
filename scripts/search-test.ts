@@ -546,6 +546,7 @@ if (existsSync(builtPath)) {
       ["花菇", "香菇"],
       ["蚬子", "花蛤"],
       ["粿条", "河粉"],
+      ["骨头汤", "海带排骨汤"],
     ];
 
     for (const [query, fragment] of realAliasChecks) {
@@ -559,6 +560,12 @@ if (existsSync(builtPath)) {
     const tofuFuzzy = real.search("豆腐干").hits.find((item) => item.name === "豆腐皮");
     assert.equal(tofuFuzzy?.score, 47);
     assert.equal(tofuFuzzy?.route, "fuzzy");
+
+    assert.equal(real.search("鲜肉包").hits[0]?.name, "鲜肉小笼包");
+    const suggest = real.search("酸菜鱼面").suggestions ?? [];
+    assert.ok(suggest.includes("酸菜鱼"), "零结果建议应包含酸菜鱼");
+    assert.ok(suggest.length <= 3, "零结果建议最多 3 个");
+    assert.equal(real.search("骨头汤").hits[0]?.route, "nearAlias");
 
     for (const query of ["土豆", "白菜", "鸡蛋"]) {
       assert.ok(
