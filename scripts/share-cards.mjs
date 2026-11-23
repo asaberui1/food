@@ -179,7 +179,7 @@ async function buildCard(dir) {
     })
     .join("")}
 
-  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="30" font-weight="600" fill="#f9f2e6" letter-spacing="1">创智食单</text>
+  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="30" font-weight="400" fill="#f9f2e6" letter-spacing="1">创智食单</text>
 </svg>`;
 
   const overlay = Buffer.from(svg);

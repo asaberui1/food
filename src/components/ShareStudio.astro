@@ -210,22 +210,18 @@ const payload = {
       ctx.shadowBlur = 0;
       ctx.shadowOffsetY = 0;
 
-      const qrSize = 168;
-      const pad = 12;
+      const qrSize = 235;
       const qrX = 1080 - 88 - qrSize;
       const qrY = 1440 - 120 - qrSize;
       if (qrReady) {
-        ctx.fillStyle = "#fbf0dc";
-        ctx.beginPath();
-        ctx.roundRect(qrX - pad, qrY - pad, qrSize + pad * 2, qrSize + pad * 2, 14);
-        ctx.fill();
+        // 二维码本身已有浅色留白，直接按默认分享卡的大小与位置画，不再额外加圆角底板
         ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
       }
 
       ctx.fillStyle = "#f9f2e6";
-      ctx.font = '600 30px "Noto Serif SC", serif';
+      ctx.font = '30px "Noto Serif SC", serif';
       ctx.textAlign = "right";
-      ctx.fillText("创智食单", 1080 - 88, qrY + qrSize + 46);
+      ctx.fillText("创智食单", 1080 - 88, qrY + qrSize + 42);
       ctx.textAlign = "left";
     };
 
@@ -533,7 +529,7 @@ const payload = {
       draw();
 
       // 字体按需加载，首帧可能还没到位，加载完再画一次
-      const sample = [data.name, data.cuisine, data.address, ...selected].join("");
+      const sample = [data.name, data.cuisine, data.address, "创智食单", ...selected].join("");
       try {
         await Promise.all([
           document.fonts.load('500 84px "Noto Serif SC"', sample),
