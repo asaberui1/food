@@ -204,10 +204,10 @@ const payload = {
         ctx.drawImage(qr, qrX, qrY, qrSize, qrSize);
       }
 
-      ctx.fillStyle = "rgba(240,231,216,0.6)";
-      ctx.font = '22px "PingFang SC", sans-serif';
+      ctx.fillStyle = "#ffffff";
+      ctx.font = '600 30px "Noto Serif SC", serif';
       ctx.textAlign = "right";
-      ctx.fillText("创智食单", 1080 - 88, qrY + qrSize + 42);
+      ctx.fillText("创智食单", 1080 - 88, qrY + qrSize + 46);
       ctx.textAlign = "left";
     };
 
@@ -216,7 +216,12 @@ const payload = {
         const hit = group.items.find((item) => item.name === name);
         if (hit) return hit.price;
       }
-      const dish = (data.dishes || []).find((d) => d === name);
+      const base = name.replace(/（.*$/, "");
+      const bases = [base, base.replaceAll("鳜", "桂"), base.replaceAll("桂", "鳜")];
+      for (const group of data.menu || []) {
+        const hit = group.items.find((item) => bases.some((candidate) => item.name.startsWith(candidate)));
+        if (hit) return hit.price;
+      }
       return "";
     };
 
@@ -402,6 +407,29 @@ const payload = {
       applyZoom();
     });
 
+    // 滚轮缩放底图；阻止滚到弹窗后面的页面。换菜列表本身要能滚，放行。
+    document.addEventListener(
+      "wheel",
+      (event) => {
+        if (!dialog.open) return;
+        const target = event.target instanceof Element ? event.target : null;
+        if (target?.closest("[data-picker-body]")) return;
+        event.preventDefault();
+        if (!target?.closest(".studio__card")) return;
+        const factor = event.deltaY < 0 ? 1.1 : 1 / 1.1;
+        zoom = Math.max(1, Math.min(2.4, Math.round(zoom * factor * 100) / 100));
+        zoomIndex = ZOOMS.reduce(
+          (best, value, index) =>
+            Math.abs(value - zoom) < Math.abs(ZOOMS[best] - zoom) ? index : best,
+          0,
+        );
+        zoomButton.setAttribute("aria-label", `缩放底图，当前 ${Math.round(zoom * 100)}%`);
+        zoomButton.title = `缩放：${Math.round(zoom * 100)}%`;
+        draw();
+      },
+      { passive: false },
+    );
+
     // 生成
     const generate = dialog.querySelector("[data-studio-generate]");
     const edit = dialog.querySelector("[data-studio-edit]");
@@ -455,7 +483,11 @@ const payload = {
     };
 
     document.querySelectorAll("[data-studio-open]").forEach((button) => {
-      button.addEventListener("click", open);
+      button.addEventListener("click", (event) => {
+        // 触发器本身是 <a href="分享卡大图">，JS 可用时拦掉跳转，直接开自定义弹窗
+        event.preventDefault();
+        open();
+      });
     });
 
     window.addEventListener("resize", () => {

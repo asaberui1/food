@@ -72,6 +72,18 @@ export function isVegetableCategory(value: string): boolean {
   return VEGETABLE_CATEGORY_TERMS.has(normalizeText(value));
 }
 
+/**
+ * 两字菜名里，本身就算一道菜的（肴蹄、河鳗、烧麦…）放出来；
+ * 涮菜、浇头、配料（光面、土豆、卤蛋…）仍然按原规则隐藏。
+ */
+const STANDALONE_TWO_CHAR = new Set(
+  ["肴蹄", "河鳗", "河虾", "甲鱼", "草虾", "青蟹", "炝饼", "烧麦", "麻饼", "羊糕"].map(normalizeText),
+);
+
+export function isStandaloneTwoChar(value: string): boolean {
+  return STANDALONE_TWO_CHAR.has(normalizeText(value));
+}
+
 export const SYNONYM_GROUPS: readonly (readonly string[])[] = [
   ...ALIAS_RELATIONS.exact.map((relation) => [relation.canonical, ...relation.members]),
   ...VEGETABLE_GROUPS.map((group) => [group.canonical, ...group.aliases]),

@@ -2,6 +2,7 @@ import Fuse from "fuse.js";
 import {
   GENERIC_TERMS,
   NEAR_RELATIONS,
+  isStandaloneTwoChar,
   isVegetableCategory,
   vegetableCanonical,
   vegetablesIn,
@@ -750,6 +751,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     const visibleGroups = groups.filter(
       (group) =>
         codePointLength(group.name) > 2 ||
+        isStandaloneTwoChar(group.name) ||
         ((queryVeg !== undefined || vegetableCategory) && vegetablesIn(group.name).length > 0),
     );
 

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { parse as parseYaml } from "yaml";
-import { GENERIC_TERMS, vegetablesIn } from "../src/lib/search/dictionary";
+import { GENERIC_TERMS, isStandaloneTwoChar, vegetablesIn } from "../src/lib/search/dictionary";
 import { createSearchEngine } from "../src/lib/search/engine";
 import { codePointLength, normalizeText } from "../src/lib/search/normalize";
 import type { SearchData, SearchHit } from "../src/lib/search/types";
@@ -164,7 +164,7 @@ for (const dish of targetDishes) {
   const shopId = shop?.id ?? "";
   const label = `${shop?.name ?? "?"} / ${dish.name}`;
 
-  if (codePointLength(dish.name) <= 2) {
+  if (codePointLength(dish.name) <= 2 && !isStandaloneTwoChar(dish.name)) {
     if (deep && vegetablesIn(dish.name).length === 0) {
       warnings.push(`[搜索] ${label} 是两字菜名，按现有规则不会出现在结果里`);
     }

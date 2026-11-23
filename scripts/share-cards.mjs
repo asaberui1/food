@@ -16,6 +16,7 @@ const SITE = "https://asaberui1.github.io/food";
 
 const W = 1080;
 const H = 1440;
+const QR_SIZE = 235; // 47 个模块 × 5px，二维码和中心垫片都按整模块对齐
 
 function parseList(text, key) {
   const m = text.match(new RegExp(`^${key}:\\s*\\[([^\\]]*)\\]`, "m"));
@@ -25,6 +26,68 @@ function parseList(text, key) {
 function parseScalar(text, key) {
   const m = text.match(new RegExp(`^${key}:\\s*(.+)$`, "m"));
   return m ? m[1].trim().replace(/^["']|["']$/g, "") : "";
+}
+
+/** 菜单里的菜名 → 价格，推荐菜也复用同一份价格表 */
+function parsePrices(text) {
+  const prices = new Map();
+  for (const m of text.matchAll(/\{\s*name:\s*([^,}]+),\s*price:\s*([^}]+)\s*\}/g)) {
+    prices.set(m[1].trim(), m[2].trim());
+  }
+  for (const m of text.matchAll(/\n\s*- name:\s*(.+)\n\s*price:\s*(.+)/g)) {
+    prices.set(m[1].trim(), m[2].trim());
+  }
+  return prices;
+}
+
+function dishPrice(prices, name) {
+  if (prices.has(name)) return prices.get(name);
+  const base = name.replace(/（.*$/, "");
+  const bases = [base, base.replaceAll("鳜", "桂"), base.replaceAll("桂", "鳜")];
+  for (const [key, value] of prices) {
+    if (bases.some((candidate) => key.startsWith(candidate))) return value;
+  }
+  return "";
+}
+
+const QR_LOGO = "public/logo-192.png";
+let logoBuffer;
+
+/** 二维码中心压一个「创智食单」logo；H 级容错，垫片按二维码模块对齐，避免切出半格 */
+async function qrWithSeal(url, size) {
+  const qr = QRCode.create(url, { errorCorrectionLevel: "H" });
+  const totalModules = qr.modules.size + 2; // 左右各 1 模块 quiet zone
+  // 取整模块像素，二维码宽高都落在模块边界上，垫片才不会切出半格
+  const modulePx = Math.max(2, Math.round(size / totalModules));
+  const qrPx = totalModules * modulePx;
+  const raw = await QRCode.toBuffer(url, {
+    width: qrPx,
+    margin: 1,
+    errorCorrectionLevel: "H",
+    color: { dark: "#17130fff", light: "#fbf0dcff" },
+  });
+
+  logoBuffer ??= await readFile(QR_LOGO);
+  const logoModules = Math.max(3, Math.round(totalModules * 0.32));
+  const borderModules = 1;
+  const plateModules = logoModules + borderModules * 2;
+  const startModule = Math.floor((totalModules - plateModules) / 2);
+  const sealSize = logoModules * modulePx;
+  const plateSize = plateModules * modulePx;
+  const plateOffset = startModule * modulePx;
+  const seal = await sharp(logoBuffer).resize(sealSize, sealSize, { fit: "cover" }).png().toBuffer();
+  // 垫片和二维码浅色模块同色，边缘对齐整模块
+  const plate = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${plateSize}" height="${plateSize}"><rect width="${plateSize}" height="${plateSize}" fill="#fbf0dc"/></svg>`,
+  );
+
+  return sharp(raw)
+    .composite([
+      { input: plate, left: plateOffset, top: plateOffset },
+      { input: seal, left: plateOffset + borderModules * modulePx, top: plateOffset + borderModules * modulePx },
+    ])
+    .png()
+    .toBuffer();
 }
 
 /** 没有中文字体时，librsvg 会用 last-resort 字体把汉字画成「53 4E」这种码位方块 */
@@ -60,9 +123,10 @@ async function buildCard(dir) {
     : [];
 
   const url = `${SITE}/restaurants/${dir}/`;
-  const qr = await QRCode.toBuffer(url, { width: 420, margin: 1, color: { dark: "#17130fff", light: "#fbf0dcff" } });
+  const prices = parsePrices(md);
+  const qr = await qrWithSeal(url, QR_SIZE);
   await mkdir(QR_OUT, { recursive: true });
-  await writeFile(join(QR_OUT, `${dir}.png`), await QRCode.toBuffer(url, { width: 600, margin: 1, color: { dark: "#17130fff", light: "#fbf0dcff" } }));
+  await writeFile(join(QR_OUT, `${dir}.png`), await qrWithSeal(url, 600));
 
   let background = sharp({ create: { width: W, height: H, channels: 3, background: "#17130f" } });
   let hasCover = true;
@@ -92,17 +156,17 @@ async function buildCard(dir) {
   <text x="88" y="1112" font-family="Noto Sans CJK SC, PingFang SC, Noto Sans SC, sans-serif" font-size="34" fill="#f0b979">${escapeXml(cuisine)}${avg ? ` · 人均约 ¥${avg}` : ""}</text>
   <text x="88" y="1164" font-family="Noto Sans CJK SC, PingFang SC, Noto Sans SC, sans-serif" font-size="32" fill="rgba(240,231,216,0.76)">${escapeXml(address)}</text>
   ${dishes
-    .map(
-      (dish, index) =>
-        `<text x="88" y="${1226 + index * 54}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="34" fill="rgba(236,226,206,0.94)">· ${escapeXml(dish)}</text>`,
-    )
+    .map((dish, index) => {
+      const price = dishPrice(prices, dish);
+      return `<text x="88" y="${1226 + index * 54}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="34" fill="rgba(236,226,206,0.94)">· ${escapeXml(dish)}${price ? `  ${escapeXml(price)}` : ""}</text>`;
+    })
     .join("")}
 
-  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="Noto Sans CJK SC, PingFang SC, Noto Sans SC, sans-serif" font-size="22" fill="rgba(240,231,216,0.6)">创智食单</text>
+  <text x="${W - 88}" y="${1440 - 120 + 42}" text-anchor="end" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="30" font-weight="600" fill="#ffffff" letter-spacing="1">创智食单</text>
 </svg>`;
 
   const overlay = Buffer.from(svg);
-  const qrSize = 168;
+  const qrSize = QR_SIZE;
   const qrX = W - 88 - qrSize;
   const qrY = H - 120 - qrSize;
 

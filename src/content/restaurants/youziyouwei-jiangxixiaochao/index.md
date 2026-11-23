@@ -35,6 +35,9 @@ bills:
   - people: 5
     dishes: [韭香田螺肉, 番茄蛋汤, 香辣猪头肉, 空心菜, 赣味香辣小鱼虾, 烟笋腊肉, 农家一碗香]
     total: 222
+  - people: 3
+    dishes: [干锅井冈山豆皮, 香菇小青菜, 拆骨肉荷包蛋, 外婆菜回锅肉]
+    total: 124
 order:
   url: https://api.mobile.meituan.com/qrcode/saasRebate/code/35503886756828
   qr: ./order-qr.png
@@ -85,7 +88,9 @@ menu:
       - { name: 农家锅巴, price: ¥28 }
       - { name: 小酥肉, price: ¥32 }
       - { name: 糖醋里脊, price: ¥36 }
-      - { name: 外婆菜回锅肉, price: ¥30 }
+      - name: 外婆菜回锅肉
+        price: ¥30
+        image: ./waipocai-huiguorou.webp
       - { name: 韭香田螺肉, price: ¥32 }
       - { name: 农家一碗香, price: ¥36 }
       - { name: 香辣猪头肉, price: ¥36 }
@@ -95,7 +100,9 @@ menu:
       - { name: 爆炒腰花, price: ¥36 }
       - { name: 肝腰合炒, price: ¥38 }
       - { name: 烟笋腊肉, price: ¥38 }
-      - { name: 拆骨肉荷包蛋, price: ¥38 }
+      - name: 拆骨肉荷包蛋
+        price: ¥38
+        image: ./chaigu-rou-hebaodan.webp
       - { name: 土豆烧肉, price: ¥38 }
       - { name: 香辣花甲, price: ¥38 }
       - { name: 啤酒鸭, price: ¥42 }
@@ -125,7 +132,9 @@ menu:
       - { name: 干锅手撕包菜, price: ¥28 }
       - { name: 干锅土豆片, price: ¥28 }
       - { name: 干锅花菜, price: ¥30 }
-      - { name: 干锅井冈山豆皮, price: ¥32 }
+      - name: 干锅井冈山豆皮
+        price: ¥32
+        image: ./ganguo-jinggangshan-doupi.webp
       - { name: 干锅鹿茸菇, price: ¥46 }
       - { name: 干锅牛杂, price: ¥48 }
       - { name: 干锅牛腩, price: ¥58 }
@@ -139,7 +148,9 @@ menu:
   - title: 田园时蔬
     items:
       - { name: 酸辣大白菜, price: ¥18 }
-      - { name: 香菇小青菜, price: ¥18 }
+      - name: 香菇小青菜
+        price: ¥18
+        image: ./xianggu-xiaoqingcai.webp
       - { name: 生菜, price: ¥18 }
       - { name: 油麦菜, price: ¥18 }
       - { name: 空心菜, price: ¥18 }

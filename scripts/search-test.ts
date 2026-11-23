@@ -620,6 +620,11 @@ if (existsSync(builtPath)) {
       ["粿条", "河粉"],
       ["骨头汤", "海带排骨汤"],
       ["鱼泡", "干锅鱼籽鱼鳔"],
+      ["双椒烤黑鱼", "烤黑鱼"],
+      ["双椒黑鱼", "烤黑鱼"],
+      ["落花生", "长生果"],
+      ["花生", "长生果"],
+      ["鳗鱼", "河鳗"],
     ];
 
     for (const [query, fragment] of realAliasChecks) {
@@ -647,6 +652,12 @@ if (existsSync(builtPath)) {
     assert.ok(suggest.includes("酸菜鱼"), "零结果建议应包含酸菜鱼");
     assert.ok(suggest.length <= 3, "零结果建议最多 3 个");
     assert.equal(real.search("骨头汤").hits[0]?.route, "nearAlias");
+
+    assert.ok(real.search("肴蹄").hits.some((item) => item.name === "肴蹄"));
+    assert.ok(real.search("河鳗").hits.some((item) => item.name === "河鳗"));
+    assert.ok(real.search("鳗鱼").hits.some((item) => item.name === "河鳗"));
+    assert.equal(real.search("光面").hits.length, 0);
+    assert.ok(real.search("卤蛋").hits.every((item) => [...item.name].length > 2));
 
     for (const query of ["土豆", "白菜", "鸡蛋"]) {
       assert.ok(
