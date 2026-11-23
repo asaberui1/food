@@ -12,20 +12,25 @@ import type { MatchRoute, PreparedDish, SearchData, SearchHit, SearchOutcome } f
  * 同一道菜多路命中取最高分，不累加。
  */
 
-/** 最长公共子串长度，用来在同一个 canon 组里挑更贴近用户原话的展示名 */
-function longestCommonSubstring(a: string, b: string): number {
-  if (!a || !b) return 0;
+/**
+ * 字面重合分：公共子串越长越好；同样长时，匹配位置越靠前越好。
+ * 这样「肉包」会优先「鲜肉小笼包」里的“肉”，而不是「豆腐小笼包」里的“包”。
+ */
+function literalOverlapScore(query: string, target: string): number {
+  if (!query || !target) return 0;
   let best = 0;
-  const previous = new Array<number>(b.length + 1).fill(0);
-  for (let i = 1; i <= a.length; i += 1) {
-    const current = new Array<number>(b.length + 1).fill(0);
-    for (let j = 1; j <= b.length; j += 1) {
-      if (a[i - 1] === b[j - 1]) {
+  const previous = new Array<number>(target.length + 1).fill(0);
+  for (let i = 1; i <= query.length; i += 1) {
+    const current = new Array<number>(target.length + 1).fill(0);
+    for (let j = 1; j <= target.length; j += 1) {
+      if (query[i - 1] === target[j - 1]) {
         current[j] = previous[j - 1] + 1;
-        if (current[j] > best) best = current[j];
+        const queryStart = i - current[j];
+        const score = current[j] * 10 - queryStart;
+        if (score > best) best = score;
       }
     }
-    for (let j = 0; j <= b.length; j += 1) previous[j] = current[j];
+    for (let j = 0; j <= target.length; j += 1) previous[j] = current[j];
   }
   return best;
 }
@@ -379,7 +384,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     for (const dish of dishes) {
       let score = 0;
       let route: MatchRoute = "name";
-      const overlap = longestCommonSubstring(query, dish.norm);
+      const overlap = literalOverlapScore(query, dish.norm);
 
       // 1) 菜名精确 / 2) 前缀 / 3) 包含（规范化后比较，别名差异已在 canon 里抹平）
       if (dish.norm === query || dish.canon === queryCanon) {
