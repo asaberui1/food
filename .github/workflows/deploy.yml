@@ -24,7 +24,8 @@ jobs:
       - name: Install CJK fonts (分享卡渲染用)
         run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk
 
-      # npm run build 的 postbuild 会执行 npm run test:search；索引自检失败会阻断部署
+      # npm run build 的 postbuild 会执行 npm run test:search && npm run audit:shops；
+      # 地图点、菜单价格格式、搜索自检任一失败都会阻断部署
       - name: Build site
         uses: withastro/action@v6
         with:

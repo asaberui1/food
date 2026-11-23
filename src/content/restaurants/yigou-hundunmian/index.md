@@ -13,7 +13,7 @@ gallery:
 dishes:
   - name: 豌杂面
     price: ¥18
-    note: 重庆做法，豌豆耙软、杂酱咸香，拌开再吃。
+    note: 重庆做法，豌豆酥脆、杂酱咸香，拌开再吃。
     image: ./wanzamian.webp
   - name: 尖椒香干回锅肉盖饭
     price: ¥20

@@ -27,7 +27,9 @@
     "share": "node scripts/share-cards.mjs",
     "prebuild": "astro check",
     "test:search": "tsx scripts/search-test.ts",
-    "postbuild": "npm run test:search"
+    "audit:shops": "tsx scripts/audit-shops.ts",
+    "geo": "node scripts/baidu-to-wgs.mjs",
+    "postbuild": "npm run test:search && npm run audit:shops"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -42,7 +44,8 @@
     "prettier": "^3.8.4",
     "qrcode": "^1.5.4",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "yaml": "^2.9.0"
   },
   "overrides": {
     "yaml": "^2.9.0"

@@ -5,7 +5,7 @@ cuisine: 本帮菜
 dining: group
 walkMinutes: 15
 address: 建华路 38 号，菜市场后面的弄堂里
-summary: 白斩鸡和椒盐排条是招牌，圆台面，适合一家人或一群朋友坐下来慢慢吃。
+summary: 藏在弄堂里的传统口味本帮菜餐厅，适合一家人或一群朋友坐下来慢慢吃。
 cover: ./door.webp
 gallery:
   - src: ./room-wide.webp

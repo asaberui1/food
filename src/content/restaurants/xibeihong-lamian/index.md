@@ -10,7 +10,7 @@ summary: 24 小时不打烊的老面馆，上海黄汤底的牛肉面，面条�
 cover: ./door.webp
 gallery:
   - src: ./side-dishes.webp
-    alt: 收银台旁的自助小菜台：酸豆角、泡萝卜、辣椒酱、葱花、凉拌秋葵，都放在青花瓷盆里
+    alt: 蒜苗、辣椒豆子、萝卜干、泡双色萝卜、泡豇豆
   - src: ./room.webp
     alt: 店堂内景：白色瓷砖墙、木桌配蓝色卡座，饭点坐得满满当当
 dishes:
