@@ -43,7 +43,7 @@ async function collectChars() {
         entry.name !== "alias-relations.json"
       ) {
         // 搜索词典 / 汉字拼音表只参与匹配、不会渲染，不把里面的生僻字塞进字体子集
-        const text = (await readFile(path, "utf8")).replace(/<[^>]+>/g, " ").replace(/^---[\s\S]*?---/, "");
+        const text = (await readFile(path, "utf8")).replace(/<[^>]+>/g, " ");
         for (const char of text) {
           const code = char.codePointAt(0);
           if (
