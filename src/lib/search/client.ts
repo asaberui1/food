@@ -85,7 +85,10 @@ function buildResult(hit: SearchHit, base: string): HTMLLIElement {
   const item = document.createElement("li");
   item.className = "search-result";
   const approximate =
-    hit.route === "fuzzy" || hit.route === "pinyinTypo" || hit.route === "wordBag";
+    hit.route === "fuzzy" ||
+    hit.route === "pinyinTypo" ||
+    hit.route === "wordBag" ||
+    hit.route === "nearAlias";
 
   if (hit.shops.length === 1) {
     const shop = hit.shops[0];
@@ -164,7 +167,7 @@ export function mountSearch(): void {
   dialog.dataset.mounted = "1";
 
   const base = dialog.dataset.base || "/";
-  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=7`;
+  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=8`;
 
   const input = dialog.querySelector<HTMLInputElement>("[data-search]");
   const results = dialog.querySelector<HTMLUListElement>("[data-results]");

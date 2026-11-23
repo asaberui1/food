@@ -108,6 +108,15 @@ const hasDish = (query: string, name: string, source = engine) =>
         item.shops.some((shop) => shop.name === name),
     );
 const hit = (query: string, name: string) => groupFor(query, name);
+const foundFragment = (query: string, fragment: string, source = engine) =>
+  source
+    .search(query)
+    .hits.some(
+      (item) =>
+        item.name.includes(fragment) ||
+        item.aliases.some((alias) => alias.includes(fragment)) ||
+        item.shops.some((shop) => shop.name.includes(fragment)),
+    );
 
 let passed = 0;
 function check(label: string, callback: () => void): void {
@@ -493,6 +502,37 @@ if (existsSync(builtPath)) {
       console.log(`  ✓ ${query} → ${expected}（${found.score} 分）`);
       passed += 1;
     }
+
+    const realAliasChecks: [string, string][] = [
+      ["西葫芦炒蛋", "西葫芦炒鸡蛋"],
+      ["洋葱炒鸡蛋", "洋葱炒蛋"],
+      ["小葱炒鸡蛋", "小葱跑蛋"],
+      ["蛤蜊蒸水蛋", "蛤蜊炖蛋"],
+      ["肉末蒸蛋", "肉糜炖蛋"],
+      ["海带骨头汤", "海带排骨汤"],
+      ["羊杂碎汤", "羊杂汤"],
+      ["牛肉火锅", "牛肉锅"],
+      ["牛杂火锅", "牛杂锅"],
+      ["清远鸡煲", "清远鸡锅"],
+      ["老鹅煲", "老鹅锅"],
+      ["皮蛋瘦肉粥", "皮蛋肉丝粥"],
+      ["大米粥", "白米粥"],
+      ["小米稀饭", "小米粥"],
+      ["红烧狮子头", "狮子头"],
+      ["四喜丸子", "狮子头"],
+      ["尖椒肉丝", "青椒肉丝"],
+      ["雪里蕻", "雪菜"],
+      ["雪里红", "雪菜"],
+      ["柿子椒", "青椒"],
+      ["包心菜", "包菜"],
+      ["豌豆苗", "豆苗"],
+    ];
+
+    for (const [query, fragment] of realAliasChecks) {
+      assert.ok(foundFragment(query, fragment, real), `「${query}」没有命中「${fragment}」`);
+      passed += 1;
+    }
+    console.log(`  ✓ 同菜异名/近义修订：${realAliasChecks.length} 组`);
 
     for (const query of ["土豆", "白菜", "鸡蛋"]) {
       assert.ok(

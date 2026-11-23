@@ -1,5 +1,5 @@
 import Fuse from "fuse.js";
-import { GENERIC_TERMS } from "./dictionary";
+import { GENERIC_TERMS, NEAR_ALIASES } from "./dictionary";
 import { codePointLength, isPinyinQuery, normalizeText } from "./normalize";
 import { KNOWN_TERMS, canonicalize } from "./synonyms";
 import type { MatchRoute, PreparedDish, SearchData, SearchHit, SearchOutcome } from "./types";
@@ -32,6 +32,8 @@ const SCORE = {
   initialsTypoExact: 50,
   /** 词袋匹配：清蒸 + 鳜鱼 这种顺序不同的组合，按近似处理 */
   wordBag: 66,
+  /** 不是严格同义词、但菜单里指向同一道菜的写法，标近似 */
+  nearAlias: 62,
   /** 编辑距离相似度上限，实际按 70 * (1 - 距离/长度) 折算 */
   fuzzyMax: 70,
   /** 食材别称预留位：等 ingredients 真正录入再启用 */
@@ -427,6 +429,16 @@ export function createSearchEngine(data: SearchData): SearchEngine {
               route = "pinyinTypo";
             }
           }
+        }
+      }
+
+      // 8.4) 近义写法：海带骨头汤 / 尖椒肉丝 / 皮蛋瘦肉粥，命中后标「近似」
+      const nearTargets = NEAR_ALIASES[queryCanon] ?? [];
+      if (nearTargets.length > 0 && score < SCORE.nearAlias) {
+        const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
+        if (nearTargets.some((target) => targets.some((value) => value.includes(target)))) {
+          score = SCORE.nearAlias;
+          route = "nearAlias";
         }
       }
 
