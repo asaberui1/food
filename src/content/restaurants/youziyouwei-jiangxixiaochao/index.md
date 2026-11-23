@@ -1,7 +1,7 @@
 ---
 name: 有滋有味·江西小炒
 added: "2026-11-18"
-cuisine: 江西菜
+cuisine: 赣菜
 dining: both
 walkMinutes: 10
 address: 业祥路 187 号

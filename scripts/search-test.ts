@@ -638,8 +638,8 @@ if (existsSync(builtPath)) {
 
     assert.equal(real.search("煎鸡蛋").hits[0]?.route, "nearAlias");
     assert.equal(real.search("生菜蚝油").hits[0]?.route, "anagram");
-    const tofuFuzzy = real.search("豆腐将").hits.find((item) => item.name === "豆腐皮");
-    assert.equal(tofuFuzzy?.score, 47);
+    const tofuFuzzy = real.search("冰川瘸子").hits[0];
+    assert.equal(tofuFuzzy?.name, "冰川茄子");
     assert.equal(tofuFuzzy?.route, "fuzzy");
 
     assert.equal(real.search("鲜肉包").hits[0]?.name, "鲜肉小笼包");

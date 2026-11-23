@@ -163,8 +163,13 @@ const payload = {
       ctx.shadowOffsetY = 2;
 
       ctx.fillStyle = "#f9f2e6";
-      ctx.font = '500 84px "Noto Serif SC", serif';
-      ctx.fillText(fitted(data.name, 760), 84, 1046);
+      let nameSize = 84;
+      do {
+        ctx.font = `500 ${nameSize}px "Noto Serif SC", serif`;
+        if (ctx.measureText(data.name).width <= 912) break;
+        nameSize -= 2;
+      } while (nameSize > 44);
+      ctx.fillText(fitted(data.name, 912), 84, 1046);
 
       ctx.fillStyle = "#f0b979";
       ctx.font = '34px "PingFang SC", sans-serif';

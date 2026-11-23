@@ -676,6 +676,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         [...bucket].sort(
           (a, b) =>
             b.overlap - a.overlap ||
+            Number(codePointLength(b.name) > 2) - Number(codePointLength(a.name) > 2) ||
             Number(b.norm === b.canon) - Number(a.norm === a.canon) ||
             (counts.get(b.name) ?? 0) - (counts.get(a.name) ?? 0) ||
             a.name.length - b.name.length ||

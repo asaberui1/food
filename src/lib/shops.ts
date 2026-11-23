@@ -16,15 +16,22 @@ export const DINING_LABEL: Record<string, string> = {
 
 /**
  * 一家店的全部标签 = 品类 + 自定义标签 + 就餐方式标签。
- * 一家店可以有多个标签（比如既是本帮菜也是家常菜）。
+ * 品类可以用「、」「·」「/」分隔多个，例如「湘菜、徽菜、本帮菜」。
  */
+export function cuisinesOf(shop: CollectionEntry<"restaurants">): string[] {
+  return shop.data.cuisine
+    .split(/[、,，/·]/)
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
 export function tagsOf(shop: CollectionEntry<"restaurants">): string[] {
-  return [...new Set([shop.data.cuisine, ...shop.data.tags, ...(DINING_TAGS[shop.data.dining] ?? [])])];
+  return [...new Set([...cuisinesOf(shop), ...shop.data.tags, ...(DINING_TAGS[shop.data.dining] ?? [])])];
 }
 
 /** 全站标签：品类在前，其次自定义标签，最后就餐方式 */
 export function allTagsOf(shops: CollectionEntry<"restaurants">[]): string[] {
-  const cuisines = [...new Set(shops.map((shop) => shop.data.cuisine))];
+  const cuisines = [...new Set(shops.flatMap((shop) => cuisinesOf(shop)))];
   const extra = [...new Set(shops.flatMap((shop) => shop.data.tags))].filter((tag) => !cuisines.includes(tag));
   const dining = ["单人餐", "多人聚餐", "四六分餐馆"].filter((tag) =>
     shops.some((shop) => tagsOf(shop).includes(tag)),

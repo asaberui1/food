@@ -7,11 +7,13 @@ import ShopCard from "../../components/ShopCard.astro";
 import ShopMapModal from "../../components/ShopMapModal.astro";
 import SearchDialog from "../../components/SearchDialog.astro";
 import { siteConfig } from "../../config/site";
-import { allTagsOf, tagsOf } from "../../lib/shops";
+import { allTagsOf, cuisinesOf, tagsOf } from "../../lib/shops";
 
-// 按店名拼音排，不再按收录时间
-const shops = (await getCollection("restaurants")).sort((a, b) =>
-  a.data.name.localeCompare(b.data.name, "zh"),
+// 有封面店招的排前面，同组内按店名拼音
+const shops = (await getCollection("restaurants")).sort(
+  (a, b) =>
+    Number(Boolean(b.data.cover)) - Number(Boolean(a.data.cover)) ||
+    a.data.name.localeCompare(b.data.name, "zh"),
 );
 const tagged = shops.map((shop) => ({ shop, tags: tagsOf(shop) }));
 // 有菜单才有可搜的菜名
@@ -118,11 +120,12 @@ const seen = new Set<string>();
 
               <div class="shop-grid shop-grid--list">
                 {tagged.map(({ shop, tags }) => {
-                  const isFirst = !seen.has(shop.data.cuisine);
-                  seen.add(shop.data.cuisine);
+                  const primaryCuisine = cuisinesOf(shop)[0] ?? "";
+                  const isFirst = !seen.has(primaryCuisine);
+                  seen.add(primaryCuisine);
                   return (
                     <div
-                      id={isFirst ? shop.data.cuisine : undefined}
+                      id={isFirst ? primaryCuisine : undefined}
                       class="anchor-target"
                       data-shop
                       data-id={shop.id}

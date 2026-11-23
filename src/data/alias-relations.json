@@ -410,7 +410,8 @@
       "members": [
         "鳗鲡",
         "白鳝",
-        "曼鱼"
+        "曼鱼",
+        "河鳗"
       ],
       "kind": "exact",
       "confidence": 1,
@@ -452,7 +453,9 @@
       "canonical": "黑鱼",
       "members": [
         "乌鳢",
-        "财鱼"
+        "财鱼",
+        "乌鱼",
+        "生鱼"
       ],
       "kind": "exact",
       "confidence": 1,
@@ -1095,7 +1098,9 @@
     {
       "canonical": "豇豆",
       "members": [
-        "长豆角"
+        "长豆角",
+        "长缸豆",
+        "长豇豆"
       ],
       "kind": "exact",
       "confidence": 1,
@@ -1353,6 +1358,86 @@
       "kind": "exact",
       "confidence": 1,
       "note": "人工确认：鱼鳔和鱼泡是同一个部位"
+    },
+    {
+      "canonical": "折耳根",
+      "members": [
+        "鱼腥草",
+        "侧耳根",
+        "猪鼻孔"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：折耳根即鱼腥草，西南地区常见叫法"
+    },
+    {
+      "canonical": "蹄花",
+      "members": [
+        "猪蹄",
+        "猪手",
+        "猪脚"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：蹄花即猪蹄，川渝常叫蹄花"
+    },
+    {
+      "canonical": "凤爪",
+      "members": [
+        "鸡爪"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：凤爪即鸡爪"
+    },
+    {
+      "canonical": "牛蛙",
+      "members": [
+        "田鸡"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：牛蛙在菜单上也叫田鸡"
+    },
+    {
+      "canonical": "毛蟹",
+      "members": [
+        "大闸蟹",
+        "河蟹",
+        "中华绒螯蟹"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：毛蟹即大闸蟹，上海常见叫法"
+    },
+    {
+      "canonical": "河虾",
+      "members": [
+        "青虾",
+        "沼虾"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：河虾也叫青虾"
+    },
+    {
+      "canonical": "草虾",
+      "members": [
+        "斑节虾",
+        "黑虎虾"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：草虾即斑节虾"
+    },
+    {
+      "canonical": "多宝鱼",
+      "members": [
+        "大菱鲆"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：多宝鱼即大菱鲆"
     }
   ],
   "near": [
@@ -1572,6 +1657,35 @@
       ],
       "confidence": 0.7,
       "note": "骨头汤与排骨汤是相近写法"
+    },
+    {
+      "from": "烤黑鱼双椒",
+      "targets": [
+        "烤黑鱼"
+      ],
+      "confidence": 0.86,
+      "note": "烤黑鱼的双椒口味，和整道烤黑鱼是同一道菜的口味变体"
+    },
+    {
+      "from": "烤鱼",
+      "targets": [
+        "烤黑鱼",
+        "烤鲶鱼",
+        "烤花鲢",
+        "烤青鱼",
+        "烤大黑鱼"
+      ],
+      "confidence": 0.55,
+      "note": "烤鱼类菜品的统称"
+    },
+    {
+      "from": "石锅鱼",
+      "targets": [
+        "石锅黑鱼",
+        "石锅鲶鱼"
+      ],
+      "confidence": 0.62,
+      "note": "石锅鱼是石锅黑鱼/鲶鱼的统称"
     }
   ]
 }

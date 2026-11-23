@@ -75,6 +75,7 @@ async function buildCard(dir) {
 
   const base = await background.png().toBuffer();
   const nameY = hasCover ? 880 : 700;
+  const nameSize = fitFontSize(name, W - 168, 84);
 
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
@@ -87,7 +88,7 @@ async function buildCard(dir) {
   </defs>
   <rect y="700" width="${W}" height="${H - 700}" fill="url(#veil)"/>
 
-  <text x="84" y="1046" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="84" fill="#f9f2e6">${escapeXml(name)}</text>
+  <text x="84" y="1046" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="${nameSize}" fill="#f9f2e6">${escapeXml(name)}</text>
   <text x="88" y="1112" font-family="Noto Sans CJK SC, PingFang SC, Noto Sans SC, sans-serif" font-size="34" fill="#f0b979">${escapeXml(cuisine)}${avg ? ` · 人均约 ¥${avg}` : ""}</text>
   <text x="88" y="1164" font-family="Noto Sans CJK SC, PingFang SC, Noto Sans SC, sans-serif" font-size="32" fill="rgba(240,231,216,0.76)">${escapeXml(address)}</text>
   ${dishes
@@ -114,6 +115,16 @@ async function buildCard(dir) {
     .toFile(join(OUT, `${dir}.jpg`));
 
   return `${dir}.jpg`;
+}
+
+/** 中文按 1 个字宽、拉丁字母按 0.58 估，超宽就缩字号，最低 44px */
+function fitFontSize(text, maxWidth, maxSize = 84) {
+  const units = [...String(text)].reduce(
+    (sum, char) => sum + (/[\u3000-\u9fff\uff00-\uffef]/.test(char) ? 1 : 0.58),
+    0,
+  );
+  if (!units) return maxSize;
+  return Math.max(44, Math.min(maxSize, Math.floor(maxWidth / units)));
 }
 
 function escapeXml(value) {
