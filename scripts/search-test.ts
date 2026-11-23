@@ -625,6 +625,9 @@ if (existsSync(builtPath)) {
       ["落花生", "长生果"],
       ["花生", "长生果"],
       ["鳗鱼", "河鳗"],
+      ["锅贴", "胡记锅贴（锅贴）"],
+      ["生煎", "胡记锅贴（生煎）"],
+      ["生煎包", "胡记锅贴（生煎）"],
     ];
 
     for (const [query, fragment] of realAliasChecks) {

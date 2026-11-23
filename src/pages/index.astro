@@ -147,7 +147,7 @@ const structuredData = {
 
               <div class="shop-grid" data-random-picks>
                 {shops.map((shop) => (
-                  <div class="reveal" data-pick>
+                  <div class="reveal" data-pick data-has-cover={shop.data.cover ? "true" : "false"}>
                     <ShopCard shop={shop} />
                   </div>
                 ))}
@@ -206,10 +206,22 @@ const structuredData = {
       const grid = document.querySelector("[data-random-picks]");
       if (!grid) return;
 
-      const items = Array.from(grid.children);
-      if (items.length <= 3) return;
+      const allItems = Array.from(grid.children);
+      // 「换一批」只在有店招封面的店里刷，避免刷出「照片待补充」
+      const items = allItems.filter((item) => item.getAttribute("data-has-cover") === "true");
+      if (!items.length) return;
+      const hideUncovered = () => {
+        allItems.forEach((item) => {
+          if (!items.includes(item)) item.hidden = true;
+        });
+      };
+      if (items.length <= 3) {
+        hideUncovered();
+        return;
+      }
 
       const pick = () => {
+        hideUncovered();
         const picked = new Set();
         while (picked.size < 3) picked.add(Math.floor(Math.random() * items.length));
 

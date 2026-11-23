@@ -691,7 +691,8 @@
     {
       "canonical": "生煎包",
       "members": [
-        "生煎馒头"
+        "生煎馒头",
+        "生煎"
       ],
       "kind": "exact",
       "confidence": 1,
