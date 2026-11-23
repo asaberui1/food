@@ -189,7 +189,7 @@ const payload = {
           const dishText = fitted(`· ${dish}`, 560);
           ctx.fillText(dishText, 88, y);
           if (price) {
-            const priceFont = '31px system-ui, -apple-system, "PingFang SC", "Noto Sans SC", sans-serif';
+            const priceFont = '31px Helvetica, Arial, sans-serif';
             const start = 88 + ctx.measureText(dishText).width + 12;
             ctx.font = priceFont;
             const end = 700 - ctx.measureText(price).width - 20;
@@ -316,18 +316,20 @@ const payload = {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "studio__pick";
-          if (selected.includes(item.name)) button.classList.add("is-on");
+          const selectedIndex = selected.indexOf(item.name);
+          if (selectedIndex >= 0) button.classList.add("is-on");
+          if (selectedIndex >= 0 && selectedIndex !== slotIndex) {
+            button.classList.add("is-taken");
+            button.disabled = true;
+          }
           button.innerHTML = `<span class="studio__pick-name">${item.name}</span><span class="studio__pick-leader" aria-hidden="true"></span><span class="studio__pick-price">${item.price}</span>`;
           button.addEventListener("click", () => {
-            const existing = selected.indexOf(item.name);
-            if (existing >= 0) {
-              selected.splice(existing, 1);
-              button.classList.remove("is-on");
-              renderSlots();
-              draw();
+            // 点当前槽位已选的菜：直接完成；点其他槽位已选的菜：不允许（按钮已 disabled）
+            if (selected[slotIndex] === item.name) {
+              closePicker();
               return;
             }
-            if (selected.length >= MAX) return;
+            if (!selected[slotIndex] && selected.length >= MAX) return;
             selected[slotIndex] = item.name;
             selected = selected.filter(Boolean).slice(0, MAX);
             closePicker();
@@ -508,6 +510,22 @@ const payload = {
     });
 
     const open = async () => {
+      // 每次打开都从默认推荐菜开始，不沿用上一次的自定义
+      selected = [...data.dishes];
+      showDishes = false;
+      picker.hidden = true;
+      result.hidden = true;
+      card.classList.remove("is-result");
+      generate.hidden = false;
+      edit.hidden = true;
+      download.hidden = true;
+      offsetX = 0.5;
+      offsetY = 0.45;
+      zoom = 1;
+      zoomIndex = 0;
+      zoomButton.setAttribute("aria-label", "缩放底图，当前 100%");
+      zoomButton.title = "缩放：100%";
+
       renderSlots();
       dialog.showModal();
       dialog.focus();

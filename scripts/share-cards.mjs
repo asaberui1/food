@@ -164,7 +164,8 @@ async function buildCard(dir) {
         0,
       );
       const leaderStart = 88 + 44 + units * 28 + 12;
-      const leaderEnd = 630;
+      // 按价格字符数预留右端空间，1–3 位数都不会压到点号
+      const leaderEnd = 700 - (14 + [...price].length * 14) - 20;
       const dotCount = Math.max(0, Math.floor((leaderEnd - leaderStart) / 16) + 1);
       const dots = price
         ? Array.from({ length: dotCount }, (_, i) =>
@@ -172,7 +173,7 @@ async function buildCard(dir) {
           ).join("")
         : "";
       const priceText = price
-        ? `${dots}<text x="700" y="${y}" text-anchor="end" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif" font-size="31" fill="rgba(236,226,206,0.94)">${escapeXml(price)}</text>`
+        ? `${dots}<text x="700" y="${y}" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="31" fill="rgba(236,226,206,0.94)">${escapeXml(price)}</text>`
         : "";
       return `<text x="88" y="${y}" font-family="Noto Serif CJK SC, Noto Serif SC, Songti SC, serif" font-size="34" fill="rgba(236,226,206,0.94)">· ${escapeXml(dish)}</text>${priceText}`;
     })

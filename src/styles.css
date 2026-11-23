@@ -1220,7 +1220,7 @@ body:has(.shop-toc) .site-footer{
 }.menu-item__price{
   flex: none;
   color: var(--cream);
-  font-family: var(--font-mono);
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 0.95rem;
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -2320,6 +2320,15 @@ body:has(.shop-toc) .site-footer{
   color: var(--ember);
 }
 
+.studio__pick.is-taken {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.studio__pick:disabled:hover {
+  border-color: transparent;
+}
+
 .studio__pick-name {
   min-width: 0;
 }
@@ -2338,7 +2347,7 @@ body:has(.shop-toc) .site-footer{
 .studio__pick-price {
   flex: none;
   color: var(--muted-foreground);
-  font-family: var(--font-sans);
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 0.92rem;
   font-variant-numeric: tabular-nums;
   text-align: right;
@@ -2833,6 +2842,15 @@ body:has(.shop-toc) .site-footer{
   color: var(--ember);
 }
 
+.studio__pick.is-taken {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.studio__pick:disabled:hover {
+  border-color: transparent;
+}
+
 .studio__pick-name {
   min-width: 0;
 }
@@ -2851,7 +2869,7 @@ body:has(.shop-toc) .site-footer{
 .studio__pick-price {
   flex: none;
   color: var(--muted-foreground);
-  font-family: var(--font-sans);
+  font-family: Helvetica, Arial, sans-serif;
   font-size: 0.92rem;
   font-variant-numeric: tabular-nums;
   text-align: right;
