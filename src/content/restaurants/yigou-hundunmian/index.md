@@ -6,6 +6,19 @@ dining: single
 walkMinutes: 16
 address: 华发路 31 号，明丰新纪苑底商
 summary: 面、盖浇饭、馄饨、炒饭、酸辣粉都有，一个人吃刚好，丰俭由人。
+cover: ./door.webp
+gallery:
+  - src: ./room.webp
+    alt: 店堂内景：白色瓷砖墙、木质桌椅，饭点坐满了人，尽头是点餐和取餐的柜台
+dishes:
+  - name: 豌杂面
+    price: ¥18
+    note: 重庆做法，豌豆耙软、杂酱咸香，拌开再吃。
+    image: ./wanzamian.webp
+  - name: 尖椒香干回锅肉盖饭
+    price: ¥20
+    note: 现炒的盖浇饭，尖椒和香干一起回锅，很下饭。
+    image: ./huiguorou-gaifan.webp
 order:
   url: https://zzgfs.leshuazf.com/zzg-mini-order/code-restaurant.html?qrCodeNo=3520492341479868416
   qr: ./order-qr.png
@@ -41,7 +54,9 @@ menu:
       - { name: 肉沫酸豆角面, price: ¥12 }
       - { name: 雪菜肉丝面, price: ¥10 }
       - { name: 榨菜肉丝面, price: ¥10 }
-      - { name: 豌杂面, price: ¥18 }
+      - name: 豌杂面
+        price: ¥18
+        image: ./wanzamian.webp
       - { name: 万州杂酱面, price: ¥17 }
       - { name: 热干面, price: ¥10 }
   - title: 盖浇饭
@@ -68,7 +83,9 @@ menu:
       - { name: 尖椒炒牛肚盖饭, price: ¥25 }
       - { name: 尖椒炒牛柳盖饭, price: ¥22 }
       - { name: 茭白香干肉丝盖饭, price: ¥18 }
-      - { name: 尖椒香干回锅肉盖饭, price: ¥20 }
+      - name: 尖椒香干回锅肉盖饭
+        price: ¥20
+        image: ./huiguorou-gaifan.webp
       - { name: 尖椒炒鸡杂盖饭, price: ¥20 }
       - { name: 红烧大肉盖饭, price: ¥20 }
       - { name: 清炒牛蛙盖饭, price: ¥35 }
@@ -129,6 +146,6 @@ menu:
 tags: [盖浇饭]
 ---
 
-这家只有扫码点餐和收银台点餐两种方式，没有纸质菜单，菜单也可能调整，以店里的点餐页为准。
+这家只有扫码点餐和收银台点餐两种方式，没有纸质菜单，菜单也可能调整，以店里的点餐页为准。点餐都会赠送一碟甜口泡菜和一碗紫菜清汤。
 
 高峰期要拼桌。几个人点了同一种口味的盖浇饭，厨师会一锅炒、一起出锅；赶在开炒前点进去，就不用等下一锅。赶时间可以问一句厨师下一锅炒什么，点同一道就能搭上这锅。

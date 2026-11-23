@@ -1,4 +1,4 @@
-import { SYNONYM_GROUPS } from "./dictionary";
+import { SYNONYM_GROUPS, VEGETABLE_CATEGORY_TERMS } from "./dictionary";
 import { normalizeText } from "./normalize";
 
 /**
@@ -18,6 +18,8 @@ const ROOT: TrieNode = { children: new Map() };
 
 /** 词典里出现过的规范词/别名，用来判断两个字到底是不是“具体名词” */
 export const KNOWN_TERMS = new Set<string>();
+
+for (const term of VEGETABLE_CATEGORY_TERMS) KNOWN_TERMS.add(term);
 
 for (let group = 0; group < SYNONYM_GROUPS.length; group += 1) {
   for (const term of SYNONYM_GROUPS[group]) {

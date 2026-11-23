@@ -10,11 +10,14 @@ summary: 24 小时不打烊的老面馆，上海黄汤底的牛肉面，面条�
 cover: ./door.webp
 gallery:
   - src: ./side-dishes.webp
-    alt: 收银机对面的自助小菜台：蒜苗、辣椒豆子、萝卜干、泡双色萝卜、泡豇豆
+    alt: 收银台旁的自助小菜台：酸豆角、泡萝卜、辣椒酱、葱花、凉拌秋葵，都放在青花瓷盆里
+  - src: ./room.webp
+    alt: 店堂内景：白色瓷砖墙、木桌配蓝色卡座，饭点坐得满满当当
 dishes:
   - name: 红烧牛肉面
     price: ¥23/25
     note: 上海黄汤底，点单时可以说面要粗还是细。
+    image: ./beef-noodle.webp
   - name: 牛肉炒刀削
     price: ¥23/26
     note: 刀削厚实，酱色重，配一碗汤。
@@ -27,7 +30,9 @@ menu:
   - title: 本店特色
     note: 小碗 / 大碗只差主食的分量，浇头（哨子）一样多；只标一个价的，就是只有这一种份量。
     items:
-      - { name: 红烧牛肉面, price: ¥23/25 }
+      - name: 红烧牛肉面
+        price: ¥23/25
+        image: ./beef-noodle.webp
       - { name: 红烧大肠面, price: ¥25/27 }
       - { name: 酸菜红烧牛肉面, price: ¥26/28 }
       - { name: 酸菜红烧大肠面, price: ¥26/28 }

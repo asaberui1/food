@@ -57,6 +57,7 @@ export type MatchRoute =
   | "wordBag"
   | "nearAlias"
   | "anagram"
+  | "vegetable"
   | "fuzzy"
   | "ingredient";
 

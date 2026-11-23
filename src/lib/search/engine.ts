@@ -1,5 +1,11 @@
 import Fuse from "fuse.js";
-import { GENERIC_TERMS, NEAR_RELATIONS } from "./dictionary";
+import {
+  GENERIC_TERMS,
+  NEAR_RELATIONS,
+  isVegetableCategory,
+  vegetableCanonical,
+  vegetablesIn,
+} from "./dictionary";
 import { codePointLength, isPinyinQuery, normalizeText } from "./normalize";
 import { KNOWN_TERMS, canonicalize } from "./synonyms";
 import type { MatchRoute, PreparedDish, SearchData, SearchHit, SearchOutcome } from "./types";
@@ -61,6 +67,10 @@ const SCORE = {
   anagram: 58,
   /** 编辑距离相似度上限，实际按 70 * (1 - 距离/长度) 折算 */
   fuzzyMax: 70,
+  /** 「时蔬 / 蔬菜」类目召回：低于字面命中，高于近似 */
+  vegetableCategory: 72,
+  /** 搜某一种叶菜时，其他时蔬按低置信度近似排在后面 */
+  vegetableNear: 52,
   /** 食材别称预留位：等 ingredients 真正录入再启用 */
   ingredient: 40,
 } as const;
@@ -71,6 +81,8 @@ const FUZZY_CANDIDATES = 40;
 const PINYIN_FUZZY_CANDIDATES = 30;
 
 const GENERIC = new Set(GENERIC_TERMS.map(normalizeText));
+/** 时蔬类目只收“菜”，不收荠菜馄饨、生菜炒饭这类主食 */
+const VEG_STAPLE = /(馄饨|水饺|饺子|小笼包|汤包|包子|包|饼|炒饭|盖饭|盖浇饭|拌面|汤面|面|粉丝|粉|粥|年糕|饭)/;
 
 type ScoredHit = {
   dish: PreparedDish;
@@ -376,8 +388,12 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     const allowAliasContains = queryLength >= 3;
     // 汉字查询转拼音：觉鱼 / 绝鱼 → jueyu，再去匹配鳜鱼的错误读音
     const queryPinyin =
-      !pinyinQuery && queryLength >= 2 ? queryPinyinVariants(query, pinyinTable) : [];
+      !pinyinQuery && queryLength >= 2
+        ? queryPinyinVariants(synonymQuery ? queryCanon : query, pinyinTable)
+        : [];
     const queryTokens = queryLength >= 3 ? tokenizeKnown(queryCanon, knownTermList) : [];
+    const queryVeg = vegetableCanonical(queryCanon);
+    const vegetableCategory = isVegetableCategory(query) || isVegetableCategory(queryCanon);
 
     const scored = new Map<PreparedDish, ScoredHit>();
 
@@ -385,6 +401,9 @@ export function createSearchEngine(data: SearchData): SearchEngine {
       let score = 0;
       let route: MatchRoute = "name";
       const overlap = literalOverlapScore(query, dish.norm);
+      const dishVeg = vegetablesIn(dish.canon);
+      const genericVeg = /时蔬|蔬菜|绿叶菜/.test(dish.norm);
+      const vegDish = (dishVeg.length > 0 || genericVeg) && !VEG_STAPLE.test(dish.norm);
 
       // 1) 菜名精确 / 2) 前缀 / 3) 包含（规范化后比较，别名差异已在 canon 里抹平）
       if (dish.norm === query || dish.canon === queryCanon) {
@@ -499,6 +518,22 @@ export function createSearchEngine(data: SearchData): SearchEngine {
               route = "pinyinTypo";
             }
           }
+        }
+      }
+
+      // 8.3) 「时蔬 / 蔬菜」：把菜单里的叶菜类作为一个类目召回
+      if (vegetableCategory && vegDish) {
+        if (score < SCORE.vegetableCategory) {
+          score = SCORE.vegetableCategory;
+          route = "vegetable";
+        }
+      }
+
+      // 8.35) 搜某一种叶菜：其他时蔬按低置信度近似，排在后面
+      if (queryVeg && score < SCORE.vegetableNear) {
+        if (vegDish && !dishVeg.includes(queryVeg)) {
+          score = SCORE.vegetableNear;
+          route = "nearAlias";
         }
       }
 
@@ -711,7 +746,11 @@ export function createSearchEngine(data: SearchData): SearchEngine {
 
     // 两个字以内的菜（土豆、白菜、卤蛋、米饭…）不返回：它们要么是涮菜/浇头，
     // 要么是主食，搜出来没有决策价值；这条规则在搜索框注释里向用户说明。
-    const visibleGroups = groups.filter((group) => codePointLength(group.name) > 2);
+    const visibleGroups = groups.filter(
+      (group) =>
+        codePointLength(group.name) > 2 ||
+        ((queryVeg !== undefined || vegetableCategory) && vegetablesIn(group.name).length > 0),
+    );
 
     const total = visibleGroups.length;
     const hits = visibleGroups.map(

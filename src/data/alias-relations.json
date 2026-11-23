@@ -1326,6 +1326,33 @@
       "kind": "exact",
       "confidence": 1,
       "note": "人工确认的同菜异名/地域叫法/错别字"
+    },
+    {
+      "canonical": "三林塘肉皮",
+      "members": [
+        "三林肉皮"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：三林塘肉皮即三林肉皮"
+    },
+    {
+      "canonical": "酸菜肚条",
+      "members": [
+        "酸菜烩肚条"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：墙上写酸菜烩肚条，纸菜单写酸菜肚条"
+    },
+    {
+      "canonical": "鱼鳔",
+      "members": [
+        "鱼泡"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：鱼鳔和鱼泡是同一个部位"
     }
   ],
   "near": [

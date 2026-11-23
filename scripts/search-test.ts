@@ -83,6 +83,31 @@ const shops: ShopLike[] = [
       ],
     },
   },
+  {
+    id: "shishu",
+    data: {
+      name: "时蔬测试",
+      menu: [
+        {
+          title: "田园时蔬",
+          items: [
+            { name: "清炒时蔬", price: "¥18" },
+            { name: "蒜泥空心菜", price: "¥18" },
+            { name: "蚝油生菜", price: "¥18" },
+            { name: "蒜泥米苋", price: "¥20" },
+            { name: "酒香草头", price: "¥25" },
+            { name: "酒香豆苗", price: "¥22" },
+            { name: "马兰头香干", price: "¥16" },
+            { name: "香菇青菜", price: "¥20" },
+            { name: "清炒鸡毛菜", price: "¥18" },
+            { name: "生菜", price: "¥9" },
+            { name: "荠菜肉大馄饨", price: "¥15" },
+            { name: "生菜牛肉炒饭", price: "¥16" },
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 const data = prepareSearchData(shops);
@@ -424,6 +449,53 @@ check("每条菜用自己的全拼和首字母都能搜到自己", () => {
   }
 });
 
+console.log("时蔬类目");
+check("「时蔬」命中所有叶菜，不把荠菜馄饨、生菜炒饭算进来", () => {
+  for (const query of ["时蔬", "蔬菜"]) {
+    for (const name of ["清炒时蔬", "蒜泥空心菜", "蚝油生菜", "蒜泥米苋", "酒香草头", "马兰头香干", "香菇青菜", "清炒鸡毛菜", "生菜"]) {
+      assert.ok(hasDish(query, name), `${query} / ${name}`);
+    }
+    assert.ok(!hasDish(query, "荠菜肉大馄饨"), query);
+    assert.ok(!hasDish(query, "生菜牛肉炒饭"), query);
+  }
+  assert.equal(hit("时蔬", "蒜泥空心菜")?.route, "vegetable");
+  assert.equal(hit("时蔬", "蒜泥空心菜")?.score, 72);
+});
+
+check("各地叫法都能搜到对应的上海叶菜", () => {
+  const pairs: [string, string][] = [
+    ["蕹菜", "蒜泥空心菜"],
+    ["通菜", "蒜泥空心菜"],
+    ["藤藤菜", "蒜泥空心菜"],
+    ["苋菜", "蒜泥米苋"],
+    ["瓢儿白", "香菇青菜"],
+    ["青菜", "香菇青菜"],
+    ["苜蓿", "酒香草头"],
+    ["金花菜", "酒香草头"],
+    ["马兰", "马兰头香干"],
+    ["小青菜", "清炒鸡毛菜"],
+    ["豌豆苗", "酒香豆苗"],
+  ];
+  for (const [query, name] of pairs) {
+    assert.ok(hasDish(query, name), `${query} / ${name}`);
+  }
+});
+
+check("搜某一种叶菜，其他时蔬是低置信度近似", () => {
+  const near = hit("空心菜", "蒜泥米苋");
+  assert.ok(near);
+  assert.equal(near.route, "nearAlias");
+  assert.equal(near.score, 52);
+  const generic = hit("空心菜", "清炒时蔬");
+  assert.ok(generic);
+  assert.equal(generic.score, 52);
+});
+
+check("两字叶菜在时蔬查询里保留", () => {
+  assert.ok(hasDish("生菜", "生菜"));
+  assert.ok(hasDish("时蔬", "生菜"));
+});
+
 console.log("性能");
 check("搜索缓存生效", () => {
   const first = search("宫保鸡丁");
@@ -547,6 +619,7 @@ if (existsSync(builtPath)) {
       ["蚬子", "花蛤"],
       ["粿条", "河粉"],
       ["骨头汤", "海带排骨汤"],
+      ["鱼泡", "干锅鱼籽鱼鳔"],
     ];
 
     for (const [query, fragment] of realAliasChecks) {
@@ -555,9 +628,17 @@ if (existsSync(builtPath)) {
     }
     console.log(`  ✓ 同菜异名/近义修订：${realAliasChecks.length} 组`);
 
+    const shishu = real.search("时蔬");
+    for (const name of ["清炒时蔬", "蒜泥空心菜", "蚝油生菜", "蒜泥米苋", "酒香草头", "马兰头香干", "香菇青菜", "生菜"]) {
+      assert.ok(shishu.hits.some((item) => item.name === name), `时蔬 / ${name}`);
+    }
+    assert.ok(!shishu.hits.some((item) => item.name.includes("馄饨")), "时蔬不应收入荠菜馄饨");
+    assert.equal(real.search("空心菜").hits.find((item) => item.name === "蒜泥米苋")?.route, "nearAlias");
+    console.log(`  ✓ 「时蔬」命中 ${shishu.total} 道叶菜，其他叶菜按低置信度近似`);
+
     assert.equal(real.search("煎鸡蛋").hits[0]?.route, "nearAlias");
     assert.equal(real.search("生菜蚝油").hits[0]?.route, "anagram");
-    const tofuFuzzy = real.search("豆腐干").hits.find((item) => item.name === "豆腐皮");
+    const tofuFuzzy = real.search("豆腐将").hits.find((item) => item.name === "豆腐皮");
     assert.equal(tofuFuzzy?.score, 47);
     assert.equal(tofuFuzzy?.route, "fuzzy");
 

@@ -1,4 +1,6 @@
 import relations from "../../data/alias-relations.json";
+import vegetables from "../../data/vegetables.json";
+import { normalizeText } from "./normalize";
 
 /**
  * 同菜异名/近义关系数据。
@@ -33,9 +35,47 @@ export const ALIAS_RELATIONS = relations as {
   near: readonly NearAliasRelation[];
 };
 
-export const SYNONYM_GROUPS: readonly (readonly string[])[] = ALIAS_RELATIONS.exact.map(
-  (relation) => [relation.canonical, ...relation.members],
+export type VegetableGroup = {
+  canonical: string;
+  aliases: readonly string[];
+  note: string;
+};
+
+export const VEGETABLE_GROUPS = vegetables.groups as readonly VegetableGroup[];
+
+export const VEGETABLE_CATEGORY_TERMS: ReadonlySet<string> = new Set(
+  vegetables.categoryTerms.map(normalizeText),
 );
+
+/** 菜名里的蔬菜叫法 → 规范名；用于「时蔬」类目召回和近义蔬菜扩散 */
+const VEGETABLE_CANONICAL = new Map<string, string>();
+for (const group of VEGETABLE_GROUPS) {
+  for (const term of [group.canonical, ...group.aliases]) {
+    VEGETABLE_CANONICAL.set(normalizeText(term), normalizeText(group.canonical));
+  }
+}
+
+export function vegetableCanonical(value: string): string | undefined {
+  return VEGETABLE_CANONICAL.get(normalizeText(value));
+}
+
+export function vegetablesIn(value: string): string[] {
+  const norm = normalizeText(value);
+  const found = new Set<string>();
+  for (const [term, canonical] of VEGETABLE_CANONICAL) {
+    if (norm.includes(term)) found.add(canonical);
+  }
+  return [...found];
+}
+
+export function isVegetableCategory(value: string): boolean {
+  return VEGETABLE_CATEGORY_TERMS.has(normalizeText(value));
+}
+
+export const SYNONYM_GROUPS: readonly (readonly string[])[] = [
+  ...ALIAS_RELATIONS.exact.map((relation) => [relation.canonical, ...relation.members]),
+  ...VEGETABLE_GROUPS.map((group) => [group.canonical, ...group.aliases]),
+];
 
 export type NearRelation = {
   targets: readonly string[];
