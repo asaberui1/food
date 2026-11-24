@@ -93,6 +93,7 @@ type ScoredHit = {
   norm: string;
   price: string;
   group: string;
+  groupIndex: number;
   shopId: string;
   shopName: string;
   score: number;
@@ -592,6 +593,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           norm: dish.norm,
           price: dish.price,
           group: dish.group,
+          groupIndex: dish.groupIndex,
           shopId: shop?.id ?? "",
           shopName: shop?.name ?? "",
           score,
@@ -626,6 +628,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           norm: dish.norm,
           price: dish.price,
           group: dish.group,
+          groupIndex: dish.groupIndex,
           shopId: shop?.id ?? "",
           shopName: shop?.name ?? "",
           score,
@@ -706,6 +709,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           shopName: row.shopName,
           price: row.price,
           group: row.group,
+          groupIndex: row.groupIndex,
           name: row.name,
         }));
 

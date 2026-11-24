@@ -134,7 +134,7 @@ export function prepareSearchData(shops: ShopLike[]): SearchData {
   let counter = 0;
 
   shops.forEach((shop, shopIndex) => {
-    for (const group of shop.data.menu) {
+    for (const [groupIndex, group] of shop.data.menu.entries()) {
       for (const item of group.items) {
         const norm = normalizeText(item.name);
         if (!norm) continue;
@@ -165,6 +165,7 @@ export function prepareSearchData(shops: ShopLike[]): SearchData {
           name: item.name,
           price: item.price,
           group: group.title,
+          groupIndex,
           norm,
           canon,
           py: namePinyin.full,

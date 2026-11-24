@@ -82,6 +82,16 @@ const payload = {
       <p class="label-eyebrow">换一道菜（最多 3 道）</p>
       <button type="button" class="studio__picker-close" data-picker-close>完成</button>
     </div>
+    <div class="studio__picker-search">
+      <input
+        type="search"
+        data-picker-search
+        placeholder="搜菜名"
+        aria-label="搜菜名"
+        autocomplete="off"
+        spellcheck="false"
+      />
+    </div>
     <div class="studio__picker-body" data-picker-body></div>
   </div>
 </dialog>
@@ -100,6 +110,7 @@ const payload = {
     const card = dialog.querySelector(".studio__card");
     const slotsRoot = dialog.querySelector("[data-studio-slots]");
     const picker = dialog.querySelector("[data-studio-picker]");
+    const pickerSearch = dialog.querySelector("[data-picker-search]");
     const pickerBody = dialog.querySelector("[data-picker-body]");
     const result = dialog.querySelector("[data-studio-result]");
     const resultImg = dialog.querySelector("[data-studio-result-img]");
@@ -271,10 +282,10 @@ const payload = {
       }
     };
 
-    const openPicker = (slotIndex) => {
-      picker.hidden = false;
-      picker.dataset.slot = String(slotIndex);
+    const renderPicker = (rawQuery = "") => {
       pickerBody.replaceChildren();
+      const query = rawQuery.trim().toLocaleLowerCase("zh-Hans-CN");
+      pickerBody.scrollTop = 0;
 
       if (!data.menu || !data.menu.length) {
         const empty = document.createElement("p");
@@ -284,9 +295,22 @@ const payload = {
         return;
       }
 
+      const slotIndex = Number(picker.dataset.slot || 0);
+      let matched = 0;
+
       data.menu.forEach((group) => {
+        const items = query
+          ? group.items.filter((item) =>
+              item.name.toLocaleLowerCase("zh-Hans-CN").includes(query),
+            )
+          : group.items;
+        if (!items.length) return;
+        matched += items.length;
+
         const details = document.createElement("details");
         details.className = "studio__group";
+        // 有搜索词时直接展开命中的分组，省得再点一次
+        if (query) details.open = true;
 
         const summary = document.createElement("summary");
         summary.className = "studio__group-head";
@@ -297,7 +321,7 @@ const payload = {
 
         const count = document.createElement("span");
         count.className = "studio__group-count";
-        count.textContent = `${group.items.length} 道`;
+        count.textContent = `${items.length} 道`;
 
         const chev = document.createElement("span");
         chev.className = "studio__group-chev";
@@ -332,7 +356,7 @@ const payload = {
 
         const list = document.createElement("div");
         list.className = "studio__group-list";
-        group.items.forEach((item) => {
+        items.forEach((item) => {
           const button = document.createElement("button");
           button.type = "button";
           button.className = "studio__pick";
@@ -362,7 +386,23 @@ const payload = {
         details.append(list);
         pickerBody.append(details);
       });
+
+      if (!matched) {
+        const empty = document.createElement("p");
+        empty.className = "studio__empty";
+        empty.textContent = `没有找到「${rawQuery.trim()}」。`;
+        pickerBody.append(empty);
+      }
     };
+
+    const openPicker = (slotIndex) => {
+      picker.hidden = false;
+      picker.dataset.slot = String(slotIndex);
+      if (pickerSearch) pickerSearch.value = "";
+      renderPicker("");
+    };
+
+    pickerSearch?.addEventListener("input", () => renderPicker(pickerSearch.value));
 
     const closePicker = () => {
       picker.hidden = true;

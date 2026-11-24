@@ -66,11 +66,16 @@ const APPROXIMATE_ROUTES = new Set(["fuzzy", "pinyinTypo", "wordBag", "nearAlias
 
 const isApproximate = (hit: SearchHit): boolean => APPROXIMATE_ROUTES.has(hit.route);
 
+function resultHref(base: string, shop: SearchHit["shops"][number]): string {
+  const groupHash = Number.isInteger(shop.groupIndex) ? `#menu-${shop.groupIndex}` : "#menu-title";
+  return `${base}restaurants/${shop.shopId}/?dish=${encodeURIComponent(shop.name)}${groupHash}`;
+}
+
 function shopLink(base: string, shop: SearchHit["shops"][number]): HTMLAnchorElement {
   const link = document.createElement("a");
   link.className = "search-result__shop";
   link.dataset.resultLink = "1";
-  link.href = `${base}restaurants/${shop.shopId}/#menu-title`;
+  link.href = resultHref(base, shop);
   link.setAttribute("aria-label", `${shop.name}，${shop.shopName}，${shop.price}`);
 
   const name = document.createElement("span");
@@ -96,7 +101,7 @@ function buildResult(hit: SearchHit, base: string): HTMLLIElement {
     const link = document.createElement("a");
     link.className = "search-result__name";
     link.dataset.resultLink = "1";
-    link.href = `${base}restaurants/${shop.shopId}/#menu-title`;
+    link.href = resultHref(base, shop);
     link.setAttribute("aria-label", `${hit.name}，${shop.price}，${shop.shopName}`);
 
     const name = document.createElement("span");
@@ -167,7 +172,7 @@ export function mountSearch(): void {
   dialog.dataset.mounted = "1";
 
   const base = dialog.dataset.base || "/";
-  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=9`;
+  const indexUrl = dialog.dataset.indexUrl || `${base}search-index.json?v=10`;
 
   const input = dialog.querySelector<HTMLInputElement>("[data-search]");
   const results = dialog.querySelector<HTMLUListElement>("[data-results]");

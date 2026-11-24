@@ -145,6 +145,7 @@ menu:
       - name: 孜然牛肉
         price: ¥28
         image: ./ziran-niurou.webp
+        note: 牛肉拍粉炸过再炒，孜然味不明显，整体比较普通，不太推荐。
       - { name: 百叶烧肉, price: ¥32 }
       - { name: 回锅肉片, price: ¥22 }
       - { name: 红烧猪手, price: ¥68 }

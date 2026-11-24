@@ -93,7 +93,7 @@ order:
 | `cover` | 否 | 封面图；不填则用店名占位块 |
 | `gallery` | 否 | 环境照数组，每项 `src` + `alt` |
 | `dishes` | 否 | 推荐菜数组，`name` 必填，`price`、`note`、`image` 可选 |
-| `menu` | 否 | 菜单分组，`title` + `items[]`（`name`、`price` 必填） |
+| `menu` | 否 | 菜单分组，`title` + `items[]`（`name`、`price` 必填；`note` 会显示为菜名后的说明按钮，`image` 会显示为照片按钮） |
 | `bills` | 否 | 消费记录，可多条：`date`（2026-11-18）、`people`（人数）、`dishes`（菜名）、`total`（总价）；人均由它动态算出，不手写 |
 | `added` | 否 | 收录日期，用于 RSS 排序 |
 | `order` | 否 | 扫码点餐：`url`、`qr`（二维码图片）、`note`、`tip`（小提示） |

@@ -3610,3 +3610,162 @@ body:has(.map-dialog[open]) {
   height: 100%;
   cursor: zoom-in;
 }
+
+/* 搜索结果落地：标出目标菜，避免打开分组后还要自己找 */
+.menu-item.is-target {
+  margin-left: -0.5rem;
+  padding-left: 0.5rem;
+  border-radius: 2px;
+  background: rgb(217 138 52 / 0.14);
+  box-shadow: inset 3px 0 0 var(--ember);
+}
+.menu-item.is-target .menu-item__name,
+.menu-item.is-target .menu-item__price {
+  color: var(--cream);
+}
+
+/* 菜单里的说明按钮：放在菜名后、照片图标前 */
+.menu-item__name-trigger,
+.menu-item__photo-trigger {
+  display: inline-flex;
+  align-items: baseline;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-item__photo-trigger {
+  align-self: center;
+  align-items: center;
+  line-height: 0;
+  color: var(--ember);
+  opacity: 0.75;
+}
+
+.menu-item__name-trigger:focus-visible,
+.menu-item__photo-trigger:focus-visible,
+.menu-item__note:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.menu-item__name-trigger:hover .menu-item__name.is-photo,
+.menu-item__photo-trigger:hover {
+  color: var(--focus);
+  opacity: 1;
+}
+
+.menu-item__note {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted-foreground);
+  line-height: 0;
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.menu-item__note:hover,
+.menu-item__note:focus-visible {
+  color: var(--ember);
+}
+
+.menu-note {
+  position: fixed;
+  inset: auto;
+  z-index: 80;
+  width: max-content;
+  max-width: min(22rem, 80vw);
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  box-shadow: 0 18px 36px -18px rgb(0 0 0 / 0.9);
+  color: rgb(240 231 216 / 0.92);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  white-space: normal;
+}
+
+/* 自定义分享卡：选菜搜索 */
+.studio__picker-search {
+  flex: none;
+  padding: 0 1.25rem 0.85rem;
+}
+
+.studio__picker-search input {
+  width: 100%;
+  padding: 0.58rem 0.75rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.studio__picker-search input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.studio__picker-search input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.studio__picker-body {
+  flex: 1;
+  min-height: 0;
+}
+
+
+/* 菜名换行时，价格和图标跟随整行垂直居中，而不是贴着第一行 */
+.menu-item,
+.menu-item__trigger {
+  align-items: center;
+}
+
+/* 菜名与价格之间至少留出 4 个全角字符的宽度 */
+.menu-item__leader,
+.studio__pick-leader {
+  min-width: 4em;
+}
+
+/* 选菜列表的长菜名同样让价格垂直居中 */
+.studio__pick {
+  align-items: center;
+}
+
+.studio__picker-body {
+  align-content: start;
+}
+
+/* 选菜分组：菜品段前后留白一致，分隔线拉到浮窗左右边缘 */
+.studio__group {
+  position: relative;
+  border-bottom: 0;
+}
+
+.studio__group::after {
+  content: "";
+  position: absolute;
+  right: -1.25rem;
+  bottom: 0;
+  left: -1.25rem;
+  height: 1px;
+  background: rgb(117 97 76 / 0.35);
+  pointer-events: none;
+}
+
+.studio__group-list {
+  padding: 0.45rem 0;
+}

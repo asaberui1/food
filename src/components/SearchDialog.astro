@@ -8,7 +8,7 @@ type Props = {
 
 const {
   // ?v= 用来在索引结构变化时绕开旧缓存，改 schema 时记得加一
-  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=9`,
+  indexUrl = `${import.meta.env.BASE_URL}search-index.json?v=10`,
   withMenu = 0,
   total = 0,
 } = Astro.props;
@@ -75,8 +75,8 @@ const {
     </label>
     <p class="search-hint" id="search-hint">
       {withMenu >= total && total > 0
-        ? "菜名搜索基于已收录菜单，只返回超过 2 个字的结果，目前全部餐厅均已录入菜单。"
-        : `菜名搜索基于已收录菜单，只返回超过 2 个字的结果，目前覆盖 ${withMenu}/${total} 家餐厅。`}
+        ? "菜名搜索基于已收录菜单，目前全部餐厅均已录入菜单。"
+        : `菜名搜索基于已收录菜单，目前覆盖 ${withMenu}/${total} 家餐厅。`}
     </p>
 
     <p class="search-status" data-search-status role="status"></p>

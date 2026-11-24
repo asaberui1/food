@@ -106,7 +106,7 @@ const priceNumbers = (price: string) =>
       return match ? Number(match[0]) : Number.NaN;
     })
     .filter((value) => Number.isFinite(value) && value > 0);
-const menuGroups = menuLarge.map((group) => {
+const menuGroups = menuLarge.map((group, groupIndex) => {
   const firsts: number[] = [];
   const lasts: number[] = [];
   for (const item of group.items) {
@@ -120,7 +120,7 @@ const menuGroups = menuLarge.map((group) => {
   const allMarketPrice = group.items.length > 0 && group.items.every((item) => item.price.includes("时价"));
   const range =
     min === null ? (allMarketPrice ? "时价" : "") : min === max ? `¥${min}` : `¥${min}–${max}`;
-  return { ...group, range };
+  return { ...group, groupIndex, range };
 });
 
 const priceText = priceLabel(shop);
@@ -397,7 +397,7 @@ const structuredData = {
                 {menuNote && <p class="menu-acc__intro">{menuNote}</p>}
                 <div class="menu-acc-list">
                   {menuGroups.map((group) => (
-                    <details class="menu-acc">
+                    <details class="menu-acc" id={`menu-${group.groupIndex}`}>
                       <summary class="menu-acc__head">
                         <span class="menu-acc__title">{group.title}</span>
                         <span class="menu-acc__range">{group.range}</span>
@@ -407,33 +407,89 @@ const structuredData = {
                       <div class="menu-acc__body">
                         {group.note && <p class="menu-acc__note">{group.note}</p>}
                         <ul class="menu-items">
-                          {group.items.map((item) =>
-                            item.full ? (
-                              <li class="menu-item menu-item--photo">
-                                <button
-                                  type="button"
-                                  class="menu-item__trigger"
-                                  data-lightbox
-                                  data-full={item.full}
-                                  data-thumb={item.thumb}
-                                  data-alt={item.name}
-                                >
-                                  <span class="menu-item__name is-photo">{item.name}</span>
-                                  <span class="menu-item__photo" aria-hidden="true">
-                                    <Icon name="photo" size={18} />
-                                  </span>
+                          {group.items.map((item, itemIndex) => {
+                            const noteId = `menu-note-${shop.id}-${group.groupIndex}-${itemIndex}`;
+                            return item.full ? (
+                              item.note ? (
+                                <li class="menu-item" data-menu-dish={item.name}>
+                                  <button
+                                    type="button"
+                                    class="menu-item__name-trigger"
+                                    data-lightbox
+                                    data-full={item.full}
+                                    data-thumb={item.thumb}
+                                    data-alt={item.name}
+                                    aria-label={`查看${item.name}的照片`}
+                                  >
+                                    <span class="menu-item__name is-photo">{item.name}</span>
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="menu-item__note"
+                                    popovertarget={noteId}
+                                    aria-label={`查看${item.name}的说明`}
+                                    aria-expanded="false"
+                                  >
+                                    <Icon name="info" size={24} />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="menu-item__photo-trigger"
+                                    data-lightbox
+                                    data-full={item.full}
+                                    data-thumb={item.thumb}
+                                    data-alt={item.name}
+                                    aria-label={`查看${item.name}的照片`}
+                                  >
+                                    <span class="menu-item__photo" aria-hidden="true">
+                                      <Icon name="photo" size={24} />
+                                    </span>
+                                  </button>
                                   <span class="menu-item__leader" aria-hidden="true"></span>
                                   <span class="menu-item__price">{item.price}</span>
-                                </button>
-                              </li>
+                                  <span class="menu-note" id={noteId} popover role="tooltip">{item.note}</span>
+                                </li>
+                              ) : (
+                                <li class="menu-item menu-item--photo" data-menu-dish={item.name}>
+                                  <button
+                                    type="button"
+                                    class="menu-item__trigger"
+                                    data-lightbox
+                                    data-full={item.full}
+                                    data-thumb={item.thumb}
+                                    data-alt={item.name}
+                                  >
+                                    <span class="menu-item__name is-photo">{item.name}</span>
+                                    <span class="menu-item__photo" aria-hidden="true">
+                                      <Icon name="photo" size={24} />
+                                    </span>
+                                    <span class="menu-item__leader" aria-hidden="true"></span>
+                                    <span class="menu-item__price">{item.price}</span>
+                                  </button>
+                                </li>
+                              )
                             ) : (
-                              <li class="menu-item">
+                              <li class="menu-item" data-menu-dish={item.name}>
                                 <span class="menu-item__name">{item.name}</span>
+                                {item.note && (
+                                  <button
+                                    type="button"
+                                    class="menu-item__note"
+                                    popovertarget={noteId}
+                                    aria-label={`查看${item.name}的说明`}
+                                    aria-expanded="false"
+                                  >
+                                    <Icon name="info" size={24} />
+                                  </button>
+                                )}
                                 <span class="menu-item__leader" aria-hidden="true"></span>
                                 <span class="menu-item__price">{item.price}</span>
+                                {item.note && (
+                                  <span class="menu-note" id={noteId} popover role="tooltip">{item.note}</span>
+                                )}
                               </li>
-                            ),
-                          )}
+                            );
+                          })}
                         </ul>
                       </div>
                     </details>
@@ -907,6 +963,105 @@ const structuredData = {
               behavior: reduced.matches ? "auto" : "smooth",
             });
           });
+        });
+      });
+
+      // 从搜索结果进来：展开对应分组，并把目标菜标出来。
+      const targetMatch = /^#menu-(\d+)$/.exec(window.location.hash);
+      if (targetMatch) {
+        const targetGroup = document.getElementById(`menu-${targetMatch[1]}`);
+        const dish = new URLSearchParams(window.location.search).get("dish");
+        if (targetGroup instanceof HTMLDetailsElement) {
+          targetGroup.open = true;
+          if (dish) {
+            const item = [...targetGroup.querySelectorAll<HTMLElement>("[data-menu-dish]")].find(
+              (row) => row.dataset.menuDish === dish,
+            );
+            if (item) {
+              item.classList.add("is-target");
+              requestAnimationFrame(() => {
+                const headerHeight = header?.getBoundingClientRect().height ?? 0;
+                const groupHeadHeight =
+                  targetGroup.querySelector<HTMLElement>("summary")?.getBoundingClientRect().height ?? 0;
+                const top =
+                  item.getBoundingClientRect().top + window.scrollY - headerHeight - groupHeadHeight - 12;
+                window.scrollTo({
+                  top: Math.max(0, top),
+                  behavior: reduced.matches ? "auto" : "smooth",
+                });
+              });
+            }
+          }
+        }
+      }
+
+      // 菜单里的说明按钮：点击在菜名附近展开自适应宽度的说明。
+      const noteButtons = [...document.querySelectorAll<HTMLButtonElement>(".menu-item__note")];
+      const canPopover = typeof HTMLElement.prototype.showPopover === "function";
+
+      const placeNote = (button: HTMLButtonElement, pop: HTMLElement): void => {
+        const margin = 12;
+        const rect = button.getBoundingClientRect();
+        const box = pop.getBoundingClientRect();
+        let left = rect.left + rect.width / 2 - box.width / 2;
+        if (left < margin) {
+          left = Math.max(margin, Math.min(rect.left, window.innerWidth - margin - box.width));
+        }
+        if (left + box.width > window.innerWidth - margin) left = window.innerWidth - margin - box.width;
+        let top = rect.bottom + 8;
+        if (top + box.height > window.innerHeight - margin) top = rect.top - 8 - box.height;
+        if (top < margin) top = margin;
+        pop.style.left = `${left}px`;
+        pop.style.top = `${top}px`;
+      };
+
+      noteButtons.forEach((button) => {
+        const id = button.getAttribute("popovertarget");
+        const pop = id ? document.getElementById(id) : null;
+        if (!pop) return;
+
+        if (canPopover) {
+          pop.addEventListener("toggle", (event) => {
+            const open = (event as Event & { newState?: string }).newState === "open";
+            button.setAttribute("aria-expanded", String(open));
+            if (open) requestAnimationFrame(() => placeNote(button, pop));
+          });
+          return;
+        }
+
+        // 老浏览器：退回 hidden 开关
+        pop.hidden = true;
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          if (pop.hidden) {
+            pop.hidden = false;
+            button.setAttribute("aria-expanded", "true");
+            requestAnimationFrame(() => placeNote(button, pop));
+          } else {
+            pop.hidden = true;
+            button.setAttribute("aria-expanded", "false");
+          }
+        });
+        document.addEventListener("click", (event) => {
+          if (pop.hidden) return;
+          if (button.contains(event.target as Node) || pop.contains(event.target as Node)) return;
+          pop.hidden = true;
+          button.setAttribute("aria-expanded", "false");
+        });
+        document.addEventListener("keydown", (event) => {
+          if (event.key !== "Escape" || pop.hidden) return;
+          pop.hidden = true;
+          button.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      window.addEventListener("resize", () => {
+        noteButtons.forEach((button) => {
+          const id = button.getAttribute("popovertarget");
+          const pop = id ? document.getElementById(id) : null;
+          if (!pop) return;
+          const open = canPopover ? pop.matches(":popover-open") : !pop.hidden;
+          if (open) placeNote(button, pop);
         });
       });
     })();

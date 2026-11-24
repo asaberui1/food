@@ -19,6 +19,8 @@ export type PreparedDish = {
   name: string;
   price: string;
   group: string;
+  /** 菜单分组的顺序，用于详情页锚点（#menu-2） */
+  groupIndex: number;
   norm: string;
   canon: string;
   py: string;
@@ -67,6 +69,8 @@ export type SearchShop = {
   shopName: string;
   price: string;
   group: string;
+  /** 对应详情页菜单分组的顺序，用于定位与自动展开 */
+  groupIndex: number;
   /** 这家店菜单上的原始写法，可能和卡片标题不同（西红柿炒鸡蛋 / 番茄炒蛋） */
   name: string;
 };
