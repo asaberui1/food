@@ -150,8 +150,8 @@ node scripts/qr-code.mjs "<点餐页 URL>" src/content/restaurants/<slug>/order-
 - 站名、导航、邮箱、学校信息：`src/config/site.ts`
 - 域名与子路径：`astro.config.mjs` 里的 `site` / `base`（当前部署在 `/food/`，链接前缀由 `src/lib/urls.ts` 统一处理）
 - 首页文案：`src/pages/index.astro`
-- 字体：中文用思源宋体（Noto Serif SC），只打包站里用到的字。`npm run build` 会自动先跑 `scripts/font-subset.mjs` 重新生成子集（需要联网，失败则沿用旧字体）
-- 分享卡：`npm run share` 会为每家店生成 `public/share/<slug>.jpg`（1080×1350，带二维码）。新增餐馆后跑一次
+- 字体：中文用思源宋体（Noto Serif SC），只打包站里用到的字。`npm run build` 会自动先跑 `scripts/font-subset.mjs` 重新生成子集（需要联网，失败则沿用旧字体）；`npm run test:fonts` 会离线核对 `styles-fonts.css` 是否覆盖站内所有字，构建的 postbuild 和 CI 都会跑
+- 分享卡：`npm run share` 会为每家店生成 `public/share/<slug>.jpg`（1080×1440，带二维码）。新增餐馆后跑一次
 - 统计：`src/config/site.ts` 里填 `analytics.goatcounter`（GoatCounter 的站点代码）即可启用，留空不加载
 - 颜色、字体、间距：`src/styles.css` 顶部的 CSS 变量
 

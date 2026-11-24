@@ -28,6 +28,10 @@ dishes:
   - name: 白切草鸡
     price: ¥32
     note: 皮黄肉紧，蘸一点酱油就够。
+  - name: 草头圈子
+    price: ¥68
+    note: 圈子是猪大肠，先烧到软糯，再铺在草头上面，草头吸了汤汁。
+    image: ./caotou-quanzi.webp
 bills:
   - people: 2
     dishes: [椒盐排条, 白切草鸡, 酒香草头]
@@ -35,6 +39,9 @@ bills:
   - people: 3
     dishes: [香菜拌素鸡, 无为卤鹅, 八宝辣酱, 自制特色基围虾, 椒盐排条]
     total: 168
+  - people: 4
+    dishes: [自制特色基围虾, 椒盐排条, 糟香门腔, 松仁玉米, 小炒马桥干, 草头圈子]
+    total: 218
 menu:
   - title: 冷菜
     items:
@@ -47,7 +54,9 @@ menu:
       - { name: 糖醋小排, price: ¥36 }
       - { name: 五香酱牛肉, price: ¥42 }
       - { name: 猪肉香肠, price: ¥28 }
-      - { name: 糟香门腔, price: ¥28 }
+      - name: 糟香门腔
+        price: ¥28
+        image: ./zaoxiang-menqiang.webp
       - { name: 白切猪肚, price: ¥42 }
       - { name: 野山椒凤爪, price: ¥26 }
       - { name: 五香烤子鱼, price: ¥32 }
@@ -120,7 +129,9 @@ menu:
       - { name: 糟溜鱼片, price: ¥32 }
       - { name: 茄汁鱼片, price: ¥28 }
       - { name: 糖醋瓦块鱼, price: ¥36 }
-      - { name: 草头圈子, price: ¥68 }
+      - name: 草头圈子
+        price: ¥68
+        image: ./caotou-quanzi.webp
       - { name: 葱姜花蛤, price: ¥28 }
       - { name: 水煮鱼片, price: ¥26 }
   - title: 炒菜
@@ -173,7 +184,9 @@ menu:
       - { name: 酱爆猪肝, price: ¥28 }
       - { name: 辣香子鸡, price: ¥48 }
       - { name: 农家小炒肉, price: ¥32 }
-      - { name: 小炒马桥干, price: ¥22 }
+      - name: 小炒马桥干
+        price: ¥28
+        image: ./xiaochao-maqiaogan.webp
       - { name: 番茄炒蛋, price: ¥18 }
       - { name: 青椒炒蛋, price: ¥18 }
       - { name: 鱼香茄子, price: ¥18 }
@@ -181,7 +194,9 @@ menu:
       - { name: 咸菜百叶炒肉丝, price: ¥25 }
       - { name: 韭菜干丝肉丝, price: ¥20 }
       - { name: 山药木耳, price: ¥20 }
-      - { name: 松仁玉米, price: ¥18 }
+      - name: 松仁玉米
+        price: ¥18
+        image: ./songren-yumi.webp
       - { name: 葱油蚕豆, price: ¥28 }
       - { name: 特色面筋, price: ¥22 }
       - { name: 蚝油双菇, price: ¥25 }

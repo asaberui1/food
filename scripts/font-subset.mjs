@@ -10,10 +10,11 @@
  */
 import { readFile, writeFile, readdir, mkdir, rm, rename } from "node:fs/promises";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const SRC = "src";
-const FONT_DIR = "src/assets/fonts";
-const CSS_FILE = "src/styles-fonts.css";
+export const FONT_DIR = "src/assets/fonts";
+export const CSS_FILE = "src/styles-fonts.css";
 const BATCH = 140;
 
 // 以后多半会用到的字：菜名、做法、口味、场景
@@ -27,7 +28,7 @@ const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36";
 
 /** 收集站点里出现的汉字与中文标点 */
-async function collectChars() {
+export async function collectChars() {
   const used = new Set([...EXTRA]);
 
   const walk = async (dir) => {
@@ -127,11 +128,17 @@ async function main() {
   await rename(tmpDir, FONT_DIR);
   await writeFile(CSS_FILE, css);
   console.log(
-    `字体子集：${chars.length} 字，${batches.length} 个文件，共 ${(total / 1024).toFixed(0)} KB（已校验无缺字）`,
+    `字体子集：${chars.length} 字，${batches.length} 个文件，共 ${(total / 1024).toFixed(0)} KB（已生成；覆盖检查见 npm run test:fonts）`,
   );
 }
 
-main().catch((error) => {
-  console.warn(`[font-subset] 跳过：${error.message}（沿用已有字体）`);
-  process.exit(0);
-});
+const isMain = process.argv[1]
+  ? import.meta.url === pathToFileURL(process.argv[1]).href
+  : false;
+
+if (isMain) {
+  main().catch((error) => {
+    console.warn(`[font-subset] 跳过：${error.message}（沿用已有字体）`);
+    process.exit(0);
+  });
+}

@@ -1133,7 +1133,7 @@ body:has(.shop-toc) .site-footer{
   border-bottom: 1px solid var(--border);
 }.menu-acc__head{
   position: sticky;
-  top: 4.1rem;
+  top: var(--site-header-height, 4.1rem);
   z-index: 6;
   background: var(--background);
   display: grid;

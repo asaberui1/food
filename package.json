@@ -27,9 +27,10 @@
     "share": "node scripts/share-cards.mjs",
     "prebuild": "astro check",
     "test:search": "tsx scripts/search-test.ts",
+    "test:fonts": "node scripts/font-audit.mjs",
     "audit:shops": "tsx scripts/audit-shops.ts",
     "geo": "node scripts/baidu-to-wgs.mjs",
-    "postbuild": "npm run test:search && npm run audit:shops"
+    "postbuild": "npm run test:search && npm run audit:shops && npm run test:fonts"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

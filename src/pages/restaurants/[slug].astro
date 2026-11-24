@@ -857,4 +857,44 @@ const structuredData = {
       );
     });
   </script>
+
+  <script>
+    // 收起菜单分组时，把该组表头带回顶部导航下方，避免页面停在展开内容的深处。
+    (() => {
+      const groups = [...document.querySelectorAll<HTMLDetailsElement>(".menu-acc")];
+      if (!groups.length) return;
+
+      const header = document.querySelector<HTMLElement>(".site-header");
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+      const gap = 10;
+
+      // 菜单分组头吸顶时也要让开顶部横幅，不能藏在它下面
+      const syncHeaderHeight = () => {
+        if (!header) return;
+        document.documentElement.style.setProperty(
+          "--site-header-height",
+          `${header.getBoundingClientRect().height}px`,
+        );
+      };
+      syncHeaderHeight();
+      window.addEventListener("resize", syncHeaderHeight);
+
+      groups.forEach((group) => {
+        group.addEventListener("toggle", () => {
+          if (group.open) return;
+
+          const headerHeight = header?.getBoundingClientRect().height ?? 0;
+          const top = group.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
+
+          // 等折叠后的布局落定再滚，避免被浏览器的滚动锚定拉回去
+          requestAnimationFrame(() => {
+            window.scrollTo({
+              top: Math.max(0, top),
+              behavior: reduced.matches ? "auto" : "smooth",
+            });
+          });
+        });
+      });
+    })();
+  </script>
 </BaseLayout>

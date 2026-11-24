@@ -105,6 +105,7 @@ const payload = {
     const resultImg = dialog.querySelector("[data-studio-result-img]");
     const download = dialog.querySelector("[data-studio-download]");
     const MAX = 3;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     let offsetX = 0.5;
     let offsetY = 0.45;
@@ -305,6 +306,20 @@ const payload = {
 
         summary.append(title, count, chev);
         details.append(summary);
+
+        // 收起分组时把这一组的表头带回菜单顶部，避免停在展开内容的深处。
+        details.addEventListener("toggle", () => {
+          if (details.open) return;
+          requestAnimationFrame(() => {
+            const bodyTop = pickerBody.getBoundingClientRect().top;
+            const groupTop = details.getBoundingClientRect().top;
+            const top = pickerBody.scrollTop + groupTop - bodyTop - 8;
+            pickerBody.scrollTo({
+              top: Math.max(0, top),
+              behavior: reduced.matches ? "auto" : "smooth",
+            });
+          });
+        });
 
         const list = document.createElement("div");
         list.className = "studio__group-list";
