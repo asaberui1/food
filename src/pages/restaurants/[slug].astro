@@ -878,6 +878,9 @@ const structuredData = {
       };
       syncHeaderHeight();
       window.addEventListener("resize", syncHeaderHeight);
+      if (header && "ResizeObserver" in window) {
+        new ResizeObserver(syncHeaderHeight).observe(header);
+      }
 
       groups.forEach((group) => {
         group.addEventListener("toggle", () => {
