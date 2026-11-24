@@ -3619,7 +3619,7 @@ body:has(.map-dialog[open]) {
   background: rgb(217 138 52 / 0.14);
   box-shadow: inset 3px 0 0 var(--ember);
 }
-.menu-item.is-target .menu-item__name,
+.menu-item.is-target .menu-item__name:not(.is-photo),
 .menu-item.is-target .menu-item__price {
   color: var(--cream);
 }
@@ -3768,4 +3768,28 @@ body:has(.map-dialog[open]) {
 
 .studio__group-list {
   padding: 0.45rem 0;
+}
+
+/* 说明与照片图标统一用店招橙，避免嵌套透明度把颜色压灰 */
+.menu-item__note {
+  color: var(--ember);
+  opacity: 0.9;
+}
+
+.menu-item__note:hover,
+.menu-item__note:focus-visible {
+  color: var(--focus);
+  opacity: 1;
+}
+
+.menu-item__photo {
+  opacity: 0.9;
+}
+
+.menu-item__photo-trigger {
+  opacity: 1;
+}
+
+.menu-item__photo-trigger:hover .menu-item__photo {
+  opacity: 1;
 }
