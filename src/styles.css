@@ -2257,10 +2257,16 @@ body:has(.shop-toc) .site-footer{
 }
 
 .studio__group-head {
+  position: sticky;
+  top: -1rem;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.85rem 0.6rem;
+  margin-inline: -1.25rem;
+  padding: 0.85rem 1.85rem;
+  background: #17130f;
+  box-shadow: 0 1px 0 rgb(117 97 76 / 0.35);
   cursor: pointer;
   list-style: none;
 }
@@ -2779,10 +2785,16 @@ body:has(.shop-toc) .site-footer{
 }
 
 .studio__group-head {
+  position: sticky;
+  top: -1rem;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.85rem 0.6rem;
+  margin-inline: -1.25rem;
+  padding: 0.85rem 1.85rem;
+  background: #17130f;
+  box-shadow: 0 1px 0 rgb(117 97 76 / 0.35);
   cursor: pointer;
   list-style: none;
 }

@@ -886,11 +886,22 @@ const structuredData = {
         group.addEventListener("toggle", () => {
           if (group.open) return;
 
-          const headerHeight = header?.getBoundingClientRect().height ?? 0;
-          const top = group.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
-
-          // 等折叠后的布局落定再滚，避免被浏览器的滚动锚定拉回去
+          // 等折叠后的布局落定再看表头位置，避免被浏览器的滚动锚定拉回去
           requestAnimationFrame(() => {
+            const headerHeight = header?.getBoundingClientRect().height ?? 0;
+            const summary = group.querySelector<HTMLElement>("summary");
+            const rect = summary?.getBoundingClientRect();
+
+            // 表头已经完整落在横幅下方的屏幕内，就保持原位，不强制跳转
+            if (
+              rect &&
+              rect.top >= headerHeight - 1 &&
+              rect.bottom <= window.innerHeight + 1
+            ) {
+              return;
+            }
+
+            const top = group.getBoundingClientRect().top + window.scrollY - headerHeight - gap;
             window.scrollTo({
               top: Math.max(0, top),
               behavior: reduced.matches ? "auto" : "smooth",

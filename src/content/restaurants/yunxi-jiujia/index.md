@@ -25,9 +25,6 @@ dishes:
     price: ¥32
     note: 八样料：鸡丁、鸭胗丁、虾仁丁、豌豆、胡萝卜丁、豆腐丁、高笋丁、花生米。
     image: ./babao-lajiang.webp
-  - name: 白切草鸡
-    price: ¥32
-    note: 皮黄肉紧，蘸一点酱油就够。
   - name: 草头圈子
     price: ¥68
     note: 圈子是猪大肠，先烧到软糯，再铺在草头上面，草头吸了汤汁。

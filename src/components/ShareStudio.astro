@@ -307,13 +307,22 @@ const payload = {
         summary.append(title, count, chev);
         details.append(summary);
 
-        // 收起分组时把这一组的表头带回菜单顶部，避免停在展开内容的深处。
+        // 收起分组时，只有表头被顶出选菜菜单的视口才带回顶部；
+        // 表头本来就在屏幕里就保持原位，避免无意义的跳转。
         details.addEventListener("toggle", () => {
           if (details.open) return;
           requestAnimationFrame(() => {
-            const bodyTop = pickerBody.getBoundingClientRect().top;
-            const groupTop = details.getBoundingClientRect().top;
-            const top = pickerBody.scrollTop + groupTop - bodyTop - 8;
+            const bodyRect = pickerBody.getBoundingClientRect();
+            const summaryRect = summary.getBoundingClientRect();
+
+            if (
+              summaryRect.top >= bodyRect.top - 1 &&
+              summaryRect.bottom <= bodyRect.bottom + 1
+            ) {
+              return;
+            }
+
+            const top = pickerBody.scrollTop + details.getBoundingClientRect().top - bodyRect.top - 8;
             pickerBody.scrollTo({
               top: Math.max(0, top),
               behavior: reduced.matches ? "auto" : "smooth",
