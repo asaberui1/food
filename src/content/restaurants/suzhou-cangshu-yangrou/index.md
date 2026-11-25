@@ -16,11 +16,11 @@ gallery:
 dishes:
   - name: 白烧羊肉锅仔（小）
     price: ¥108
-    note: 清汤锅，羊肉切厚片铺满一层，蒜苗给得足；三个人分正好。
+    note: 清汤锅，羊肉切厚片铺满一层，配料有娃娃菜、粉丝、豆腐泡。
     image: ./guozi-xiao.webp
   - name: 大蒜炒羊肉
     price: ¥45
-    note: 羊肉片和大蒜叶一起爆炒，酱色重，带一点干辣椒的辛香。
+    note: 羊肉片和蒜苗一起爆炒，酱香味为主，带一点干辣椒的辛香。
     image: ./dasuan-yangrou.webp
 bills:
   - people: 3
@@ -60,7 +60,7 @@ menu:
       - { name: 红烧羊肉锅仔（小）, price: ¥108 }
       - name: 白烧羊肉锅仔（小）
         price: ¥108
-        note: 清汤锅，羊肉切厚片铺满一层，蒜苗给得足；三个人分正好。
+        note: 清汤锅，羊肉切厚片铺满一层，配料有娃娃菜、粉丝、豆腐泡。
       - { name: 羊杂锅仔（小）, price: ¥108 }
   - title: 加菜
     items:
@@ -73,7 +73,7 @@ menu:
     items:
       - name: 大蒜炒羊肉
         price: ¥45
-        note: 羊肉片和大蒜叶一起爆炒，酱色重，带一点干辣椒的辛香。
+        note: 羊肉片和蒜苗一起爆炒，酱香味为主，带一点干辣椒的辛香。
       - { name: 大蒜炒羊肚, price: ¥45 }
       - { name: 青椒炒羊肚, price: ¥45 }
       - { name: 大蒜炒羊杂, price: ¥35 }

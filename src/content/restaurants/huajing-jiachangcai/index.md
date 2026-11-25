@@ -17,11 +17,11 @@ dishes:
     image: ./niudu.webp
   - name: 椒盐排条
     price: ¥28
-    note: 外层裹得薄，撒了椒盐，两次都点了。
+    note: 排骨外层裹糊炸制，撒了椒盐。
     image: ./paitiao.webp
   - name: 双椒金针菇
     price: ¥22
-    note: 青红椒配金针菇，解腻。
+    note: 清炒金针菇为主，勾了薄芡，两种辣椒起点缀作用，也不算辣。
     image: ./shuangjiao-jinzhengu.webp
   - name: 辣酱三丁
     price: ¥26
@@ -29,7 +29,7 @@ dishes:
     image: ./lajiang-sanding.webp
   - name: 山药木耳
     price: ¥20
-    note: 清炒，山药脆，木耳爽。
+    note: 清炒勾薄芡，山药糯、木耳爽。
     image: ./shanyao-muer.webp
 bills:
   - people: 4
@@ -138,7 +138,7 @@ menu:
       - { name: 鱼香肉丝, price: ¥24 }
       - name: 椒盐排条
         price: ¥28
-        note: 外层裹得薄，撒了椒盐，两次都点了。
+        note: 排骨外层裹糊炸制，撒了椒盐。
       - { name: 青椒肉丝, price: ¥22 }
       - { name: 酱爆腰花, price: ¥34 }
       - { name: 家常豆腐, price: ¥22 }
@@ -196,7 +196,7 @@ menu:
       - { name: 农家咸鸭, price: ¥32 }
       - name: 山药木耳
         price: ¥20
-        note: 清炒，山药脆，木耳爽。
+        note: 清炒勾薄芡，山药糯、木耳爽。
       - { name: 川味香肠, price: ¥28 }
   - title: 铁板类
     items:
@@ -222,7 +222,7 @@ menu:
       - { name: 山城毛血旺, price: ¥42 }
       - name: 双椒金针菇
         price: ¥22
-        note: 青红椒配金针菇，解腻。
+        note: 清炒金针菇为主，勾了薄芡，两种辣椒起点缀作用，也不算辣。
       - { name: 农家咸老鹅, price: ¥36 }
       - { name: 川味口条, price: ¥32 }
       - { name: 山林大红肠, price: ¥24 }

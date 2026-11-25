@@ -22,7 +22,7 @@ dishes:
     image: ./niu-sanxian.webp
   - name: 干锅鱼籽鱼鳔
     price: ¥58
-    note: 鱼籽和鱼鳔一起干锅烧，胶质重，适合拌饭。
+    note: 鱼籽和鱼鳔一起干锅烧，鱼鳔胶质重，吃不出鱼腥味。
     image: ./ganguo-yuzi-yupiao.webp
 bills:
   - people: 7
@@ -40,7 +40,7 @@ menu:
       - name: 干锅鱼籽鱼鳔
         price: ¥58
         image: ./ganguo-yuzi-yupiao.webp
-        note: 鱼籽和鱼鳔一起干锅烧，胶质重，适合拌饭。
+        note: 鱼籽和鱼鳔一起干锅烧，鱼鳔胶质重，吃不出鱼腥味。
       - { name: 辣子鸡, price: ¥38 }
       - { name: 脱骨柠檬凤爪, price: ¥28 }
       - name: 凉拌牛肉

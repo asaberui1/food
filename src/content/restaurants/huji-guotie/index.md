@@ -17,14 +17,14 @@ dishes:
     image: ./guotie.webp
   - name: 招牌老鸭粉丝汤
     price: ¥16
-    note: 鸭子、粉丝、油豆腐都有，唯独没有青菜。
+    note: 鸭胗肠、粉丝、油豆腐都有，唯独没有青菜。
 menu:
   - title: 老鸭粉丝汤
     note: 店里叫「十大老鸭粉丝汤」，一碗一个口味。
     items:
       - name: 招牌老鸭粉丝汤
         price: ¥16
-        note: 鸭子、粉丝、油豆腐都有，唯独没有青菜。
+        note: 鸭胗肠、粉丝、油豆腐都有，唯独没有青菜。
       - { name: 鸭肉老鸭粉丝汤, price: ¥16 }
       - { name: 香辣老鸭粉丝汤, price: ¥21 }
       - { name: 青藤椒老鸭粉丝汤, price: ¥21 }

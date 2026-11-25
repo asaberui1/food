@@ -13,7 +13,7 @@ gallery:
 dishes:
   - name: 赣味香辣小鱼虾
     price: ¥36
-    note: 小鱼小虾连壳一起炸过再回锅炒，脆、香、辣，连壳嚼最香。
+    note: 小鱼小虾连壳一起炸过再回锅炒，脆、香、辣。
     image: ./xiaoyuxia.webp
   - name: 农家一碗香
     price: ¥36
@@ -21,7 +21,7 @@ dishes:
     image: ./yiwanxiang.webp
   - name: 韭香田螺肉
     price: ¥32
-    note: 韭菜配田螺肉，辣度中等。
+    note: 韭菜配田螺肉，滋味很足。
     image: ./tianluo.webp
   - name: 香辣猪头肉
     price: ¥36
@@ -94,7 +94,7 @@ menu:
         note: 外婆菜偏咸，肉片切得比较碎，不太推荐。
       - name: 韭香田螺肉
         price: ¥32
-        note: 韭菜配田螺肉，辣度中等。
+        note: 韭菜配田螺肉，滋味很足。
       - name: 农家一碗香
         price: ¥36
         note: 默认放三个鸡蛋，可以让厨师再加一个，不加钱。
@@ -105,7 +105,7 @@ menu:
       - { name: 蒜叶腊肉, price: ¥36 }
       - name: 小鱼虾 / 赣味香辣小鱼虾
         price: ¥36
-        note: 小鱼小虾连壳一起炸过再回锅炒，脆、香、辣，连壳嚼最香。
+        note: 小鱼小虾连壳一起炸过再回锅炒，脆、香、辣。
       - { name: 爆炒腰花, price: ¥36 }
       - { name: 肝腰合炒, price: ¥38 }
       - name: 烟笋腊肉

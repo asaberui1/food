@@ -23,11 +23,11 @@ dishes:
     image: ./zai-jiang-xiaochaoji.webp
   - name: 新式小炒肉
     price: ¥42
-    note: 青椒和五花肉生爆，锅气重，下饭。
+    note: 青椒、白木耳和五花肉生爆，微辣、下饭。
     image: ./xinshi-xiaochaorou.webp
   - name: 玉米粑粑
     price: ¥15
-    note: 玉米面做的，外脆里糯，带一点甜。
+    note: 玉米面做的，裹着玉米叶上锅蒸熟，里面有整粒的玉米，口感甜润。
     image: ./yumi-baba.webp
 bills:
   - people: 4
@@ -183,7 +183,7 @@ menu:
       - { name: 自贡韭黄牛肉丝, price: ¥56 }
       - name: 新式小炒肉
         price: ¥42
-        note: 青椒和五花肉生爆，锅气重，下饭。
+        note: 青椒、白木耳和五花肉生爆，微辣、下饭。
       - { name: 泰椒土豆丝, price: ¥26 }
       - name: 冰川茄子
         price: ¥32
@@ -254,7 +254,7 @@ menu:
       - { name: 咸肉菜饭, price: ¥18 }
       - name: 玉米粑粑
         price: ¥15
-        note: 玉米面做的，外脆里糯，带一点甜。
+        note: 玉米面做的，裹着玉米叶上锅蒸熟，里面有整粒的玉米，口感甜润。
   - title: 烤鱼伴侣
     items:
       - { name: 中百叶, price: ¥6 }

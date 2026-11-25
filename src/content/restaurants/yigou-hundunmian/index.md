@@ -17,7 +17,7 @@ dishes:
     image: ./wanzamian.webp
   - name: 尖椒香干回锅肉盖饭
     price: ¥20
-    note: 现炒的盖浇饭，尖椒和香干一起回锅，很下饭。
+    note: 现炒的盖浇饭，尖椒、香干和肉片一起爆炒，很下饭。
     image: ./huiguorou-gaifan.webp
 order:
   url: https://zzgfs.leshuazf.com/zzg-mini-order/code-restaurant.html?qrCodeNo=3520492341479868416
@@ -87,7 +87,7 @@ menu:
       - name: 尖椒香干回锅肉盖饭
         price: ¥20
         image: ./huiguorou-gaifan.webp
-        note: 现炒的盖浇饭，尖椒和香干一起回锅，很下饭。
+        note: 现炒的盖浇饭，尖椒、香干和肉片一起爆炒，很下饭。
       - { name: 尖椒炒鸡杂盖饭, price: ¥20 }
       - { name: 红烧大肉盖饭, price: ¥20 }
       - { name: 清炒牛蛙盖饭, price: ¥35 }

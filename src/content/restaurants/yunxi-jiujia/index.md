@@ -19,15 +19,15 @@ dishes:
     image: ./jixiaxia.webp
   - name: 椒盐排条
     price: ¥30
-    note: 现炸的排条裹一层薄糊，和洋葱丝、芹菜段一起上桌，趁热吃最脆。
+    note: 排条裹一层薄糊现炸，和洋葱丝、甜椒段等配菜一起上桌。
     image: ./paigu.webp
   - name: 八宝辣酱
     price: ¥32
-    note: 八样料：鸡丁、鸭胗丁、虾仁丁、豌豆、胡萝卜丁、豆腐丁、高笋丁、花生米。
+    note: 八样料：鸡丁、鸭胗丁、虾仁丁、豌豆、胡萝卜丁、豆腐丁、高笋丁、花生米，调味很有特色。
     image: ./babao-lajiang.webp
   - name: 草头圈子
     price: ¥68
-    note: 圈子是猪大肠，先烧到软糯，再铺在草头上面，草头吸了汤汁。
+    note: 猪大肠处理得很干净，烧得软糯、酱香十足，再铺在酒香草头上面，相得益彰。
     image: ./caotou-quanzi.webp
 bills:
   - people: 2
@@ -134,7 +134,7 @@ menu:
       - name: 草头圈子
         price: ¥68
         image: ./caotou-quanzi.webp
-        note: 圈子是猪大肠，先烧到软糯，再铺在草头上面，草头吸了汤汁。
+        note: 猪大肠处理得很干净，烧得软糯、酱香十足，再铺在酒香草头上面，相得益彰。
       - { name: 葱姜花蛤, price: ¥28 }
       - { name: 水煮鱼片, price: ¥26 }
   - title: 炒菜
@@ -149,14 +149,14 @@ menu:
       - { name: 京酱肉丝, price: ¥28 }
       - name: 八宝辣酱
         price: ¥32
-        note: 八样料：鸡丁、鸭胗丁、虾仁丁、豌豆、胡萝卜丁、豆腐丁、高笋丁、花生米。
+        note: 八样料：鸡丁、鸭胗丁、虾仁丁、豌豆、胡萝卜丁、豆腐丁、高笋丁、花生米，调味很有特色。
       - { name: 酱爆腰花, price: ¥48 }
       - { name: 三林肉皮, price: ¥48 }
       - { name: 辣子鸡丁, price: ¥28 }
       - { name: 糖醋排条, price: ¥32 }
       - name: 椒盐排条
         price: ¥30
-        note: 现炸的排条裹一层薄糊，和洋葱丝、芹菜段一起上桌，趁热吃最脆。
+        note: 排条裹一层薄糊现炸，和洋葱丝、甜椒段等配菜一起上桌。
       - { name: 椒盐猪爪, price: ¥58 }
       - { name: 三洋锅巴, price: ¥26 }
       - { name: 炒时件, price: ¥28 }

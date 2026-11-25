@@ -16,7 +16,7 @@ gallery:
 dishes:
   - name: 红烧牛肉面
     price: ¥23/25
-    note: 上海黄汤底，点单时可以说面要粗还是细。
+    note: 上海黄汤底，咖喱味不冲、很调和；红烧牛肉份量足、炖得软烂，点单时可以说面要粗还是细。
     image: ./beef-noodle.webp
   - name: 牛肉炒刀削
     price: ¥23/26
@@ -33,7 +33,7 @@ menu:
       - name: 红烧牛肉面
         price: ¥23/25
         image: ./beef-noodle.webp
-        note: 上海黄汤底，点单时可以说面要粗还是细。
+        note: 上海黄汤底，咖喱味不冲、很调和；红烧牛肉份量足、炖得软烂，点单时可以说面要粗还是细。
       - { name: 红烧大肠面, price: ¥25/27 }
       - { name: 酸菜红烧牛肉面, price: ¥26/28 }
       - { name: 酸菜红烧大肠面, price: ¥26/28 }
