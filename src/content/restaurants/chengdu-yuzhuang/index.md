@@ -104,6 +104,7 @@ menu:
       - name: 烤黑鱼（香辣、双椒、麻辣、酸菜、蒜香、番茄）
         price: ¥99
         image: ./kao-heiyu-shuangjiao.webp
+        note: 双椒味，鱼现杀现烤，配菜单点。
       - { name: 烤花鲢（香辣、双椒、麻辣、酸菜、蒜香、番茄）, price: ¥42/斤 }
       - { name: 烤青鱼（香辣、双椒、麻辣、酸菜、蒜香、番茄）, price: ¥42/斤 }
       - name: 烤大黑鱼（香辣、双椒、麻辣、酸菜、蒜香、番茄）
@@ -145,7 +146,9 @@ menu:
       - { name: 玉米兔, price: ¥62 }
       - { name: 蒜泥菠菜, price: ¥22 }
       - { name: 清炒菠菜, price: ¥22 }
-      - { name: 仔姜小炒鸡, price: ¥53 }
+      - name: 仔姜小炒鸡
+        price: ¥53
+        note: 仔姜和青椒爆炒，姜味冲，鸡肉嫩。
       - { name: 茄角相恋, price: ¥28 }
       - { name: 蒜泥青菜, price: ¥22 }
       - { name: 清炒青菜, price: ¥22 }
@@ -177,7 +180,9 @@ menu:
       - { name: 自贡韭黄炒蛋, price: ¥28 }
       - { name: 自贡韭黄干丝肉丝, price: ¥32 }
       - { name: 自贡韭黄牛肉丝, price: ¥56 }
-      - { name: 新式小炒肉, price: ¥42 }
+      - name: 新式小炒肉
+        price: ¥42
+        note: 青椒和五花肉生爆，锅气重，下饭。
       - { name: 泰椒土豆丝, price: ¥26 }
       - name: 冰川茄子
         price: ¥32
@@ -245,7 +250,9 @@ menu:
       - { name: 光面, price: ¥6 }
       - { name: 蛋炒饭, price: ¥12 }
       - { name: 咸肉菜饭, price: ¥18 }
-      - { name: 玉米粑粑, price: ¥15 }
+      - name: 玉米粑粑
+        price: ¥15
+        note: 玉米面做的，外脆里糯，带一点甜。
   - title: 烤鱼伴侣
     items:
       - { name: 中百叶, price: ¥6 }

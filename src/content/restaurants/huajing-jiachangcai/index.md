@@ -136,7 +136,9 @@ menu:
       - { name: 木须肉, price: ¥26 }
       - { name: 辣子牛肉, price: ¥33 }
       - { name: 鱼香肉丝, price: ¥24 }
-      - { name: 椒盐排条, price: ¥28 }
+      - name: 椒盐排条
+        price: ¥28
+        note: 外层裹得薄，撒了椒盐，两次都点了。
       - { name: 青椒肉丝, price: ¥22 }
       - { name: 酱爆腰花, price: ¥34 }
       - { name: 家常豆腐, price: ¥22 }
@@ -183,14 +185,18 @@ menu:
       - { name: 炒三鲜, price: ¥25 }
       - { name: 莴笋肉片, price: ¥26 }
       - { name: 咸肉山药, price: ¥28 }
-      - { name: 辣酱三丁, price: ¥26 }
+      - name: 辣酱三丁
+        price: ¥26
+        note: 豆干丁、鸡胗丁和鸡肉丁三丁，酱香口味。
       - { name: 酱炒三丝, price: ¥22 }
       - { name: 金黄玉米烙, price: ¥24 }
       - { name: 蒜苗肉丝, price: ¥24 }
       - { name: 土豆牛肉, price: ¥24 }
       - { name: 农家咸草鸡, price: ¥33 }
       - { name: 农家咸鸭, price: ¥32 }
-      - { name: 山药木耳, price: ¥20 }
+      - name: 山药木耳
+        price: ¥20
+        note: 清炒，山药脆，木耳爽。
       - { name: 川味香肠, price: ¥28 }
   - title: 铁板类
     items:
@@ -210,9 +216,13 @@ menu:
       - { name: 干锅手撕包菜, price: ¥32 }
   - title: 新菜推荐
     items:
-      - { name: 川香牛肚, price: ¥35 }
+      - name: 川香牛肚
+        price: ¥35
+        note: 牛肚切条，和青尖椒、干辣椒一起爆炒。
       - { name: 山城毛血旺, price: ¥42 }
-      - { name: 双椒金针菇, price: ¥22 }
+      - name: 双椒金针菇
+        price: ¥22
+        note: 青红椒配金针菇，解腻。
       - { name: 农家咸老鹅, price: ¥36 }
       - { name: 川味口条, price: ¥32 }
       - { name: 山林大红肠, price: ¥24 }

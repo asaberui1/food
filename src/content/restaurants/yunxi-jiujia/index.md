@@ -99,7 +99,9 @@ menu:
     items:
       - { name: 椒盐扇子骨, price: ¥78 }
       - { name: 酱油大头虾, price: ¥58 }
-      - { name: 自制特色基围虾, price: ¥38 }
+      - name: 自制特色基围虾
+        price: ¥38
+        note: 虾先炸过，趁热放进调好的酱汁里，靠热胀冷缩把味吸进去，所以外面挂着汁、里面也有味。
       - { name: 农家锅巴, price: ¥38 }
       - { name: 臭桂鱼, price: ¥98 }
       - { name: 芹菜炒小鲍鱼, price: ¥78 }
@@ -129,6 +131,7 @@ menu:
       - name: 草头圈子
         price: ¥68
         image: ./caotou-quanzi.webp
+        note: 圈子是猪大肠，先烧到软糯，再铺在草头上面，草头吸了汤汁。
       - { name: 葱姜花蛤, price: ¥28 }
       - { name: 水煮鱼片, price: ¥26 }
   - title: 炒菜
@@ -141,12 +144,16 @@ menu:
       - { name: 沙律牛排, price: ¥38 }
       - { name: 生炒子鸡, price: ¥42 }
       - { name: 京酱肉丝, price: ¥28 }
-      - { name: 八宝辣酱, price: ¥32 }
+      - name: 八宝辣酱
+        price: ¥32
+        note: 八样料：鸡丁、鸭胗丁、虾仁丁、豌豆、胡萝卜丁、豆腐丁、高笋丁、花生米。
       - { name: 酱爆腰花, price: ¥48 }
       - { name: 三林肉皮, price: ¥48 }
       - { name: 辣子鸡丁, price: ¥28 }
       - { name: 糖醋排条, price: ¥32 }
-      - { name: 椒盐排条, price: ¥30 }
+      - name: 椒盐排条
+        price: ¥30
+        note: 现炸的排条裹一层薄糊，和洋葱丝、芹菜段一起上桌，趁热吃最脆。
       - { name: 椒盐猪爪, price: ¥58 }
       - { name: 三洋锅巴, price: ¥26 }
       - { name: 炒时件, price: ¥28 }

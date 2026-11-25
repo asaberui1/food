@@ -38,7 +38,9 @@ menu:
       - { name: 羊肉烩面, price: ¥16/18 }
       - { name: 红烧羊肉烩面, price: ¥28/30 }
       - { name: 红烧牛肉烩面, price: ¥23/25 }
-      - { name: 牛肉/牛杂烩面, price: ¥16/18 }
+      - name: 牛肉/牛杂烩面
+        price: ¥16/18
+        note: 汤里没有那口黄汤，胡椒味重，配白切牛肉和宽面片；小碗的量一个人刚好。
       - { name: 羊杂烩面, price: ¥16/18 }
       - { name: 捞烩面, price: ¥17/19 }
       - { name: 老式炝锅烩面, price: ¥30 }
@@ -105,12 +107,16 @@ menu:
     note: 人多时可以当炒菜馆用，一个人点一份配面也行。
     items:
       - { name: 土豆丝, price: ¥16 }
-      - { name: 炒青菜, price: ¥16 }
+      - name: 炒青菜
+        price: ¥16
+        note: 最朴素的一道，滋味足，点了一桌小炒时用来解腻。
       - { name: 炒鸡蛋, price: ¥20 }
       - { name: 大蒜/青椒炒羊杂, price: ¥48 }
       - { name: 大蒜/青椒炒羊肉, price: ¥58 }
       - { name: 大蒜/青椒炒羊肚, price: ¥58 }
-      - { name: 孜然羊肉, price: ¥58 }
+      - name: 孜然羊肉
+        price: ¥58
+        note: 孜然味重、油大，羊肉切薄片爆炒，适合下饭。
       - { name: 霸道水煮牛肉, price: ¥48 }
       - { name: 土豆烧牛肉, price: ¥48 }
       - { name: 老坛酸菜鱼, price: ¥38 }

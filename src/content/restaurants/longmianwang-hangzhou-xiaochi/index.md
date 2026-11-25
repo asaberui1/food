@@ -30,7 +30,9 @@ menu:
     items:
       - { name: 招牌鲜肉小笼包, price: ¥10 }
       - { name: 薄皮灌汤小笼包, price: ¥12 }
-      - { name: 豆腐小笼包, price: ¥10 }
+      - name: 豆腐小笼包
+        price: ¥10
+        note: 嵊州做法，皮薄，馅是豆腐配一点肉末，特色鲜明。
       - { name: 鲜肉蒸饺（8 个）, price: ¥10 }
       - { name: 鸡蛋煎饺（8 个）, price: ¥15 }
       - { name: 鸡蛋鲜肉煎包, price: ¥15 }
@@ -62,6 +64,7 @@ menu:
       - name: 黄焖鸡米饭
         price: ¥20
         image: ./huangmenji.webp
+        note: 拿黄豆酱焖出来的，咸鲜微辣，可以拌饭也可以喝汤。
       - { name: 黄焖牛肉饭, price: ¥35 }
       - { name: 蛋炒饭, price: ¥13 }
       - { name: 牛肉炒饭, price: ¥25 }
@@ -77,7 +80,9 @@ menu:
       - { name: 西红柿鸡蛋盖饭, price: ¥18 }
   - title: 面类
     items:
-      - { name: 招牌牛肉炒米粉（榨面）/面/河粉, price: ¥25 }
+      - name: 招牌牛肉炒米粉（榨面）/面/河粉
+        price: ¥25
+        note: 选米粉就是嵊州榨面，比河粉细，炒得干香；也可以换成面或河粉。
       - { name: 香肠鸡蛋炒米粉（榨面）/面/河粉, price: ¥18 }
       - { name: 肉丝鸡蛋炒米粉（榨面）/面/河粉, price: ¥18 }
       - { name: 咸菜肉丝汤米粉（榨面）/面, price: ¥16 }

@@ -22,7 +22,9 @@ menu:
   - title: 老鸭粉丝汤
     note: 店里叫「十大老鸭粉丝汤」，一碗一个口味。
     items:
-      - { name: 招牌老鸭粉丝汤, price: ¥16 }
+      - name: 招牌老鸭粉丝汤
+        price: ¥16
+        note: 鸭子、粉丝、油豆腐都有，唯独没有青菜。
       - { name: 鸭肉老鸭粉丝汤, price: ¥16 }
       - { name: 香辣老鸭粉丝汤, price: ¥21 }
       - { name: 青藤椒老鸭粉丝汤, price: ¥21 }
@@ -96,9 +98,15 @@ menu:
       - { name: 爆炒大肠面, price: ¥25 }
   - title: 锅贴
     items:
-      - { name: 胡记锅贴（锅贴）, price: ¥8/两 }
-      - { name: 胡记锅贴（生煎）, price: ¥8/两 }
-      - { name: 胡记锅贴（单个）, price: ¥2 }
+      - name: 胡记锅贴（锅贴）
+        price: ¥8/两
+        note: 一两四只，分生煎和锅贴两种做法；想少来点可以 2 元一个散买。
+      - name: 胡记锅贴（生煎）
+        price: ¥8/两
+        note: 一两四只，分生煎和锅贴两种做法；想少来点可以 2 元一个散买。
+      - name: 胡记锅贴（单个）
+        price: ¥2
+        note: 一两四只，分生煎和锅贴两种做法；想少来点可以 2 元一个散买。
   - title: 馄饨
     items:
       - { name: 荠菜大馄饨（10只）, price: ¥13 }

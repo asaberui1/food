@@ -3951,3 +3951,14 @@ body:has(.map-dialog[open]) {
 .map-edge-marker[data-edge="right"] .map-edge-pin {
   transform: rotate(-90deg);
 }
+
+/* 菜名/说明图标默认米白；只有带照片的菜才用橙色 */
+.menu-item__note {
+  color: rgb(240 231 216 / 0.88);
+  opacity: 1;
+}
+
+.menu-item.has-photo .menu-item__note {
+  color: var(--ember);
+  opacity: 0.9;
+}

@@ -416,7 +416,7 @@ const structuredData = {
                             const noteId = `menu-note-${shop.id}-${group.groupIndex}-${itemIndex}`;
                             return item.full ? (
                               item.note ? (
-                                <li class="menu-item" data-menu-dish={item.name}>
+                                <li class="menu-item has-photo" data-menu-dish={item.name}>
                                   <button
                                     type="button"
                                     class="menu-item__name-trigger"
@@ -455,7 +455,7 @@ const structuredData = {
                                   <span class="menu-note" id={noteId} popover role="tooltip">{item.note}</span>
                                 </li>
                               ) : (
-                                <li class="menu-item menu-item--photo" data-menu-dish={item.name}>
+                                <li class="menu-item menu-item--photo has-photo" data-menu-dish={item.name}>
                                   <button
                                     type="button"
                                     class="menu-item__trigger"

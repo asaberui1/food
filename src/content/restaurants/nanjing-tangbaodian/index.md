@@ -22,7 +22,9 @@ dishes:
 menu:
   - title: 包子 / 点心
     items:
-      - { name: 鲜肉小笼包, price: ¥8 }
+      - name: 鲜肉小笼包
+        price: ¥8
+        note: 一笼 8 个；卖到后面只剩几个，就按 1 元 1 个散卖。
       - { name: 鲜肉汤包, price: ¥9 }
       - { name: 烧麦, price: ¥7 }
       - { name: 小馄饨, price: ¥7 }
@@ -48,7 +50,9 @@ menu:
       - { name: 肥肠面, price: ¥23 }
   - title: 粉丝汤
     items:
-      - { name: 老鸭粉丝汤, price: ¥12 }
+      - name: 老鸭粉丝汤
+        price: ¥12
+        note: 鸭胗、鸭血加粉丝、油豆腐、干丝和蔬菜，荤素都有；默认调味偏咸，可以让老板少放盐。
       - { name: 牛腩粉丝汤, price: ¥20 }
   - title: 另加浇头
     items:

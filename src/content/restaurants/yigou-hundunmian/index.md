@@ -57,6 +57,7 @@ menu:
       - name: 豌杂面
         price: ¥18
         image: ./wanzamian.webp
+        note: 重庆做法，豌豆酥脆、杂酱咸香，拌开再吃。
       - { name: 万州杂酱面, price: ¥17 }
       - { name: 热干面, price: ¥10 }
   - title: 盖浇饭
@@ -86,6 +87,7 @@ menu:
       - name: 尖椒香干回锅肉盖饭
         price: ¥20
         image: ./huiguorou-gaifan.webp
+        note: 现炒的盖浇饭，尖椒和香干一起回锅，很下饭。
       - { name: 尖椒炒鸡杂盖饭, price: ¥20 }
       - { name: 红烧大肉盖饭, price: ¥20 }
       - { name: 清炒牛蛙盖饭, price: ¥35 }

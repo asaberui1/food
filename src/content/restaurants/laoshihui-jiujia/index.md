@@ -39,6 +39,7 @@ menu:
       - name: 干锅鱼籽鱼鳔
         price: ¥58
         image: ./ganguo-yuzi-yupiao.webp
+        note: 鱼籽和鱼鳔一起干锅烧，胶质重，适合拌饭。
       - { name: 辣子鸡, price: ¥38 }
       - { name: 脱骨柠檬凤爪, price: ¥28 }
       - name: 凉拌牛肉
@@ -51,6 +52,7 @@ menu:
       - name: 牛三鲜
         price: ¥69
         image: ./niu-sanxian.webp
+        note: 牛肚、牛肠、牛筋一锅炖，越煮越入味。
       - { name: 红焖猪手煲, price: ¥68 }
       - { name: 红烧肥肠, price: ¥68 }
       - { name: 洪湖粉藕煲, price: ¥48 }
@@ -70,7 +72,9 @@ menu:
       - { name: 雪花牛肉粒, price: ¥48 }
       - { name: 油爆河虾, price: ¥38 }
       - { name: 蒜香排骨, price: ¥58 }
-      - { name: 黄山臭桂鱼, price: ¥118 }
+      - name: 黄山臭桂鱼
+        price: ¥118
+        note: 徽州做法，闻着臭、吃着香，蒜瓣肉紧实。
       - { name: 响油鳝丝, price: ¥48 }
       - { name: 清炒鳝丝, price: ¥88 }
       - { name: 剁椒鱼头, price: ¥58 }

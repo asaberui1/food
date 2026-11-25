@@ -91,15 +91,25 @@ menu:
       - name: 外婆菜回锅肉
         price: ¥30
         image: ./waipocai-huiguorou.webp
-      - { name: 韭香田螺肉, price: ¥32 }
-      - { name: 农家一碗香, price: ¥36 }
-      - { name: 香辣猪头肉, price: ¥36 }
+      - name: 韭香田螺肉
+        price: ¥32
+        note: 韭菜配田螺肉，辣度中等。
+      - name: 农家一碗香
+        price: ¥36
+        note: 默认放三个鸡蛋，可以让厨师再加一个，不加钱。
+      - name: 香辣猪头肉
+        price: ¥36
+        note: 猪头肉切薄片，辣椒和蒜苗给得足。
       - { name: 酸辣鸡杂, price: ¥36 }
       - { name: 蒜叶腊肉, price: ¥36 }
-      - { name: 小鱼虾 / 赣味香辣小鱼虾, price: ¥36 }
+      - name: 小鱼虾 / 赣味香辣小鱼虾
+        price: ¥36
+        note: 小鱼小虾连壳一起炸过再回锅炒，脆、香、辣，连壳嚼最香。
       - { name: 爆炒腰花, price: ¥36 }
       - { name: 肝腰合炒, price: ¥38 }
-      - { name: 烟笋腊肉, price: ¥38 }
+      - name: 烟笋腊肉
+        price: ¥38
+        note: 烟笋干香，腊肉偏咸，配饭刚好。
       - name: 拆骨肉荷包蛋
         price: ¥38
         image: ./chaigu-rou-hebaodan.webp

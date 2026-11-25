@@ -33,6 +33,7 @@ menu:
       - name: 红烧牛肉面
         price: ¥23/25
         image: ./beef-noodle.webp
+        note: 上海黄汤底，点单时可以说面要粗还是细。
       - { name: 红烧大肠面, price: ¥25/27 }
       - { name: 酸菜红烧牛肉面, price: ¥26/28 }
       - { name: 酸菜红烧大肠面, price: ¥26/28 }
@@ -77,12 +78,16 @@ menu:
       - { name: 牛肚粉丝汤, price: ¥20 }
   - title: 炒面 / 炒饭类
     items:
-      - { name: 牛肉炒面/刀削, price: ¥23/26 }
+      - name: 牛肉炒面/刀削
+        price: ¥23/26
+        note: 刀削厚实，酱色重，配一碗汤。
       - { name: 牛杂炒面/刀削, price: ¥23/26 }
       - { name: 红烧牛肉炒面, price: ¥30 }
       - { name: 红烧牛肉炒刀削, price: ¥30 }
       - { name: 牛肉炒河粉, price: ¥22 }
-      - { name: 牛肉炒饭, price: ¥23 }
+      - name: 牛肉炒饭
+        price: ¥23
+        note: 铁锅现炒，粒粒分明，配一碗汤。
       - { name: 牛杂炒饭, price: ¥23 }
       - { name: 红烧牛肉炒饭, price: ¥30 }
   - title: 单加浇头
