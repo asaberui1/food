@@ -46,6 +46,7 @@ menu:
       - name: 无为卤鹅
         price: ¥38
         image: ./wuwei-lue.webp
+        note: 据说是无为市的做法，卤出来是五香略甜的。
       - { name: 葱油海蜇头, price: ¥28 }
       - { name: 本帮熏鱼, price: ¥28 }
       - { name: 糖醋小排, price: ¥36 }
@@ -54,6 +55,7 @@ menu:
       - name: 糟香门腔
         price: ¥28
         image: ./zaoxiang-menqiang.webp
+        note: 糟卤的猪舌，没有脏器味，味道不错；可能一直冷藏保鲜，刚上桌时肉还没有完全解冻。
       - { name: 白切猪肚, price: ¥42 }
       - { name: 野山椒凤爪, price: ¥26 }
       - { name: 五香烤子鱼, price: ¥32 }
@@ -62,6 +64,7 @@ menu:
       - name: 香菜拌素鸡
         price: ¥16
         image: ./xiangcai-suji.webp
+        note: 香菜和小块豆干加植物油拌匀，没什么特色。
       - { name: 四喜烤夫, price: ¥18 }
       - { name: 时蔬色拉, price: ¥25 }
       - { name: 糟香毛豆, price: ¥12 }
@@ -191,6 +194,7 @@ menu:
       - name: 小炒马桥干
         price: ¥28
         image: ./xiaochao-maqiaogan.webp
+        note: 马桥镇的香干是盐卤点浆的，略带苦味，是一道传统上海家常菜。
       - { name: 番茄炒蛋, price: ¥18 }
       - { name: 青椒炒蛋, price: ¥18 }
       - { name: 鱼香茄子, price: ¥18 }
@@ -201,6 +205,7 @@ menu:
       - name: 松仁玉米
         price: ¥18
         image: ./songren-yumi.webp
+        note: 玉米为主，松仁、胡萝卜丁、豌豆粒为辅，调味是甜咸口。
       - { name: 葱油蚕豆, price: ¥28 }
       - { name: 特色面筋, price: ¥22 }
       - { name: 蚝油双菇, price: ¥25 }

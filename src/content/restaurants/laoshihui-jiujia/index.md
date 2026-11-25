@@ -36,6 +36,7 @@ menu:
       - name: 香酥鱼鳅
         price: ¥38
         image: ./xiangsu-yuqiu.webp
+        note: 炸得很酥脆的小鱼。
       - name: 干锅鱼籽鱼鳔
         price: ¥58
         image: ./ganguo-yuzi-yupiao.webp
@@ -45,6 +46,7 @@ menu:
       - name: 凉拌牛肉
         price: ¥38
         image: ./liangban-niurou.webp
+        note: 卤牛肉切片放入凉拌汁里，不算入味。
       - { name: 卤水拼盘, price: ¥38 }
       - { name: 秘制羊蝎子, price: ¥108 }
       - { name: 红焖羊肉, price: ¥118 }
@@ -61,9 +63,11 @@ menu:
       - name: 干锅菌菇
         price: ¥38
         image: ./ganguo-jungu.webp
+        note: 菌菇放在带固体酒精的干锅里炖煮，很入味，但煮到后面有点咸。
       - name: 小鱼小虾
         price: ¥38
         image: ./xiaoyu-xiaoxia.webp
+        note: 先问清老板今天怎么做：如果是韭菜炒的，比较一般；如果是菜单上这种炒法，值得一试。
       - { name: 韭菜肉配豆腐, price: ¥38 }
       - name: 特色纸包黑鱼/巴沙鱼（麻辣鲜香、蒜香豆豉、金汤青花椒、苗家豆花）
         price: ¥78/138
@@ -96,6 +100,7 @@ menu:
       - name: 凉拌小木耳
         price: ¥12
         image: ./liangban-muer.webp
+        note: 剁椒酱的味道有点抢，整体中规中矩。
       - { name: 五香驴肉, price: ¥32 }
       - { name: 椒盐花生米, price: ¥10 }
       - { name: 糟门腔, price: ¥32 }
@@ -107,6 +112,7 @@ menu:
       - name: 五香耳尖
         price: ¥26
         image: ./wuxiang-erjian.webp
+        note: 卤猪耳切片后拌进凉拌汁，猪耳是采购的半成品，口感一般。
       - { name: 凉拌猪鼻冲, price: ¥26 }
   - title: 江南百味
     items:
@@ -124,6 +130,7 @@ menu:
       - name: 八宝辣酱
         price: ¥35
         image: ./babao-lajiang.webp
+        note: 虾仁、豆干丁、花生米、土豆丁、黄豆、香菇丁、猪肉丁和鸡胗丁八种料，调味偏甜。
       - { name: 红烧老鹅, price: ¥88 }
       - { name: 香糟溜鱼片（黑鱼）, price: ¥48 }
       - { name: 烂糊肉丝, price: ¥28 }
@@ -138,6 +145,7 @@ menu:
       - name: 大蒜香干咸肉
         price: ¥28
         image: ./dasuan-xianggan-xianrou.webp
+        note: 顾名思义，一道中规中矩的家常小炒。
       - { name: 蚝油牛肉, price: ¥38 }
       - { name: 铁板牛肉, price: ¥38 }
       - { name: 梅菜扣肉, price: ¥38 }
@@ -192,6 +200,7 @@ menu:
       - name: 干锅花菜
         price: ¥28
         image: ./ganguo-huacai.webp
+        note: 花菜和五花肉放在带固体酒精的干锅里炖煮；花菜切得大，难煮软也难入味，吃到后面锅底容易糊。
       - { name: 牛肉锅仔, price: ¥88 }
       - { name: 羊肉锅仔, price: ¥118 }
       - { name: 风鹅锅仔, price: ¥58 }
@@ -234,6 +243,7 @@ menu:
       - name: 酒香草头
         price: ¥26
         image: ./jiuxiang-caotou.webp
+        note: 这是收录菜单里价格最高的一道酒香草头，但做法很经典，吃不出为什么卖这么贵。
       - { name: 葱油莴笋丝, price: ¥22 }
       - { name: 韭菜炒银芽, price: ¥18 }
       - { name: 刀豆土豆, price: ¥26 }
@@ -250,6 +260,7 @@ menu:
       - name: 番茄蛋汤
         price: ¥12
         image: ./fanqie-dantang.webp
+        note: 份量大概有 8～9 碗。
       - { name: 肉丝芥菜豆腐羹, price: ¥15 }
       - { name: 酒酿丸子, price: ¥16 }
       - { name: 滋补肺头汤, price: ¥48 }

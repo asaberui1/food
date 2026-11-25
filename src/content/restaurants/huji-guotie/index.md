@@ -44,6 +44,7 @@ menu:
       - name: 老鸭青菜粉丝汤
         price: ¥12
         image: ./laoya-caitang.webp
+        note: 主菜是豆腐泡、粉丝加上大量的青菜，汤底是老鸭清汤。
   - title: 炒年糕
     items:
       - { name: 青菜肉丝炒年糕, price: ¥16 }

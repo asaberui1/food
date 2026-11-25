@@ -159,6 +159,7 @@ menu:
       - name: 金豆焖蹄花
         price: ¥56
         image: ./jindou-men-tihua.webp
+        note: 蹄花蘸着调料吃，炖得不够软烂，平平无奇。
       - { name: 丝瓜炖豆腐, price: ¥32 }
       - { name: 崇明羊肉锅仔, price: ¥92/149 }
       - { name: 红烧崇明羊肉, price: ¥108 }
@@ -187,6 +188,7 @@ menu:
       - name: 冰川茄子
         price: ¥32
         image: ./bingchuan-qiezi.webp
+        note: 选用云南冰川茄，想模仿[风味茄子](../haozailai-lucai/?dish=%E9%A3%8E%E5%91%B3%E8%8C%84%E5%AD%90#menu-2)，但调味上有点画虎类犬。
       - { name: 干锅扁豆, price: ¥32 }
   - title: 成都老味道
     items:

@@ -15,11 +15,14 @@ gallery:
 dishes:
   - name: 风味茄子
     price: ¥28
+    note: 酸甜酥脆，趁热吃最好，放凉以后表面会变硬。
+    image: ./fengwei-qiezi.webp
   - name: 老家散养小公鸡
     price: ¥148
     note: 枣庄炒鸡，酱香浓郁，胶质感十足。
   - name: 香辣肉丝
     price: ¥28
+    note: 肉丝、葱丝、芫荽丝，加上花生米和干辣椒一起翻炒，卷煎饼或者当炒菜吃都很香。
     image: ./xiangla-rousi.webp
 bills:
   - people: 3
@@ -69,7 +72,7 @@ menu:
     items:
       - name: 面条辣子鸡
         price: ¥68
-        note: 风味像大盘鸡，特色不如老家散养小公鸡。
+        note: 风味像大盘鸡，特色不如[老家散养小公鸡](?dish=%E8%80%81%E5%AE%B6%E6%95%A3%E5%85%BB%E5%B0%8F%E5%85%AC%E9%B8%A1#menu-1)。
         image: ./mianliao-laziji.webp
       - { name: 地锅鸡, price: ¥68 }
       - { name: 辣子鸡, price: ¥48 }
@@ -85,10 +88,14 @@ menu:
       - name: 香辣肉丝
         price: ¥28
         image: ./xiangla-rousi.webp
+        note: 肉丝、葱丝、芫荽丝，加上花生米和干辣椒一起翻炒，卷煎饼或者当炒菜吃都很香。
       - { name: 干炸金蚕, price: ¥58 }
       - { name: 鸡鞭腰花, price: ¥158 }
       - { name: 大杂烩肉丝, price: ¥22 }
-      - { name: 风味茄子, price: ¥28 }
+      - name: 风味茄子
+        price: ¥28
+        note: 酸甜酥脆，趁热吃最好，放凉以后表面会变硬。
+        image: ./fengwei-qiezi.webp
       - { name: 京酱肉丝, price: ¥38 }
       - { name: 河虾, price: ¥98 }
       - { name: 蚕蛹, price: ¥48 }

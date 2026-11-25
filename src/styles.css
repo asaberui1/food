@@ -3962,3 +3962,17 @@ body:has(.map-dialog[open]) {
   color: var(--ember);
   opacity: 0.9;
 }
+
+.menu-note a,
+.dish__note a {
+  color: var(--ember);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.menu-note a:hover,
+.menu-note a:focus-visible,
+.dish__note a:hover,
+.dish__note a:focus-visible {
+  color: var(--focus);
+}

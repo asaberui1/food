@@ -126,6 +126,13 @@ const menuGroups = menuLarge.map((group, groupIndex) => {
 
 const priceText = priceLabel(shop);
 const billsAverage = averagePerPerson(bills);
+const escapeHtml = (value: string): string =>
+  value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char] ?? char);
+
+// 说明文字支持 [文字](链接)，用于把菜名链到另一道菜。
+const noteHtml = (note: string): string =>
+  escapeHtml(note).replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
 const distanceText = walkMinutes
   ? `步行 ${walkMinutes} 分钟`
   : far
@@ -362,7 +369,7 @@ const structuredData = {
                         {dish.name}
                         {dish.price && <span class="dish__price">{dish.price}</span>}
                       </h3>
-                      {dish.note && <p class="dish__note">{dish.note}</p>}
+                      {dish.note && <p class="dish__note" set:html={noteHtml(dish.note)} />}
                     </div>
                     {dish.image && (
                       <div class="dish__media">
@@ -452,7 +459,7 @@ const structuredData = {
                                   </button>
                                   <span class="menu-item__leader" aria-hidden="true"></span>
                                   <span class="menu-item__price">{item.price}</span>
-                                  <span class="menu-note" id={noteId} popover role="tooltip">{item.note}</span>
+                                  <span class="menu-note" id={noteId} popover role="tooltip" set:html={noteHtml(item.note)} />
                                 </li>
                               ) : (
                                 <li class="menu-item menu-item--photo has-photo" data-menu-dish={item.name}>
@@ -490,7 +497,7 @@ const structuredData = {
                                 <span class="menu-item__leader" aria-hidden="true"></span>
                                 <span class="menu-item__price">{item.price}</span>
                                 {item.note && (
-                                  <span class="menu-note" id={noteId} popover role="tooltip">{item.note}</span>
+                                  <span class="menu-note" id={noteId} popover role="tooltip" set:html={noteHtml(item.note)} />
                                 )}
                               </li>
                             );

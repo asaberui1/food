@@ -91,6 +91,7 @@ menu:
       - name: 外婆菜回锅肉
         price: ¥30
         image: ./waipocai-huiguorou.webp
+        note: 外婆菜偏咸，肉片切得比较碎，不太推荐。
       - name: 韭香田螺肉
         price: ¥32
         note: 韭菜配田螺肉，辣度中等。
@@ -113,6 +114,7 @@ menu:
       - name: 拆骨肉荷包蛋
         price: ¥38
         image: ./chaigu-rou-hebaodan.webp
+        note: 肉片和荷包蛋切小片一起炒，味道不错。
       - { name: 土豆烧肉, price: ¥38 }
       - { name: 香辣花甲, price: ¥38 }
       - { name: 啤酒鸭, price: ¥42 }
@@ -145,6 +147,7 @@ menu:
       - name: 干锅井冈山豆皮
         price: ¥32
         image: ./ganguo-jinggangshan-doupi.webp
+        note: 豆皮放在带固体酒精的干锅里炖煮，吸满汤汁，很入味。
       - { name: 干锅鹿茸菇, price: ¥46 }
       - { name: 干锅牛杂, price: ¥48 }
       - { name: 干锅牛腩, price: ¥58 }
@@ -161,6 +164,7 @@ menu:
       - name: 香菇小青菜
         price: ¥18
         image: ./xianggu-xiaoqingcai.webp
+        note: 瓢儿白给的部位不错，菜心比较多，这个价位很值得。
       - { name: 生菜, price: ¥18 }
       - { name: 油麦菜, price: ¥18 }
       - { name: 空心菜, price: ¥18 }
