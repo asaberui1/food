@@ -24,6 +24,8 @@ const restaurants = defineCollection({
       dining: z.enum(["group", "single", "both"]).default("group"),
       /** 从学院大门步行过去大约几分钟 */
       walkMinutes: z.number().int().positive().optional(),
+      /** 超出步行 20 分钟范围、开车/骑车更合适的店 */
+      far: z.boolean().default(false),
       address: z.string(),
       hours: z.string().default(""),
       summary: z.string(),

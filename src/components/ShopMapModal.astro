@@ -76,6 +76,8 @@ const cards = shops
         </div>
       </div>
 
+      <div class="map-edges" data-map-edges role="group" aria-label="屏幕外的餐馆"></div>
+
       <div class="map-scale" data-map-scale aria-hidden="true">
         <span class="map-scale__bar" data-map-scale-bar></span>
         <span class="map-scale__label" data-map-scale-label></span>
@@ -95,10 +97,22 @@ const cards = shops
           <path d="M12 22.5V11.6" stroke="#b9b1a6" stroke-width="2.4" stroke-linecap="round"></path>
           <circle cx="12" cy="7.6" r="5.6" fill="#d34731" stroke="#fbf0dc" stroke-width="1.6"></circle>
         </svg>
-        收录的餐馆
+        收录餐馆 · 步行可达
+      </span>
+      <span class="map-key">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="M12 22.5V11.6" stroke="#b9b1a6" stroke-width="2.4" stroke-linecap="round"></path>
+          <circle cx="12" cy="7.6" r="5.6" fill="#4b8fd6" stroke="#fbf0dc" stroke-width="1.6"></circle>
+        </svg>
+        收录餐馆 · 距离较远
       </span>
       <span class="map-dialog__credit">
-        底图 © <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> 贡献者
+        底图
+        <svg class="map-credit-mark" viewBox="0 0 20 20" width="14" height="14" aria-hidden="true">
+          <circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="1.3"></circle>
+          <path d="M12.9 7.2a4.1 4.1 0 1 0 0 5.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+        </svg>
+        <a href="https://www.openstreetmap.org/copyright" rel="noopener">OpenStreetMap</a> 贡献者
       </span>
     </footer>
   </div>
@@ -121,6 +135,7 @@ const cards = shops
     const popSummary = dialog.querySelector<HTMLElement>("[data-map-pop-summary]");
     const scaleBar = dialog.querySelector<HTMLElement>("[data-map-scale-bar]");
     const scaleLabel = dialog.querySelector<HTMLElement>("[data-map-scale-label]");
+    const edgeLayer = dialog.querySelector<HTMLElement>("[data-map-edges]");
 
     let cards: Record<string, { name: string; cover: string; href: string; summary: string }> = {};
     try {
@@ -141,12 +156,104 @@ const cards = shops
     let ty = 0;
     let activeSlug = "";
 
+    const edgePin = (color: string): string => `
+      <svg class="map-edge-pin" viewBox="0 0 24 24" width="14" height="22" aria-hidden="true">
+        <path d="M12 22.5V11.6" stroke="#b9b1a6" stroke-width="2.4" stroke-linecap="round"></path>
+        <circle cx="12" cy="7.6" r="5.6" fill="${color}" stroke="#fbf0dc" stroke-width="1.6"></circle>
+      </svg>`;
+
+    const edgeDirection: Record<number, string> = {
+      0: "right",
+      1: "bottom-right",
+      2: "bottom",
+      3: "bottom-left",
+      4: "left",
+      5: "top-left",
+      6: "top",
+      7: "top-right",
+    };
+
+    const updateEdgeMarkers = () => {
+      if (!edgeLayer || !viewport) return;
+      edgeLayer.replaceChildren();
+      const pins = [...dialog.querySelectorAll<SVGElement>(".map-pin")];
+      if (!pins.length) return;
+
+      const view = viewport.getBoundingClientRect();
+      const vx = view.left + view.width / 2;
+      const vy = view.top + view.height / 2;
+      const groups = new Map<number, { pin: SVGElement; circle: SVGCircleElement; far: boolean }[]>();
+
+      for (const pin of pins) {
+        const circle = pin.querySelector<SVGCircleElement>("circle");
+        if (!circle) continue;
+        const box = circle.getBoundingClientRect();
+        const margin = 6;
+        const visible =
+          box.right > view.left + margin &&
+          box.left < view.right - margin &&
+          box.bottom > view.top + margin &&
+          box.top < view.bottom - margin;
+        if (visible) continue;
+
+        const cx = box.left + box.width / 2;
+        const cy = box.top + box.height / 2;
+        const angle = Math.atan2(cy - vy, cx - vx);
+        const sector = (Math.round(angle / (Math.PI / 4)) + 8) % 8;
+        const group = groups.get(sector) ?? [];
+        group.push({ pin, circle, far: pin.classList.contains("is-far") });
+        groups.set(sector, group);
+      }
+
+      for (const [sector, items] of groups) {
+        const names = items.map(({ pin }) => cards[pin.dataset.mapSlug ?? ""]?.name ?? "这家店");
+        const numerals = ["零", "一", "两", "三", "四", "五", "六", "七", "八", "九", "十"];
+        const count = numerals[items.length] ?? String(items.length);
+        const label = items.length === 1 ? names[0] : `${count}家餐厅`;
+        const arrowAngle = (sector * 45 + 90) % 360;
+        const near = items.some((item) => !item.far);
+        const far = items.some((item) => item.far);
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "map-edge-marker";
+        button.dataset.edge = edgeDirection[sector] ?? "bottom";
+        button.setAttribute("aria-label", `未显示：${names.join("、")}，点击查看`);
+        button.innerHTML = `
+          <span class="map-edge-marker__pins">
+            ${near ? edgePin("#d34731") : ""}
+            ${far ? edgePin("#4b8fd6") : ""}
+          </span>
+          <span class="map-edge-marker__label">${label}</span>
+          <span class="map-edge-marker__arrow" style="transform: rotate(${arrowAngle}deg)" aria-hidden="true">
+            <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 16V4"></path><path d="m5 9 5-5 5 5"></path>
+            </svg>
+          </span>`;
+        button.addEventListener("pointerdown", (event) => event.stopPropagation());
+        button.addEventListener("click", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const first = items[0];
+          const svgEl = getSvg();
+          if (!svgEl) return;
+          const vb = svgEl.viewBox.baseVal;
+          if (!vb || !vb.width || !vb.height) return;
+          centerOn(Number(first.circle.getAttribute("cx")) / vb.width, Number(first.circle.getAttribute("cy")) / vb.height);
+          hidePop();
+          updateEdgeMarkers();
+        });
+        edgeLayer.append(button);
+      }
+    };
+
     const apply = () => {
       if (!canvas) return;
       // 用宽度而不是 transform:scale 缩放，文字才是重新光栅化的矢量，放大不发虚
       canvas.style.width = `${baseW * scale}px`;
       canvas.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
       updateScaleBar();
+      updateEdgeMarkers();
       if (activeSlug) positionPop(activeSlug);
     };
 
@@ -190,8 +297,8 @@ const cards = shops
       apply();
     };
 
-    const shopAnchor = () => {
-      const pins = [...(dialog?.querySelectorAll(".map-pin circle") ?? [])];
+    const pinAnchor = (selector: string) => {
+      const pins = [...(dialog?.querySelectorAll(`${selector} circle`) ?? [])];
       const svgEl = getSvg();
       if (!svgEl || pins.length === 0) return null;
       const vb = svgEl.viewBox.baseVal;
@@ -206,16 +313,17 @@ const cards = shops
     const fit = () => {
       measure();
       const narrow = (viewport?.clientWidth ?? 999) < 700;
-      // 窄屏整图缩小后字号只剩 4px，直接放大到看得清的倍数并对准餐馆
-      scale = narrow ? Math.min(maxScale, Math.max(minScale, 980 / baseW)) : minScale;
+      // 地图现在向南延伸到景联路：默认按宽度适配并聚焦附近门店，
+      // 否则整张图会被压扁，店名字号只剩几像素；远途店由下方按钮跳转。
+      scale = narrow
+        ? Math.min(maxScale, Math.max(minScale, 980 / baseW))
+        : Math.min(1, Math.max(minScale, (viewport?.clientWidth ?? baseW) / baseW));
       tx = 0;
       ty = 0;
       clamp();
       apply();
-      if (narrow) {
-        const anchor = shopAnchor();
-        if (anchor) centerOn(anchor[0], anchor[1]);
-      }
+      const anchor = pinAnchor(".map-pin:not(.is-far)");
+      if (anchor) centerOn(anchor[0], anchor[1]);
     };
 
     const zoomTo = (next: number, cx?: number, cy?: number) => {

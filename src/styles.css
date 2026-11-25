@@ -3793,3 +3793,161 @@ body:has(.map-dialog[open]) {
 .menu-item__photo-trigger:hover .menu-item__photo {
   opacity: 1;
 }
+
+/* 地图版权符号：用矢量圆 C 代替字体 © */
+.map-credit-mark {
+  vertical-align: -0.14em;
+  margin-inline: 0.12em;
+}
+
+/* 地图：屏幕外的餐馆，按方位贴在视口边缘 */
+.map-edges {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.map-edge-marker {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: calc(100% - 20px);
+  padding: 0.32rem 0.55rem;
+  border: 1px solid rgb(117 97 76 / 0.7);
+  background: rgb(23 19 15 / 0.94);
+  color: var(--cream);
+  font-size: 0.86rem;
+  line-height: 1.2;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.map-edge-marker:hover,
+.map-edge-marker:focus-visible {
+  border-color: var(--ember);
+  color: var(--cream);
+}
+
+.map-edge-marker[data-edge="top"] {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.map-edge-marker[data-edge="top-right"] {
+  top: 10px;
+  right: 10px;
+}
+
+.map-edge-marker[data-edge="right"] {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.map-edge-marker[data-edge="bottom-right"] {
+  right: 10px;
+  bottom: 10px;
+}
+
+.map-edge-marker[data-edge="bottom"] {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.map-edge-marker[data-edge="bottom-left"] {
+  bottom: 10px;
+  left: 10px;
+}
+
+.map-edge-marker[data-edge="left"] {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+}
+
+.map-edge-marker[data-edge="top-left"] {
+  top: 10px;
+  left: 10px;
+}
+
+.map-edge-marker__pins {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+
+.map-edge-pin + .map-edge-pin {
+  margin-left: -5px;
+}
+
+.map-edge-marker__label {
+  max-width: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.map-edge-marker__arrow {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  line-height: 0;
+  transition: transform 180ms ease;
+}
+
+@media (max-width: 640px) {
+  .map-edge-marker {
+    max-width: calc(100% - 16px);
+    padding: 0.28rem 0.45rem;
+    font-size: 0.8rem;
+  }
+
+  .map-edge-marker__label {
+    max-width: 7.2rem;
+  }
+}
+
+/* 左右两侧的屏幕外餐馆：竖排文字，大头针横过来 */
+.map-edge-marker[data-edge="left"],
+.map-edge-marker[data-edge="right"] {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem 0.32rem;
+}
+
+.map-edge-marker[data-edge="left"] .map-edge-marker__label,
+.map-edge-marker[data-edge="right"] .map-edge-marker__label {
+  max-width: none;
+  max-height: 9rem;
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: normal;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  letter-spacing: 0.08em;
+}
+
+.map-edge-marker[data-edge="left"] .map-edge-marker__pins,
+.map-edge-marker[data-edge="right"] .map-edge-marker__pins {
+  flex-direction: column;
+  gap: 2px;
+}
+
+.map-edge-marker[data-edge="left"] .map-edge-pin + .map-edge-pin,
+.map-edge-marker[data-edge="right"] .map-edge-pin + .map-edge-pin {
+  margin-top: -5px;
+  margin-left: 0;
+}
+
+.map-edge-marker[data-edge="left"] .map-edge-pin {
+  transform: rotate(90deg);
+}
+
+.map-edge-marker[data-edge="right"] .map-edge-pin {
+  transform: rotate(-90deg);
+}

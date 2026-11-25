@@ -6,10 +6,15 @@ dining: single
 walkMinutes: 11
 address: 华发路 281 号
 summary: 锅贴和老鸭粉丝汤是主打；锅贴 8 元一两四只，招牌老鸭粉丝汤 16 元。
+cover: ./door.webp
+gallery:
+  - src: ./room.webp
+    alt: 店堂，白色墙面、木桌和橙色皮凳，靠窗能看到街边行道树
 dishes:
   - name: 胡记锅贴
     price: ¥8/两
     note: 一两四只，分生煎和锅贴两种做法；想少来点可以 2 元一个散买。
+    image: ./guotie.webp
   - name: 招牌老鸭粉丝汤
     price: ¥16
     note: 鸭子、粉丝、油豆腐都有，唯独没有青菜。
@@ -34,7 +39,9 @@ menu:
       - { name: 老鸭血汤, price: ¥7 }
       - { name: 鸭血油豆腐汤, price: ¥9 }
       - { name: 老鸭杂汤（胗肠）, price: ¥12 }
-      - { name: 老鸭青菜粉丝汤, price: ¥12 }
+      - name: 老鸭青菜粉丝汤
+        price: ¥12
+        image: ./laoya-caitang.webp
   - title: 炒年糕
     items:
       - { name: 青菜肉丝炒年糕, price: ¥16 }

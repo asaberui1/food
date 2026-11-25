@@ -29,7 +29,7 @@ PINS = "src/assets/map/pins.json"
 
 W = 1200.0
 LON0, LON1 = 121.4268, 121.4522
-LAT0, LAT1 = 31.1208, 31.1396
+LAT0, LAT1 = 31.0970, 31.1396
 M_LAT = 110574.0
 M_LON = 111320.0 * math.cos(math.radians((LAT0 + LAT1) / 2))
 SPAN = (LON1 - LON0) * M_LON
@@ -52,7 +52,11 @@ SHOPS = [
     ("niumaixiang-niuroumian", "牛麦香·红烧牛肉面", 31.127449, 121.430825, "业祥路", "n"),
     ("youziyouwei-jiangxixiaochao", "有滋有味·江西小炒", 31.126606, 121.429570, "业祥路", "s"),
     ("xibeihong-lamian", "西北红拉面", 31.137956, 121.437454, "罗香路", "s"),
+    # 景联路绿亮园区，超出步行 20 分钟范围；用蓝色图钉区分
+    ("haozailai-lucai", "好再来鲁菜馆", 31.102325, 121.444316, "景联路", "s"),
 ]
+
+FAR_SLUGS = {"haozailai-lucai"}
 
 
 def px(lat, lon):
@@ -274,7 +278,10 @@ for hw in ROAD_ORDER + sorted(set(fills) - set(ROAD_ORDER)):
 S.append("</g>")
 
 # ---- 街道名：在同一条路的多个位置里挑一个离餐馆最远的，避免压到红点和标签 ----
-LABEL_ROADS = {"华发路", "建华路", "业祥路", "罗香路", "华泾路", "长华路", "老沪闵路",
+LABEL_ROADS = {
+    "沪闵路", "虹梅南路", "龙吴路", "银都路", "金都路", "春申路", "老沪闵路",
+    "景洪路", "景联路", "华泾路", "华发路", "建华路", "业祥路", "罗香路",
+    "长华路", "徐梅路", "朱梅路", "曹联路", "景东路",
                "外环高速", "龙吴路", "淀浦河", "华泾港", "朱梅路", "徐梅路", "龙腾大道",
                "罗秀路"}
 pins = [(x, y) for _s, _l, x, y in placed]
@@ -282,8 +289,15 @@ pins = [(x, y) for _s, _l, x, y in placed]
 S.append('<g class="map-roadnames" font-family="PingFang SC, Noto Sans SC, sans-serif">')
 street_boxes = []
 for name in LABEL_ROADS:
-    best = None
-    for poly in by_name.get(name, []):
+    polys = by_name.get(name, [])
+    total_len = sum(
+        math.hypot(poly[i + 1][0] - poly[i][0], poly[i + 1][1] - poly[i][1])
+        for poly in polys
+        for i in range(len(poly) - 1)
+    )
+    max_labels = 3 if total_len > 900 else 2 if total_len > 450 else 1
+    candidates = []
+    for poly in polys:
         for i in range(len(poly) - 1):
             (x1, y1), (x2, y2) = poly[i], poly[i + 1]
             seg = math.hypot(x2 - x1, y2 - y1)
@@ -304,16 +318,24 @@ for name in LABEL_ROADS:
                     continue
                 clear = min((math.hypot(px_ - cx, py_ - cy) for px_, py_ in pins), default=999)
                 score = min(clear, 260) - (0.15 * abs(cy - H / 2))
-                if best is None or score > best[0]:
-                    best = (score, cx, cy, ang, b)
-    if not best:
-        continue
-    _score, cx, cy, ang, b = best
-    street_boxes.append(b)
-    S.append(f'<text x="{cx:.0f}" y="{cy:.0f}" font-size="14.5" fill="#8f7c66" text-anchor="middle" '
-             f'dominant-baseline="middle" transform="rotate({ang:.1f} {cx:.0f} {cy:.0f})" '
-             f'letter-spacing="2.5" opacity="0.85">{name}</text>')
-S.append("</g>")
+                candidates.append((score, cx, cy, ang, b))
+
+    candidates.sort(reverse=True)
+    chosen = []
+    for _score, cx, cy, ang, b in candidates:
+        if len(chosen) >= max_labels:
+            break
+        if any(hit(b, other[4], 30) for other in chosen):
+            continue
+        if any(math.hypot(cx - other[1], cy - other[2]) < 260 for other in chosen):
+            continue
+        chosen.append((_score, cx, cy, ang, b))
+        street_boxes.append(b)
+
+    for _score, cx, cy, ang, b in chosen:
+        S.append(f'<text x="{cx:.0f}" y="{cy:.0f}" font-size="14.5" fill="#8f7c66" text-anchor="middle" '
+                 f'dominant-baseline="middle" transform="rotate({ang:.1f} {cx:.0f} {cy:.0f})" '
+                 f'letter-spacing="2.5" opacity="0.85">{name}</text>')
 
 S.append(f'<rect width="{W:.0f}" height="{H:.0f}" fill="url(#map-vignette)" pointer-events="none"/>')
 
@@ -325,13 +347,15 @@ for _slug, _label, x, y in placed:
 S.append('<g class="map-pins" font-family="PingFang SC, Noto Sans SC, sans-serif">')
 for slug, label, x, y in placed:
     head_y = y - PIN_H          # 针头圆心
-    S.append(f'<a href="{{{{base}}}}restaurants/{slug}/" class="map-pin" data-map-slug="{slug}">')
+    far = " is-far" if slug in FAR_SLUGS else ""
+    fill = "#4b8fd6" if slug in FAR_SLUGS else "#d34731"
+    S.append(f'<a href="{{{{base}}}}restaurants/{slug}/" class="map-pin{far}" data-map-slug="{slug}">')
     S.append(f"<title>{label}</title>")
     S.append(f'<ellipse cx="{x:.0f}" cy="{y + 1:.0f}" rx="3.2" ry="1.4" fill="#0b0806" opacity="0.45"/>')
     # 针脚：一根灰色细直线，末端压在门店位置上
     S.append(f'<path d="M{x:.0f} {y:.0f}V{head_y + 2:.0f}" stroke="#9b938a" '
              'stroke-width="2.2" stroke-linecap="round"/>')
-    S.append(f'<circle cx="{x:.0f}" cy="{head_y:.0f}" r="{HEAD_R}" fill="#d34731" '
+    S.append(f'<circle cx="{x:.0f}" cy="{head_y:.0f}" r="{HEAD_R}" fill="{fill}" '
              'stroke="#fbf0dc" stroke-width="2.2"/>')
     S.append("</a>")
 S.append("</g>")
@@ -367,7 +391,8 @@ for slug, label, x, y in placed:
         S.append(f'<path d="M{x:.0f} {y - PIN_H:.0f}L{ex:.0f} {ly:.0f}" stroke="#7d6a56" '
                  'stroke-width="1" opacity="0.65"/>')
     # 店名单独也是一个链接：垫一块透明矩形扩大点击面积，挨得近的两家才好点
-    S.append(f'<a href="{{{{base}}}}restaurants/{slug}/" class="map-label" data-map-slug="{slug}">')
+    far = " is-far" if slug in FAR_SLUGS else ""
+    S.append(f'<a href="{{{{base}}}}restaurants/{slug}/" class="map-label{far}" data-map-slug="{slug}">')
     S.append(f"<title>{label}</title>")
     S.append(f'<rect x="{b[0] - 3:.0f}" y="{b[1] - 2:.0f}" width="{b[2] - b[0] + 6:.0f}" '
              f'height="{b[3] - b[1] + 4:.0f}" fill="transparent" pointer-events="all"/>')

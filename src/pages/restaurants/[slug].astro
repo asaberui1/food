@@ -27,6 +27,7 @@ const {
   walkMinutes,
   address,
   hours,
+  far,
   summary,
   cover,
   gallery,
@@ -125,7 +126,11 @@ const menuGroups = menuLarge.map((group, groupIndex) => {
 
 const priceText = priceLabel(shop);
 const billsAverage = averagePerPerson(bills);
-const distanceText = walkMinutes ? `步行 ${walkMinutes} 分钟` : "待补充";
+const distanceText = walkMinutes
+  ? `步行 ${walkMinutes} 分钟`
+  : far
+    ? "步行 20 分钟以外"
+    : "待补充";
 
 const siteUrl = Astro.site ?? new URL("https://asaberui1.github.io");
 const pageUrl = new URL(Astro.url.pathname, siteUrl).href;
@@ -568,17 +573,19 @@ const structuredData = {
             />
             </a>
             <div class="share-card__tools">
-              <ShareStudio
-                triggerClass="share-tool"
-                triggerLabel="自定义"
-                triggerIcon="gear"
-                shop={shop}
-                menu={menu.map((group) => ({
-                  title: group.title,
-                  items: group.items.map((item) => ({ name: item.name, price: item.price })),
-                }))}
-                qr={`${import.meta.env.BASE_URL}qr/${shop.id}.png`}
-              />
+              {dishes.length > 0 && (
+                <ShareStudio
+                  triggerClass="share-tool"
+                  triggerLabel="自定义"
+                  triggerIcon="gear"
+                  shop={shop}
+                  menu={menu.map((group) => ({
+                    title: group.title,
+                    items: group.items.map((item) => ({ name: item.name, price: item.price })),
+                  }))}
+                  qr={`${import.meta.env.BASE_URL}qr/${shop.id}.png`}
+                />
+              )}
               <a
                 class="share-tool share-tool--round"
                 href={`${import.meta.env.BASE_URL}share/${shop.id}.jpg`}
