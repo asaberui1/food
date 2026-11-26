@@ -470,6 +470,34 @@ export type SearchEngine = {
   size: number;
 };
 
+function toScoredHit(
+  dish: PreparedDish,
+  shop: { id: string; name: string } | undefined,
+  score: number,
+  route: MatchRoute,
+  tie: number,
+  overlap: number,
+): ScoredHit {
+  return {
+    dish,
+    id: dish.id,
+    name: dish.name,
+    canon: dish.canon,
+    norm: dish.norm,
+    price: dish.price,
+    group: dish.group,
+    groupIndex: dish.groupIndex,
+    shopId: shop?.id ?? "",
+    shopName: shop?.name ?? "",
+    score,
+    route,
+    tie,
+    overlap,
+    popularity: dish.popularity,
+    key: `${dish.shop}:${dish.norm}`,
+  };
+}
+
 function groupHits(
   rows: readonly ScoredHit[],
   query: string,
@@ -774,24 +802,7 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         }
 
         const shop = shops[dish.shop];
-        scored.set(dish, {
-          dish,
-          id: dish.id,
-          name: dish.name,
-          canon: dish.canon,
-          norm: dish.norm,
-          price: dish.price,
-          group: dish.group,
-          groupIndex: dish.groupIndex,
-          shopId: shop?.id ?? "",
-          shopName: shop?.name ?? "",
-          score: best.score,
-          route: best.route,
-          tie,
-          overlap,
-          popularity: dish.popularity,
-          key: `${dish.shop}:${dish.norm}`,
-        });
+        scored.set(dish, toScoredHit(dish, shop, best.score, best.route, tie, overlap));
       }
     }
 
@@ -809,24 +820,10 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         if (existing && existing.score >= score) continue;
 
         const shop = shops[dish.shop];
-        scored.set(dish, {
+        scored.set(
           dish,
-          id: dish.id,
-          name: dish.name,
-          canon: dish.canon,
-          norm: dish.norm,
-          price: dish.price,
-          group: dish.group,
-          groupIndex: dish.groupIndex,
-          shopId: shop?.id ?? "",
-          shopName: shop?.name ?? "",
-          score,
-          route: "fuzzy",
-          tie: existing?.tie ?? 0,
-          overlap: existing?.overlap ?? 0,
-          popularity: dish.popularity,
-          key: `${dish.shop}:${dish.norm}`,
-        });
+          toScoredHit(dish, shop, score, "fuzzy", existing?.tie ?? 0, existing?.overlap ?? 0),
+        );
       }
     }
 
