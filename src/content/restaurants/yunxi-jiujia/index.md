@@ -53,8 +53,11 @@ menu:
       - name: 无为卤鹅
         price: ¥38
         image: ./wuwei-lue.webp
-        note: 据说是无为市的做法，卤出来是五香略甜的。
-      - { name: 葱油海蜇头, price: ¥28 }
+        note: 五香卤味，带一点回甜，鹅肉切块冷吃。
+      - name: 葱油海蜇头
+        price: ¥28
+        image: ./congyou-haizhetou.webp
+        note: 海蜇头脆，下面垫了萝卜丝，但不入味，吃着没什么味道，不推荐。
       - { name: 本帮熏鱼, price: ¥28 }
       - { name: 糖醋小排, price: ¥36 }
       - { name: 五香酱牛肉, price: ¥42 }
@@ -62,18 +65,24 @@ menu:
       - name: 糟香门腔
         price: ¥28
         image: ./zaoxiang-menqiang.webp
-        note: 糟卤的猪舌，没有脏器味，味道不错；可能一直冷藏保鲜，刚上桌时肉还没有完全解冻。
+        note: 糟卤猪舌，糟香清爽，没有明显脏器味；可能一直冷藏保鲜，刚上桌时肉还没有完全解冻。
       - { name: 白切猪肚, price: ¥42 }
       - { name: 野山椒凤爪, price: ¥26 }
-      - { name: 五香烤子鱼, price: ¥32 }
+      - name: 五香烤子鱼
+        price: ¥32
+        image: ./wuxiang-kaoziyu.webp
+        note: 小条子鱼炸酥后浸五香酱汁，甜咸口，小骨头也能嚼。
       - { name: 肴蹄, price: ¥28 }
       - { name: 盐水小豌豆, price: ¥18 }
       - name: 香菜拌素鸡
         price: ¥16
         image: ./xiangcai-suji.webp
-        note: 香菜和小块豆干加植物油拌匀，没什么特色。
+        note: 香菜和小块素鸡用植物油拌匀，味道偏清淡。
       - { name: 四喜烤夫, price: ¥18 }
-      - { name: 时蔬色拉, price: ¥25 }
+      - name: 时蔬色拉
+        price: ¥25
+        image: ./shishu-salad.webp
+        note: 生菜、黄瓜、小番茄和紫甘蓝，配芝麻酱汁，清爽。
       - { name: 糟香毛豆, price: ¥12 }
       - { name: 剁椒皮蛋, price: ¥12 }
       - { name: 炝花生, price: ¥16 }
@@ -97,7 +106,10 @@ menu:
       - { name: 雅片鱼头（剁椒、雪菜蒸）, price: 时价 }
       - { name: 小鲍鱼（蒜蓉蒸、豉汁蒸）, price: 时价 }
       - { name: 扇贝王（蒜蓉蒸、豉汁蒸）, price: 时价 }
-      - { name: 桂鱼（清蒸、红烧，松子、茄汁加 8 元）, price: 时价 }
+      - name: 桂鱼（清蒸、红烧，松子、茄汁加 8 元）
+        price: 时价
+        image: ./songzi-guiyu.webp
+        note: 松子做法是炸定型后浇酸甜茄汁，撒松子和青豆；即使蘸着酱汁吃，口味也偏淡。这次时价 118 元，略贵。
       - { name: 鲈鱼（清蒸、红烧，松子、茄汁加 8 元）, price: 时价 }
       - { name: 白水鱼（清蒸、红烧，蛋黄加 8 元）, price: 时价 }
       - { name: 青蟹（姜葱炒、香辣，蛋黄加 8 元）, price: 时价 }
@@ -108,7 +120,10 @@ menu:
   - title: 特色菜
     items:
       - { name: 椒盐扇子骨, price: ¥78 }
-      - { name: 酱油大头虾, price: ¥58 }
+      - name: 酱油大头虾
+        price: ¥58
+        image: ./jiangyou-datouxia.webp
+        note: 和[自制特色基围虾](?dish=%E8%87%AA%E5%88%B6%E7%89%B9%E8%89%B2%E5%9F%BA%E5%9B%B4%E8%99%BE#menu-2)做法、味道相似，感觉多付 20 元不划算。
       - name: 自制特色基围虾
         price: ¥38
         note: 虾先炸过，趁热放进调好的酱汁里，靠热胀冷缩把味吸进去，所以外面挂着汁、里面也有味。
@@ -123,7 +138,10 @@ menu:
       - { name: 葱姜腰蛤, price: ¥48 }
       - { name: 葱姜蛏子, price: ¥45 }
       - { name: 毛血旺, price: ¥48 }
-      - { name: 椒盐咸蹄, price: ¥88 }
+      - name: 椒盐咸蹄
+        price: ¥88
+        image: ./jiaoyan-xianti.webp
+        note: 咸蹄膀炸过再和洋葱、辣椒一起炒，皮又脆又糯、肉质咸香，也没有做的皮肉分离。
       - { name: 铁板牛仔骨, price: ¥78 }
       - { name: 剁椒雅片鱼头, price: ¥88 }
       - { name: 剁椒花鲢鱼头, price: ¥68 }
@@ -142,16 +160,21 @@ menu:
         price: ¥68
         image: ./caotou-quanzi.webp
         note: 猪大肠处理得很干净，烧得软糯、酱香十足，再铺在酒香草头上面，相得益彰。
-      - { name: 葱姜花蛤, price: ¥28 }
+      - name: 葱姜花蛤
+        price: ¥28
+        image: ./congjiang-huage.webp
+        note: 花蛤加葱姜爆炒，开口即出，鲜嫩。
       - { name: 水煮鱼片, price: ¥26 }
   - title: 炒菜
     items:
       - { name: 咸菜目鱼, price: ¥58 }
       - name: 响油鳝丝
         price: ¥88
+        image: ./xiangyou-shansi.webp
         note: 鳝丝新鲜，浇热油激香，酱汁浓。
       - name: 孜然牛肉
         price: ¥38
+        image: ./ziran-niurou.webp
         note: 牛肉炸过再和洋葱、孜然一起炒，干香。
       - { name: 大蒜炒香肠, price: ¥32 }
       - { name: 蚝油牛肉, price: ¥36 }
@@ -160,6 +183,7 @@ menu:
       - { name: 京酱肉丝, price: ¥28 }
       - name: 八宝辣酱
         price: ¥32
+        image: ./babao-lajiang.webp
         note: 八样料：鸡丁、鸭胗丁、虾仁丁、豌豆、胡萝卜丁、豆腐丁、高笋丁、花生米，调味很有特色。
       - { name: 酱爆腰花, price: ¥48 }
       - { name: 三林肉皮, price: ¥48 }
@@ -173,6 +197,7 @@ menu:
       - { name: 炒时件, price: ¥28 }
       - name: 手撕包菜
         price: ¥25
+        image: ./shousi-baocai.webp
         note: 莲花白和腊肉一起放在带固体酒精加热的干锅里炖煮，中规中矩。
       - { name: 铁板牛肉, price: ¥38 }
       - { name: 铁板鱿鱼, price: ¥36 }
@@ -184,6 +209,7 @@ menu:
       - { name: 盐焗南瓜, price: ¥26 }
       - name: 咸肉炖老豆腐
         price: ¥32
+        image: ./xianrou-doufu.webp
         note: 咸肉和老豆腐一起炖，豆腐吸足咸鲜汤汁。
       - { name: 童子鸡, price: ¥48 }
       - { name: 牛腩锅仔, price: ¥78 }
@@ -206,6 +232,7 @@ menu:
       - { name: 酱爆猪肝, price: ¥28 }
       - name: 辣香子鸡
         price: ¥48
+        image: ./laxiang-ziji.webp
         note: 鸡块炸过，和花生、洋葱、干辣椒一起炒。
       - { name: 农家小炒肉, price: ¥32 }
       - name: 小炒马桥干
@@ -241,6 +268,7 @@ menu:
       - { name: 酒香草头, price: ¥25 }
       - name: 酒香豆苗
         price: ¥22
+        image: ./jiuxiang-doumiao.webp
         note: 豆苗清炒，带酒香，口感嫩。
       - { name: 油焖笋, price: ¥22 }
       - { name: 花鲢鱼头汤, price: ¥78 }
@@ -267,9 +295,11 @@ menu:
       - { name: 汤馄饨, price: ¥16 }
       - name: 酒酿芝麻小圆子
         price: ¥28
+        image: ./jiuniang-xiaoyuanzi.webp
         note: 醪糟、蛋花和芝麻汤圆一起煮，甜香、酒香，汤圆也不粘牙。
       - name: 春卷（10个）
         price: ¥15
+        image: ./chunjuan.webp
         note: 厨师现做的，不是预制品，可按 1.5 元 1 个散买。
       - { name: 麻饼, price: ¥18 }
       - { name: 扬州炒饭, price: ¥18 }
