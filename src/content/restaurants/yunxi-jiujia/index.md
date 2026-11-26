@@ -5,6 +5,8 @@ cuisine: 本帮菜
 dining: group
 walkMinutes: 15
 address: 建华路 38 号，菜市场后面的弄堂里
+phone: 021-54890995
+wechat: "13701783445"
 summary: 藏在弄堂里的传统口味本帮菜餐厅，适合一家人或一群朋友坐下来慢慢吃。
 cover: ./door.webp
 gallery:
@@ -12,6 +14,8 @@ gallery:
     alt: 大堂里的圆桌，白桌布、玻璃转盘，靠墙还有一张小方桌
   - src: ./room-door.webp
     alt: 包厢门口，浅蓝墙面配深色木门，门牌写着「五福临门」
+  - src: ./room-private.webp
+    alt: 包厢里的圆桌，橙色皮椅、大理石转盘和环形吊灯
 dishes:
   - name: 自制特色基围虾
     price: ¥38
@@ -39,6 +43,9 @@ bills:
   - people: 4
     dishes: [自制特色基围虾, 椒盐排条, 糟香门腔, 松仁玉米, 小炒马桥干, 草头圈子]
     total: 218
+  - people: 10
+    dishes: [无为卤鹅, 葱油海蜇头, 五香烤子鱼, 糟香门腔, 时蔬色拉, 香菜拌素鸡, 松子桂鱼, 酱油大头虾, 椒盐咸蹄, 葱姜花蛤, 草头圈子, 响油鳝丝, 八宝辣酱, 辣香仔鸡, 酒香豆苗, 紫菜蛋汤, 春卷（10个）, 孜然牛肉, 咸肉炖老豆腐, 酒酿芝麻小圆子]
+    total: 860
 menu:
   - title: 冷菜
     items:
@@ -140,8 +147,12 @@ menu:
   - title: 炒菜
     items:
       - { name: 咸菜目鱼, price: ¥58 }
-      - { name: 响油鳝丝, price: ¥88 }
-      - { name: 孜然牛肉, price: ¥38 }
+      - name: 响油鳝丝
+        price: ¥88
+        note: 鳝丝新鲜，浇热油激香，酱汁浓。
+      - name: 孜然牛肉
+        price: ¥38
+        note: 牛肉炸过再和洋葱、孜然一起炒，干香。
       - { name: 大蒜炒香肠, price: ¥32 }
       - { name: 蚝油牛肉, price: ¥36 }
       - { name: 沙律牛排, price: ¥38 }
@@ -160,7 +171,9 @@ menu:
       - { name: 椒盐猪爪, price: ¥58 }
       - { name: 三洋锅巴, price: ¥26 }
       - { name: 炒时件, price: ¥28 }
-      - { name: 手撕包菜, price: ¥25 }
+      - name: 手撕包菜
+        price: ¥25
+        note: 莲花白和腊肉一起放在带固体酒精加热的干锅里炖煮，中规中矩。
       - { name: 铁板牛肉, price: ¥38 }
       - { name: 铁板鱿鱼, price: ¥36 }
       - { name: 重庆鸡公煲, price: ¥42 }
@@ -169,7 +182,9 @@ menu:
       - { name: 牛腩粉丝煲, price: ¥30 }
       - { name: 肉沫粉丝煲, price: ¥18 }
       - { name: 盐焗南瓜, price: ¥26 }
-      - { name: 咸肉炖老豆腐, price: ¥32 }
+      - name: 咸肉炖老豆腐
+        price: ¥32
+        note: 咸肉和老豆腐一起炖，豆腐吸足咸鲜汤汁。
       - { name: 童子鸡, price: ¥48 }
       - { name: 牛腩锅仔, price: ¥78 }
       - { name: 酸菜鱼锅仔, price: ¥38 }
@@ -189,7 +204,9 @@ menu:
       - { name: 肉丝跑蛋, price: ¥18 }
       - { name: 回锅肉, price: ¥28 }
       - { name: 酱爆猪肝, price: ¥28 }
-      - { name: 辣香子鸡, price: ¥48 }
+      - name: 辣香子鸡
+        price: ¥48
+        note: 鸡块炸过，和花生、洋葱、干辣椒一起炒。
       - { name: 农家小炒肉, price: ¥32 }
       - name: 小炒马桥干
         price: ¥28
@@ -222,7 +239,9 @@ menu:
       - { name: 炒毛菜, price: ¥16 }
       - { name: 蒜泥米苋, price: ¥20 }
       - { name: 酒香草头, price: ¥25 }
-      - { name: 酒香豆苗, price: ¥22 }
+      - name: 酒香豆苗
+        price: ¥22
+        note: 豆苗清炒，带酒香，口感嫩。
       - { name: 油焖笋, price: ¥22 }
       - { name: 花鲢鱼头汤, price: ¥78 }
       - { name: 酸辣汤, price: ¥18 }
@@ -230,7 +249,9 @@ menu:
       - { name: 榨菜肉丝蛋汤, price: ¥16 }
       - { name: 香菜肉丝豆腐羹, price: ¥16 }
       - { name: 番茄肉片汤, price: ¥18 }
-      - { name: 紫菜蛋汤, price: ¥12 }
+      - name: 紫菜蛋汤
+        price: ¥12
+        note: 紫菜蛋花汤，清口。
       - { name: 咸肉冬瓜汤, price: ¥25 }
       - { name: 香菜鱼片汤, price: ¥22 }
       - { name: 番茄菌菇滑肉汤, price: ¥28 }
@@ -244,7 +265,12 @@ menu:
       - { name: 肉丝炒面, price: ¥14 }
       - { name: 油煎大馄饨, price: ¥16 }
       - { name: 汤馄饨, price: ¥16 }
-      - { name: 酒酿芝麻小圆子, price: ¥28 }
+      - name: 酒酿芝麻小圆子
+        price: ¥28
+        note: 醪糟、蛋花和芝麻汤圆一起煮，甜香、酒香，汤圆也不粘牙。
+      - name: 春卷（10个）
+        price: ¥15
+        note: 厨师现做的，不是预制品，可按 1.5 元 1 个散买。
       - { name: 麻饼, price: ¥18 }
       - { name: 扬州炒饭, price: ¥18 }
 tags: []

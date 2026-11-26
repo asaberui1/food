@@ -28,6 +28,8 @@ const restaurants = defineCollection({
       far: z.boolean().default(false),
       address: z.string(),
       hours: z.string().default(""),
+      phone: z.string().optional(),
+      wechat: z.string().optional(),
       summary: z.string(),
       cover: image().optional(),
       gallery: z.array(z.object({ src: image(), alt: z.string() })).default([]),

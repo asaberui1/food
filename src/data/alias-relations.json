@@ -1568,6 +1568,15 @@
       "kind": "exact",
       "confidence": 1,
       "note": "人工确认：芒果螺是腰蛤的俗称"
+    },
+    {
+      "canonical": "椒盐咸蹄",
+      "members": [
+        "椒盐咸蹄膀"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：椒盐咸蹄膀和菜单上的椒盐咸蹄是同一道菜"
     }
   ],
   "near": [
