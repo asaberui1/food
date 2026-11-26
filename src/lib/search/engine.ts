@@ -1,7 +1,7 @@
 import Fuse from "fuse.js";
 import {
+  ALIAS_RELATIONS,
   GENERIC_TERMS,
-  NEAR_RELATIONS,
   isStandaloneTwoChar,
   isVegetableCategory,
   vegetableCanonical,
@@ -186,6 +186,33 @@ function dedupe(values: readonly string[]): string[] {
   return [...new Set(values.filter(Boolean))];
 }
 
+type NearEntry = {
+  from: string;
+  targets: readonly string[];
+  confidence: number;
+  note: string;
+};
+
+/**
+ * near 关系按 canonicalize(from) 建索引。
+ * 这样「豆角猪肉水饺」规范化成「四季豆猪肉水饺」后，仍能查回原关系；
+ * 原始 from 也保留为 key，兼容没有同义词替换的写法。
+ */
+const NEAR_BY_CANON = new Map<string, NearEntry[]>();
+for (const relation of ALIAS_RELATIONS.near) {
+  const key = canonicalize(normalizeText(relation.from));
+  const list = NEAR_BY_CANON.get(key) ?? [];
+  list.push(relation);
+  NEAR_BY_CANON.set(key, list);
+}
+
+function nearRelationsFor(query: string, queryCanon: string): NearEntry[] {
+  const found = new Map<string, NearEntry>();
+  for (const relation of NEAR_BY_CANON.get(query) ?? []) found.set(relation.from, relation);
+  for (const relation of NEAR_BY_CANON.get(queryCanon) ?? []) found.set(relation.from, relation);
+  return [...found.values()];
+}
+
 /** 拼音里的 v 是 ü 的键盘写法；u 也允许，所以每个拼音都同时给出 v/u 两个形态 */
 function altPinyin(value: string): string {
   return value.includes("v") ? value.replaceAll("v", "u") : "";
@@ -245,10 +272,316 @@ function tokenizeKnown(query: string, terms: readonly string[]): string[] {
   return dedupe(tokens);
 }
 
+
+type StageScore = {
+  score: number;
+  route: MatchRoute;
+};
+
+type SearchContext = {
+  query: string;
+  queryCanon: string;
+  queryLength: number;
+  pinyinQuery: boolean;
+  pinyinCandidates: readonly string[];
+  allowContains: boolean;
+  allowAliasContains: boolean;
+  queryTokens: readonly string[];
+  queryVeg: string | undefined;
+  vegetableCategory: boolean;
+  nearRelations: readonly NearEntry[];
+};
+
+const EMPTY_SCORE: StageScore = { score: 0, route: "name" };
+
+function pickBest(parts: readonly StageScore[]): StageScore {
+  let best = EMPTY_SCORE;
+  for (const part of parts) {
+    if (part.score > best.score) best = part;
+  }
+  return best;
+}
+
+function scoreName(dish: PreparedDish, ctx: SearchContext): StageScore {
+  if (dish.norm === ctx.query || dish.canon === ctx.queryCanon) {
+    return { score: SCORE.nameExact, route: "name" };
+  }
+  if (dish.norm.startsWith(ctx.query) || dish.canon.startsWith(ctx.queryCanon)) {
+    return { score: SCORE.namePrefix, route: "name" };
+  }
+  if (
+    ctx.allowContains &&
+    (dish.norm.includes(ctx.query) || dish.canon.includes(ctx.queryCanon))
+  ) {
+    return { score: SCORE.nameContains, route: "name" };
+  }
+  return EMPTY_SCORE;
+}
+
+function scoreAlias(dish: PreparedDish, ctx: SearchContext): StageScore {
+  let best = EMPTY_SCORE;
+  for (let index = 0; index < dish.aliases.length; index += 1) {
+    const alias = dish.aliases[index];
+    const aliasCanon = dish.aliasCanon[index] ?? alias;
+
+    if (alias === ctx.query || aliasCanon === ctx.queryCanon) {
+      return { score: SCORE.aliasExact, route: "alias" };
+    }
+    if (
+      ctx.allowAliasContains &&
+      (alias.includes(ctx.query) || aliasCanon.includes(ctx.queryCanon)) &&
+      best.score < SCORE.aliasContains
+    ) {
+      best = { score: SCORE.aliasContains, route: "alias" };
+    }
+  }
+  return best;
+}
+
+function scorePinyin(dish: PreparedDish, ctx: SearchContext): StageScore {
+  if (!ctx.pinyinCandidates.length) return EMPTY_SCORE;
+
+  const fullNames = pinyinVariants([dish.py, dish.cpy ?? "", ...dish.aliasPy]);
+  const typoFull = pinyinVariants([
+    ...(dish.pyTypo ?? []),
+    ...(dish.cpyTypo ?? []),
+    ...(dish.aliasPyTypo ?? []),
+  ]);
+  const initials = dedupe([dish.ini, dish.cini ?? "", ...dish.aliasIni]);
+  const typoInitials = dedupe([
+    ...(dish.iniTypo ?? []),
+    ...(dish.ciniTypo ?? []),
+    ...(dish.aliasIniTypo ?? []),
+  ]);
+
+  let best = EMPTY_SCORE;
+  for (const candidate of ctx.pinyinCandidates) {
+    const exactScore = ctx.pinyinQuery ? SCORE.pinyinExact : SCORE.homophoneExact;
+    const prefixScore = ctx.pinyinQuery ? SCORE.pinyinPrefix : SCORE.homophonePrefix;
+    const pinyinRoute: MatchRoute = ctx.pinyinQuery ? "pinyin" : "pinyinTypo";
+
+    if (fullNames.includes(candidate)) {
+      best = pickBest([best, { score: exactScore, route: pinyinRoute }]);
+    } else if (
+      candidate.length >= 3 &&
+      fullNames.some((value) => value.startsWith(candidate))
+    ) {
+      best = pickBest([best, { score: prefixScore, route: pinyinRoute }]);
+    } else if (
+      ctx.pinyinQuery &&
+      candidate.length >= 5 &&
+      fullNames.some((value) => value.includes(candidate))
+    ) {
+      best = pickBest([best, { score: SCORE.pinyinContains, route: pinyinRoute }]);
+    }
+
+    if (typoFull.includes(candidate)) {
+      best = pickBest([best, { score: SCORE.pinyinTypoExact, route: "pinyinTypo" }]);
+    } else if (
+      candidate.length >= 3 &&
+      typoFull.some((value) => value.startsWith(candidate))
+    ) {
+      best = pickBest([best, { score: SCORE.pinyinTypoPrefix, route: "pinyinTypo" }]);
+    }
+
+    if (ctx.pinyinQuery) {
+      if (initials.includes(candidate)) {
+        best = pickBest([best, { score: SCORE.initialsExact, route: "initials" }]);
+      } else if (
+        candidate.length >= 3 &&
+        initials.some((value) => value.startsWith(candidate))
+      ) {
+        best = pickBest([best, { score: SCORE.initialsPrefix, route: "initials" }]);
+      }
+
+      if (typoInitials.includes(candidate)) {
+        best = pickBest([best, { score: SCORE.initialsTypoExact, route: "pinyinTypo" }]);
+      }
+    }
+  }
+  return best;
+}
+
+function scoreApprox(
+  dish: PreparedDish,
+  ctx: SearchContext,
+  currentScore: number,
+): StageScore {
+  let best = EMPTY_SCORE;
+  const dishVeg = vegetablesIn(dish.canon);
+  const genericVeg = /时蔬|蔬菜|绿叶菜/.test(dish.norm);
+  const vegDish = (dishVeg.length > 0 || genericVeg) && !VEG_STAPLE.test(dish.norm);
+
+  if (
+    ctx.vegetableCategory &&
+    vegDish &&
+    currentScore < SCORE.vegetableCategory
+  ) {
+    best = { score: SCORE.vegetableCategory, route: "vegetable" };
+  }
+
+  if (
+    ctx.queryVeg &&
+    currentScore < SCORE.vegetableNear &&
+    vegDish &&
+    !dishVeg.includes(ctx.queryVeg)
+  ) {
+    best = pickBest([best, { score: SCORE.vegetableNear, route: "nearAlias" }]);
+  }
+
+  if (currentScore < SCORE.nearAlias) {
+    for (const relation of ctx.nearRelations) {
+      const nearScore = Math.round(50 + relation.confidence * 20);
+      const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
+      if (
+        relation.targets.some((target) =>
+          targets.some((value) => value.includes(target)),
+        )
+      ) {
+        best = pickBest([best, { score: nearScore, route: "nearAlias" }]);
+      }
+    }
+  }
+
+  if (ctx.queryLength >= 4 && currentScore < SCORE.anagram) {
+    const sortedQuery = [...ctx.queryCanon].sort().join("");
+    const sortedName = [...dish.norm].sort().join("");
+    if (sortedQuery === sortedName) {
+      best = pickBest([best, { score: SCORE.anagram, route: "anagram" }]);
+    }
+  }
+
+  if (ctx.queryTokens.length >= 2 && currentScore < SCORE.wordBag) {
+    const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
+    if (
+      ctx.queryTokens.every((token) =>
+        targets.some((value) => value.includes(token)),
+      )
+    ) {
+      best = pickBest([best, { score: SCORE.wordBag, route: "wordBag" }]);
+    }
+  }
+
+  return best;
+}
+
 export type SearchEngine = {
   search: (raw: string) => SearchOutcome;
   size: number;
 };
+
+function groupHits(
+  rows: readonly ScoredHit[],
+  query: string,
+  queryVeg: string | undefined,
+  vegetableCategory: boolean,
+): SearchHit[] {
+// 同义词和跨店同款合成一张卡：按 canon 分组，组里每个店一行
+const buckets = new Map<string, ScoredHit[]>();
+for (const row of rows) {
+  const bucket = buckets.get(row.canon);
+  if (bucket) bucket.push(row);
+  else buckets.set(row.canon, [row]);
+}
+
+const groups: GroupedHit[] = [];
+for (const [canon, bucket] of buckets) {
+  // 展示名：用户输入的字面写法 > 与原话重合最多（鲜肉包优先鲜肉小笼包）
+  // > 规范写法（norm === canon）> 出现次数 > 短 > 字典序
+  const literal = bucket.find((row) => row.norm === query);
+  const counts = new Map<string, number>();
+  for (const row of bucket) counts.set(row.name, (counts.get(row.name) ?? 0) + 1);
+  const display =
+    literal ??
+    [...bucket].sort(
+      (a, b) =>
+        b.overlap - a.overlap ||
+        Number(codePointLength(b.name) > 2) - Number(codePointLength(a.name) > 2) ||
+        Number(b.norm === b.canon) - Number(a.norm === a.canon) ||
+        (counts.get(b.name) ?? 0) - (counts.get(a.name) ?? 0) ||
+        a.name.length - b.name.length ||
+        a.name.localeCompare(b.name, "zh-Hans-CN"),
+    )[0];
+  if (!display) continue;
+
+  // 同一家店同一个 canon 只留一条，取便宜的那条
+  const byShop = new Map<string, ScoredHit>();
+  for (const row of bucket) {
+    const previous = byShop.get(row.shopId);
+    if (!previous || priceRank(row.price) < priceRank(previous.price)) {
+      byShop.set(row.shopId, row);
+    }
+  }
+
+  const shops = [...byShop.values()]
+    .sort(
+      (a, b) =>
+        b.overlap - a.overlap ||
+        priceRank(a.price) - priceRank(b.price) ||
+        a.shopName.localeCompare(b.shopName, "zh-Hans-CN"),
+    )
+    .map((row) => ({
+      shopId: row.shopId,
+      shopName: row.shopName,
+      price: row.price,
+      group: row.group,
+      groupIndex: row.groupIndex,
+      name: row.name,
+    }));
+
+  const aliases = dedupe(
+    bucket.map((row) => row.name).filter((name) => name !== display.name),
+  ).sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
+
+  const best = bucket.reduce((a, b) => (b.score > a.score ? b : a));
+  const minPrice = shops.reduce(
+    (min, shop) => Math.min(min, priceRank(shop.price)),
+    Number.POSITIVE_INFINITY,
+  );
+
+  groups.push({
+    id: canon,
+    name: display.name,
+    canon,
+    score: best.score,
+    route: best.route,
+    shops,
+    aliases,
+    tie: Math.max(...bucket.map((row) => row.tie)),
+    popularity: Math.max(...bucket.map((row) => row.popularity)),
+    minPrice,
+    overlap: Math.max(...bucket.map((row) => row.overlap)),
+  });
+}
+
+groups.sort(
+  (a, b) =>
+    b.score - a.score ||
+    b.overlap - a.overlap ||
+    b.tie - a.tie ||
+    b.popularity - a.popularity ||
+    a.name.length - b.name.length ||
+    a.name.localeCompare(b.name, "zh-Hans-CN") ||
+    a.minPrice - b.minPrice ||
+    (a.shops[0]?.shopName ?? "").localeCompare(b.shops[0]?.shopName ?? "", "zh-Hans-CN"),
+);
+
+// 两个字以内的菜（土豆、白菜、卤蛋、米饭…）不返回：它们要么是涮菜/浇头，
+// 要么是主食，搜出来没有决策价值；这条规则在搜索框注释里向用户说明。
+const visibleGroups = groups.filter(
+  (group) =>
+    codePointLength(group.name) > 2 ||
+    isStandaloneTwoChar(group.name) ||
+    ((queryVeg !== undefined || vegetableCategory) && vegetablesIn(group.name).length > 0),
+);
+
+const hits = visibleGroups.map(
+  ({ tie: _tie, popularity: _popularity, minPrice: _minPrice, overlap: _overlap, ...hit }) =>
+    hit,
+);
+
+  return hits;
+}
 
 export function createSearchEngine(data: SearchData): SearchEngine {
   const shops = data.shops;
@@ -337,11 +670,15 @@ export function createSearchEngine(data: SearchData): SearchEngine {
       ranked.set(name, Math.max(ranked.get(name) ?? 0, score));
     };
 
-    const relation = NEAR_RELATIONS[queryCanon];
-    if (relation) {
+    const relations = nearRelationsFor(query, queryCanon);
+    if (relations.length) {
       for (const dish of dishes) {
         const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
-        if (relation.targets.some((target) => targets.some((value) => value.includes(target)))) {
+        if (
+          relations.some((relation) =>
+            relation.targets.some((target) => targets.some((value) => value.includes(target))),
+          )
+        ) {
           add(dish.name, 100);
         }
       }
@@ -397,181 +734,33 @@ export function createSearchEngine(data: SearchData): SearchEngine {
     const queryVeg = vegetableCanonical(queryCanon);
     const vegetableCategory = isVegetableCategory(query) || isVegetableCategory(queryCanon);
 
+    const nearRelations = nearRelationsFor(query, queryCanon);
+    const ctx: SearchContext = {
+      query,
+      queryCanon,
+      queryLength,
+      pinyinQuery,
+      pinyinCandidates: pinyinQuery ? [query] : queryPinyin,
+      allowContains,
+      allowAliasContains,
+      queryTokens,
+      queryVeg,
+      vegetableCategory,
+      nearRelations,
+    };
+
     const scored = new Map<PreparedDish, ScoredHit>();
 
     for (const dish of dishes) {
-      let score = 0;
-      let route: MatchRoute = "name";
       const overlap = literalOverlapScore(query, dish.norm);
-      const dishVeg = vegetablesIn(dish.canon);
-      const genericVeg = /时蔬|蔬菜|绿叶菜/.test(dish.norm);
-      const vegDish = (dishVeg.length > 0 || genericVeg) && !VEG_STAPLE.test(dish.norm);
+      const base = pickBest([
+        scoreName(dish, ctx),
+        scoreAlias(dish, ctx),
+        scorePinyin(dish, ctx),
+      ]);
+      const best = pickBest([base, scoreApprox(dish, ctx, base.score)]);
 
-      // 1) 菜名精确 / 2) 前缀 / 3) 包含（规范化后比较，别名差异已在 canon 里抹平）
-      if (dish.norm === query || dish.canon === queryCanon) {
-        score = SCORE.nameExact;
-      } else if (dish.norm.startsWith(query) || dish.canon.startsWith(queryCanon)) {
-        score = SCORE.namePrefix;
-      } else if (allowContains && (dish.norm.includes(query) || dish.canon.includes(queryCanon))) {
-        score = SCORE.nameContains;
-      }
-
-      // 4) 别名精确 / 5) 别名包含
-      if (score < SCORE.aliasExact && dish.aliases.length) {
-        for (let index = 0; index < dish.aliases.length; index += 1) {
-          const alias = dish.aliases[index];
-          const aliasCanon = dish.aliasCanon[index] ?? alias;
-
-          if (alias === query || aliasCanon === queryCanon) {
-            score = SCORE.aliasExact;
-            route = "alias";
-            break;
-          }
-          if (allowAliasContains && (alias.includes(query) || aliasCanon.includes(queryCanon))) {
-            if (score < SCORE.aliasContains) {
-              score = SCORE.aliasContains;
-              route = "alias";
-            }
-          }
-        }
-      }
-
-      // 6) 拼音全拼 / 7) 拼音首字母
-      // 纯字母输入直接按拼音；汉字输入先转拼音，再按同音/近音算（结果标「近似」）
-      const pinyinCandidates = pinyinQuery ? [query] : queryPinyin;
-      if (pinyinCandidates.length) {
-        const fullNames = pinyinVariants([dish.py, dish.cpy ?? "", ...dish.aliasPy]);
-        const typoFull = pinyinVariants([
-          ...(dish.pyTypo ?? []),
-          ...(dish.cpyTypo ?? []),
-          ...(dish.aliasPyTypo ?? []),
-        ]);
-        const initials = dedupe([dish.ini, dish.cini ?? "", ...dish.aliasIni]);
-        const typoInitials = dedupe([
-          ...(dish.iniTypo ?? []),
-          ...(dish.ciniTypo ?? []),
-          ...(dish.aliasIniTypo ?? []),
-        ]);
-
-        for (const candidate of pinyinCandidates) {
-          const exactScore = pinyinQuery ? SCORE.pinyinExact : SCORE.homophoneExact;
-          const prefixScore = pinyinQuery ? SCORE.pinyinPrefix : SCORE.homophonePrefix;
-          const pinyinRoute: MatchRoute = pinyinQuery ? "pinyin" : "pinyinTypo";
-
-          if (fullNames.includes(candidate)) {
-            if (score < exactScore) {
-              score = exactScore;
-              route = pinyinRoute;
-            }
-          } else if (
-            candidate.length >= 3 &&
-            fullNames.some((value) => value.startsWith(candidate))
-          ) {
-            if (score < prefixScore) {
-              score = prefixScore;
-              route = pinyinRoute;
-            }
-          } else if (
-            pinyinQuery &&
-            candidate.length >= 5 &&
-            score < SCORE.pinyinContains &&
-            fullNames.some((value) => value.includes(candidate))
-          ) {
-            // 中文转拼音后只做精确/前缀：contains 会把「觉鱼」(jiaoyu) 误伤到「剁椒鱼头」
-            score = SCORE.pinyinContains;
-            route = pinyinRoute;
-          }
-
-          // 错误读音（如鳜鱼的 jueyu）只按近似算，分数一定低于正确拼音
-          if (typoFull.includes(candidate)) {
-            if (score < SCORE.pinyinTypoExact) {
-              score = SCORE.pinyinTypoExact;
-              route = "pinyinTypo";
-            }
-          } else if (
-            candidate.length >= 3 &&
-            typoFull.some((value) => value.startsWith(candidate))
-          ) {
-            if (score < SCORE.pinyinTypoPrefix) {
-              score = SCORE.pinyinTypoPrefix;
-              route = "pinyinTypo";
-            }
-          }
-
-          // 首字母只对纯字母输入有意义；汉字转出来的拼音不参与首字母
-          if (pinyinQuery) {
-            if (initials.includes(candidate)) {
-              if (score < SCORE.initialsExact) {
-                score = SCORE.initialsExact;
-                route = "initials";
-              }
-            } else if (
-              candidate.length >= 3 &&
-              initials.some((value) => value.startsWith(candidate))
-            ) {
-              if (score < SCORE.initialsPrefix) {
-                score = SCORE.initialsPrefix;
-                route = "initials";
-              }
-            }
-
-            if (typoInitials.includes(candidate) && score < SCORE.initialsTypoExact) {
-              score = SCORE.initialsTypoExact;
-              route = "pinyinTypo";
-            }
-          }
-        }
-      }
-
-      // 8.3) 「时蔬 / 蔬菜」：把菜单里的叶菜类作为一个类目召回
-      if (vegetableCategory && vegDish) {
-        if (score < SCORE.vegetableCategory) {
-          score = SCORE.vegetableCategory;
-          route = "vegetable";
-        }
-      }
-
-      // 8.35) 搜某一种叶菜：其他时蔬按低置信度近似，排在后面
-      if (queryVeg && score < SCORE.vegetableNear) {
-        if (vegDish && !dishVeg.includes(queryVeg)) {
-          score = SCORE.vegetableNear;
-          route = "nearAlias";
-        }
-      }
-
-      // 8.4) 近义写法：confidence 决定近似分数，note 作为可解释说明
-      const nearRelation = NEAR_RELATIONS[queryCanon];
-      if (nearRelation && score < SCORE.nearAlias) {
-        const nearScore = Math.round(50 + nearRelation.confidence * 20);
-        const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
-        if (
-          nearRelation.targets.some((target) => targets.some((value) => value.includes(target)))
-        ) {
-          score = nearScore;
-          route = "nearAlias";
-        }
-      }
-
-      // 8.45) 语序变体：生菜蚝油 / 蚝油生菜、玉米松仁 / 松仁玉米
-      if (queryLength >= 4 && score < SCORE.anagram) {
-        const sortedQuery = [...queryCanon].sort().join("");
-        const sortedName = [...dish.norm].sort().join("");
-        if (sortedQuery === sortedName) {
-          score = SCORE.anagram;
-          route = "anagram";
-        }
-      }
-
-      // 8.5) 词袋：清蒸鳜鱼 / 松子鳜鱼 / 清蒸桂鱼，顺序和原文不同也能命中
-      if (queryTokens.length >= 2 && score < SCORE.wordBag) {
-        const targets = [dish.norm, dish.canon, ...dish.aliasCanon];
-        if (queryTokens.every((token) => targets.some((value) => value.includes(token)))) {
-          score = SCORE.wordBag;
-          route = "wordBag";
-        }
-      }
-
-      if (score >= MIN_SCORE) {
+      if (best.score >= MIN_SCORE) {
         // 泛词只做同分内的弱加权：不改变分数档次，不会把「鱼香肉丝盖浇饭」
         // 抬到「鱼香肉丝」前面去。
         let tie = 0;
@@ -596,8 +785,8 @@ export function createSearchEngine(data: SearchData): SearchEngine {
           groupIndex: dish.groupIndex,
           shopId: shop?.id ?? "",
           shopName: shop?.name ?? "",
-          score,
-          route,
+          score: best.score,
+          route: best.route,
           tie,
           overlap,
           popularity: dish.popularity,
@@ -660,110 +849,8 @@ export function createSearchEngine(data: SearchData): SearchEngine {
         a.shopName.localeCompare(b.shopName, "zh-Hans-CN"),
     );
 
-    // 同义词和跨店同款合成一张卡：按 canon 分组，组里每个店一行
-    const buckets = new Map<string, ScoredHit[]>();
-    for (const row of rows) {
-      const bucket = buckets.get(row.canon);
-      if (bucket) bucket.push(row);
-      else buckets.set(row.canon, [row]);
-    }
-
-    const groups: GroupedHit[] = [];
-    for (const [canon, bucket] of buckets) {
-      // 展示名：用户输入的字面写法 > 与原话重合最多（鲜肉包优先鲜肉小笼包）
-      // > 规范写法（norm === canon）> 出现次数 > 短 > 字典序
-      const literal = bucket.find((row) => row.norm === query);
-      const counts = new Map<string, number>();
-      for (const row of bucket) counts.set(row.name, (counts.get(row.name) ?? 0) + 1);
-      const display =
-        literal ??
-        [...bucket].sort(
-          (a, b) =>
-            b.overlap - a.overlap ||
-            Number(codePointLength(b.name) > 2) - Number(codePointLength(a.name) > 2) ||
-            Number(b.norm === b.canon) - Number(a.norm === a.canon) ||
-            (counts.get(b.name) ?? 0) - (counts.get(a.name) ?? 0) ||
-            a.name.length - b.name.length ||
-            a.name.localeCompare(b.name, "zh-Hans-CN"),
-        )[0];
-      if (!display) continue;
-
-      // 同一家店同一个 canon 只留一条，取便宜的那条
-      const byShop = new Map<string, ScoredHit>();
-      for (const row of bucket) {
-        const previous = byShop.get(row.shopId);
-        if (!previous || priceRank(row.price) < priceRank(previous.price)) {
-          byShop.set(row.shopId, row);
-        }
-      }
-
-      const shops = [...byShop.values()]
-        .sort(
-          (a, b) =>
-            b.overlap - a.overlap ||
-            priceRank(a.price) - priceRank(b.price) ||
-            a.shopName.localeCompare(b.shopName, "zh-Hans-CN"),
-        )
-        .map((row) => ({
-          shopId: row.shopId,
-          shopName: row.shopName,
-          price: row.price,
-          group: row.group,
-          groupIndex: row.groupIndex,
-          name: row.name,
-        }));
-
-      const aliases = dedupe(
-        bucket.map((row) => row.name).filter((name) => name !== display.name),
-      ).sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
-
-      const best = bucket.reduce((a, b) => (b.score > a.score ? b : a));
-      const minPrice = shops.reduce(
-        (min, shop) => Math.min(min, priceRank(shop.price)),
-        Number.POSITIVE_INFINITY,
-      );
-
-      groups.push({
-        id: canon,
-        name: display.name,
-        canon,
-        score: best.score,
-        route: best.route,
-        shops,
-        aliases,
-        tie: Math.max(...bucket.map((row) => row.tie)),
-        popularity: Math.max(...bucket.map((row) => row.popularity)),
-        minPrice,
-        overlap: Math.max(...bucket.map((row) => row.overlap)),
-      });
-    }
-
-    groups.sort(
-      (a, b) =>
-        b.score - a.score ||
-        b.overlap - a.overlap ||
-        b.tie - a.tie ||
-        b.popularity - a.popularity ||
-        a.name.length - b.name.length ||
-        a.name.localeCompare(b.name, "zh-Hans-CN") ||
-        a.minPrice - b.minPrice ||
-        (a.shops[0]?.shopName ?? "").localeCompare(b.shops[0]?.shopName ?? "", "zh-Hans-CN"),
-    );
-
-    // 两个字以内的菜（土豆、白菜、卤蛋、米饭…）不返回：它们要么是涮菜/浇头，
-    // 要么是主食，搜出来没有决策价值；这条规则在搜索框注释里向用户说明。
-    const visibleGroups = groups.filter(
-      (group) =>
-        codePointLength(group.name) > 2 ||
-        isStandaloneTwoChar(group.name) ||
-        ((queryVeg !== undefined || vegetableCategory) && vegetablesIn(group.name).length > 0),
-    );
-
-    const total = visibleGroups.length;
-    const hits = visibleGroups.map(
-      ({ tie: _tie, popularity: _popularity, minPrice: _minPrice, overlap: _overlap, ...hit }) =>
-        hit,
-    );
+    const hits = groupHits(rows, query, queryVeg, vegetableCategory);
+    const total = hits.length;
 
     const reason: SearchOutcome["reason"] =
       total === 0 && queryLength <= 2 && !knownTerm && !synonymQuery ? "short" : undefined;

@@ -31,7 +31,7 @@ bills:
 menu:
   - title: 凉菜
     items:
-      - { name: 素拼, price: ¥15 }
+      - { name: 素菜拼盘, price: ¥15 }
       - { name: 猪蹄（2个）, price: ¥70 }
       - { name: 凉拌猪头肉, price: ¥30 }
       - { name: 爽口鱼皮, price: ¥28 }
@@ -44,10 +44,13 @@ menu:
       - { name: 鲁南酱香鸡, price: ¥68 }
       - { name: 麻汁豆角, price: ¥18 }
       - { name: 凉拌萝卜丝（甜/咸）, price: ¥12 }
+      - { name: 清口萝卜丝, price: ¥12 }
       - { name: 凉拌馓子, price: ¥15 }
       - { name: 小葱拌豆腐, price: ¥12 }
+      - { name: 香椿拌豆腐, price: ¥28 }
       - { name: 香菜小素鸡, price: ¥16 }
       - { name: 芹香花生米, price: ¥12 }
+      - { name: 油炸花生米, price: ¥12 }
       - { name: 老醋花生米, price: ¥12 }
       - { name: 蒜泥鸡蛋, price: ¥18 }
       - { name: 菠菜鸡蛋粉丝皮, price: ¥18 }
@@ -66,7 +69,7 @@ menu:
       - { name: 煎饼卷大葱, price: ¥38 }
       - { name: 蒜泥肘子, price: ¥78 }
       - { name: 铁锅炖大鹅, price: ¥168 }
-      - { name: 老公鸡, price: ¥288 }
+      - { name: 老公鸡（1只）, price: ¥288 }
       - { name: 小鸡扛枪, price: ¥288 }
   - title: 特色菜
     items:
@@ -75,7 +78,7 @@ menu:
         note: 风味像大盘鸡，特色不如[老家散养小公鸡](?dish=%E8%80%81%E5%AE%B6%E6%95%A3%E5%85%BB%E5%B0%8F%E5%85%AC%E9%B8%A1#menu-1)。
         image: ./mianliao-laziji.webp
       - { name: 地锅鸡, price: ¥68 }
-      - { name: 辣子鸡, price: ¥48 }
+      - { name: 辣子鸡土豆片, price: ¥48 }
       - { name: 香辣肘子, price: ¥78 }
       - { name: 红焖猪蹄, price: ¥88 }
       - { name: 驴肉拼盘, price: ¥168 }
@@ -89,7 +92,7 @@ menu:
         price: ¥28
         image: ./xiangla-rousi.webp
         note: 肉丝、葱丝、芫荽丝，加上花生米和干辣椒一起翻炒，卷煎饼或者当炒菜吃都很香。
-      - { name: 干炸金蚕, price: ¥58 }
+      - { name: 干炸金蝉, price: ¥58 }
       - { name: 鸡鞭腰花, price: ¥158 }
       - { name: 大杂烩肉丝, price: ¥22 }
       - name: 风味茄子
@@ -109,6 +112,7 @@ menu:
       - { name: 豆芽粉丝, price: ¥23 }
       - { name: 青椒炒干鱼, price: ¥38 }
       - { name: 韭菜炒干虾, price: ¥48 }
+      - { name: 青椒炒干虾, price: ¥48 }
       - { name: 石锅驴板肠, price: ¥98 }
       - { name: 丰收排骨, price: ¥68 }
       - { name: 老豆角炖红烧肉, price: ¥68 }
@@ -122,19 +126,25 @@ menu:
       - { name: 干炸小黄鱼, price: ¥48 }
       - { name: 辣炖黑鱼, price: ¥68 }
       - { name: 红烧带鱼, price: ¥58 }
+      - { name: 干炸带鱼, price: ¥58 }
       - { name: 鱼籽炒蛋, price: ¥38 }
       - { name: 红烧鱼籽鱼泡, price: ¥68 }
       - { name: 酸菜鱼, price: ¥58 }
       - { name: 红烧甲鱼, price: ¥128 }
       - { name: 臭桂鱼, price: ¥138 }
       - { name: 红烧鲫鱼, price: ¥48 }
-      - { name: 多宝鱼, price: ¥98 }
+      - { name: 清蒸多宝鱼, price: ¥98 }
       - { name: 红烧昂刺鱼, price: ¥88 }
+      - { name: 清汤昂刺鱼, price: ¥88 }
   - title: 火锅
     items:
       - { name: 羊蝎子铜火锅, price: ¥168 }
       - { name: 清汤羊肉铜火锅, price: ¥128 }
       - { name: 麻辣羊肉铜火锅, price: ¥128 }
+      - { name: 麻辣羊杂铜火锅, price: ¥128 }
+      - { name: 清汤羊杂铜火锅, price: ¥128 }
+      - { name: 麻辣牛肉铜火锅, price: ¥128 }
+      - { name: 清汤牛肉铜火锅, price: ¥128 }
       - { name: 葱爆羊肉, price: ¥98 }
       - { name: 羊肉锅仔, price: ¥78 }
       - { name: 羊杂锅仔, price: ¥78 }
@@ -152,9 +162,10 @@ menu:
     items:
       - { name: 孜然羊排, price: ¥128 }
       - name: 枣庄羊肉汤
-        price: ¥50/98
+        price: ¥50
         note: 羊肉切片，偏硬、带一些软骨。
         image: ./zaozhuang-yangrou-tang.webp
+      - { name: 枣庄羊肉汤（称重）, price: ¥98/斤 }
       - { name: 羊杂汤, price: ¥68 }
       - { name: 羊血炖豆腐, price: ¥30 }
       - { name: 炒羊血, price: ¥26 }
@@ -180,14 +191,16 @@ menu:
     items:
       - { name: 绿豆芽炒馓子, price: ¥15 }
       - { name: 醋溜白菜, price: ¥15 }
-      - { name: 包菜粉丝, price: ¥15 }
+      - { name: 粉丝包菜, price: ¥15 }
       - { name: 青椒干丝, price: ¥18 }
+      - { name: 青椒豆腐皮, price: ¥18 }
       - { name: 辣椒炒鸡蛋, price: ¥18 }
       - { name: 炒油麦菜, price: ¥18 }
       - { name: 蒜泥菠菜, price: ¥18 }
-      - { name: 韭菜鸡蛋, price: ¥18 }
+      - { name: 韭菜炒蛋, price: ¥18 }
       - { name: 空心菜, price: ¥18 }
       - { name: 蒜泥生菜, price: ¥18 }
+      - { name: 蚝油生菜, price: ¥18 }
       - { name: 西红柿炒鸡蛋, price: ¥18 }
       - { name: 虎皮青椒, price: ¥28 }
       - { name: 窝窝头外婆菜, price: ¥28 }
@@ -201,6 +214,7 @@ menu:
       - { name: 茄子烧豆角, price: ¥28 }
       - { name: 香菇青菜, price: ¥18 }
       - { name: 芹菜炒肉丝, price: ¥22 }
+      - { name: 芹菜香干肉丝, price: ¥22 }
       - { name: 韭菜炒百叶, price: ¥18 }
       - { name: 红烧肥肠, price: ¥48 }
       - { name: 蒜香牛肚, price: ¥58 }
@@ -213,6 +227,7 @@ menu:
       - { name: 小炒肉, price: ¥28 }
       - { name: 小葱跑蛋, price: ¥18 }
       - { name: 酸辣土豆丝, price: ¥15 }
+      - { name: 蚝油土豆片, price: ¥15 }
       - { name: 山药木耳, price: ¥26 }
       - { name: 蚂蚁上树, price: ¥18 }
       - { name: 麻婆豆腐, price: ¥18 }
@@ -235,10 +250,11 @@ menu:
     items:
       - { name: 椒盐小酥肉, price: ¥38 }
       - { name: 地锅饼（10个）, price: ¥15 }
-      - { name: 山东手工水饺（韭菜鸡蛋、白菜猪肉）, price: ¥20 }
+      - { name: 山东手工水饺（白菜猪肉馅、豆角猪肉馅）（20只）, price: ¥22 }
+      - { name: 山东手工水饺（韭菜鸡蛋馅、素三鲜馅）（22只）, price: ¥20 }
       - { name: 清汤面, price: ¥15 }
       - { name: 蛋炒饭, price: ¥15 }
-      - { name: 菜煎饼, price: ¥12 }
+      - { name: 滕州菜煎饼（两个饼皮+鸡蛋）, price: ¥12 }
       - { name: 刚贴, price: ¥2 }
       - { name: 米饭, price: ¥2/5 }
       - { name: 玉米烙, price: ¥28 }

@@ -1,6 +1,6 @@
 import { pinyin } from "pinyin-pro";
 import { COMMON_HANZI, RARE_HANZI } from "./common-hanzi";
-import { DISH_ALIASES, PINYIN_OVERRIDES, SYNONYM_GROUPS } from "./dictionary";
+import { PINYIN_OVERRIDES, SYNONYM_GROUPS } from "./dictionary";
 import { normalizeText } from "./normalize";
 import { aliasVariants, canonicalize } from "./synonyms";
 import type { PreparedDish, SearchData } from "./types";
@@ -94,10 +94,6 @@ function pinyinOf(value: string): PinyinResult {
 function aliasesFor(norm: string): string[] {
   const found = new Set<string>();
   for (const variant of aliasVariants(norm)) found.add(variant);
-  for (const alias of DISH_ALIASES[norm] ?? []) {
-    const clean = normalizeText(alias);
-    if (clean) found.add(clean);
-  }
   found.delete(norm);
   return [...found].slice(0, MAX_ALIASES);
 }

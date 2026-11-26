@@ -1,4 +1,9 @@
-import { SYNONYM_GROUPS, VEGETABLE_CATEGORY_TERMS } from "./dictionary";
+import {
+  INGREDIENT_TERMS,
+  METHOD_TERMS,
+  SYNONYM_GROUPS,
+  VEGETABLE_CATEGORY_TERMS,
+} from "./dictionary";
 import { normalizeText } from "./normalize";
 
 /**
@@ -39,82 +44,8 @@ for (let group = 0; group < SYNONYM_GROUPS.length; group += 1) {
   }
 }
 
-// 不在同义词组里、但足够具体、允许两个字做包含匹配的常用食材。
-// 例如「牛肉」要能捞到「土豆烧牛肉」，「鸡蛋」要能捞到「西红柿炒鸡蛋」。
-for (const term of [
-  "鸡蛋",
-  "鸭蛋",
-  "牛肉",
-  "猪肉",
-  "鸡肉",
-  "羊肉",
-  "鸡丁",
-  "鸡块",
-  "鸡翅",
-  "鸡腿",
-  "肉丝",
-  "肉片",
-  "牛腩",
-  "排骨",
-  "肥肠",
-  "猪肝",
-  "腰花",
-  "鱼片",
-  "虾仁",
-  "牛蛙",
-  "鸭血",
-  "毛肚",
-  "黄喉",
-  "腊肉",
-  "香肠",
-  "培根",
-  "午餐肉",
-  "茄子",
-  "青椒",
-  "白菜",
-  "韭菜",
-  "芹菜",
-  "豆芽",
-  "蘑菇",
-  "水饺",
-  "蒸饺",
-  "煎饺",
-  "锅贴",
-  "锅仔",
-  "清蒸",
-  "红烧",
-  "干烧",
-  "茄汁",
-  "松子",
-  "蒜蓉",
-  "爆炒",
-  "干锅",
-  "砂锅",
-  "小炒",
-  "凉拌",
-  "香辣",
-  "麻辣",
-  "椒盐",
-  "糖醋",
-  "酸辣",
-  "水煮",
-  "清炒",
-  "葱油",
-  "酱香",
-  "五香",
-  "孜然",
-  "咖喱",
-  "椒麻",
-  "剁椒",
-  "泡椒",
-  "糟卤",
-  "白灼",
-  "清炖",
-  "蒜香",
-  "香煎",
-  "油炸",
-  "干煸",
-]) {
+// 不在同义词组里、但足够具体的食材/做法，允许两个字做包含匹配。
+for (const term of [...METHOD_TERMS, ...INGREDIENT_TERMS]) {
   KNOWN_TERMS.add(normalizeText(term));
 }
 

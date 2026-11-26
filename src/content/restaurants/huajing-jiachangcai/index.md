@@ -27,10 +27,10 @@ dishes:
     price: ¥26
     note: 豆干丁、鸡胗丁和鸡肉丁三丁，酱香口味。
     image: ./lajiang-sanding.webp
-  - name: 山药木耳
-    price: ¥20
-    note: 清炒勾薄芡，山药糯、木耳爽。
-    image: ./shanyao-muer.webp
+  - name: 爆炒猪耳饭
+    price: ¥18
+    note: 猪耳肉软糯、软骨脆，甜辣口很下饭。
+    image: ./baochao-zhuer-fan.webp
 bills:
   - people: 4
     dishes: [川香牛肚, 辣酱三丁, 椒盐排条, 孜然牛肉, 山药木耳, 双椒金针菇]
@@ -61,6 +61,7 @@ menu:
       - { name: 猪肝蘑菇番茄汤, price: ¥22 }
       - { name: 榨菜肉丝蛋汤, price: ¥16 }
       - { name: 排骨冬瓜汤, price: ¥32 }
+      - { name: 酒酿小圆子, price: ¥19 }
   - title: 锅仔类
     items:
       - { name: 农家咸鸭锅仔, price: ¥50 }
@@ -229,13 +230,14 @@ menu:
       - { name: 双椒牛蛙, price: ¥38 }
       - { name: 青炒虾仁, price: ¥62 }
   - title: 现炒盖浇饭
-    note: 打包时餐盒和米饭另算
+    note: 打包时餐盒 ¥1/只、米饭 ¥2/盒，另算。
     items:
       - { name: 红烧鸡块饭, price: ¥18 }
       - { name: 爆炒猪耳饭, price: ¥18 }
       - { name: 青椒肚片饭, price: ¥19 }
       - { name: 红烧大肠饭, price: ¥18 }
       - { name: 爆炒牛肉饭, price: ¥18 }
+      - { name: 小炒肉饭, price: ¥18 }
       - { name: 辣酱三丁饭, price: ¥18 }
       - { name: 韭黄炒蛋饭, price: ¥16 }
       - { name: 川味鸡杂饭, price: ¥16 }
@@ -258,7 +260,6 @@ menu:
       - { name: 咸肉菜炒饭, price: ¥16 }
       - { name: 扬州炒饭, price: ¥16 }
       - { name: 蛋炒饭, price: ¥15 }
-      - { name: 酒酿小圆子, price: ¥19 }
 tags: [盖浇饭]
 ---
 

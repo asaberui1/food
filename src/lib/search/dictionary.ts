@@ -1,5 +1,6 @@
 import relations from "../../data/alias-relations.json";
 import vegetables from "../../data/vegetables.json";
+import searchTerms from "../../data/search-terms.json";
 import { normalizeText } from "./normalize";
 
 /**
@@ -47,6 +48,11 @@ export const VEGETABLE_CATEGORY_TERMS: ReadonlySet<string> = new Set(
   vegetables.categoryTerms.map(normalizeText),
 );
 
+/** 三张手动词表：做法词、食材词、泛类别词。 */
+export const METHOD_TERMS: readonly string[] = searchTerms.methods;
+export const INGREDIENT_TERMS: readonly string[] = searchTerms.ingredients;
+export const GENERIC_TERMS: readonly string[] = searchTerms.categories;
+
 /** 菜名里的蔬菜叫法 → 规范名；用于「时蔬」类目召回和近义蔬菜扩散 */
 const VEGETABLE_CANONICAL = new Map<string, string>();
 for (const group of VEGETABLE_GROUPS) {
@@ -84,31 +90,40 @@ export function isStandaloneTwoChar(value: string): boolean {
   return STANDALONE_TWO_CHAR.has(normalizeText(value));
 }
 
-export const SYNONYM_GROUPS: readonly (readonly string[])[] = [
+/**
+ * exact 关系和蔬菜词表可能有同一个 canonical（例如「菠菜」两边都定义）。
+ * 这里按 canonical 合并并取并集，避免 trie 里后写入的组覆盖前一组；
+ * 原始数据中的重复项由 scripts/audit-aliases.ts 在构建期提示。
+ */
+function mergeSynonymGroups(
+  groups: readonly (readonly string[])[],
+): readonly (readonly string[])[] {
+  const merged = new Map<string, string[]>();
+
+  for (const group of groups) {
+    const canonical = normalizeText(group[0] ?? "");
+    if (!canonical) continue;
+
+    let terms = merged.get(canonical);
+    if (!terms) {
+      terms = [canonical];
+      merged.set(canonical, terms);
+    }
+    for (const term of group) {
+      const norm = normalizeText(term);
+      if (norm && !terms.includes(norm)) terms.push(norm);
+    }
+  }
+
+  return [...merged.values()];
+}
+
+export const SYNONYM_GROUPS: readonly (readonly string[])[] = mergeSynonymGroups([
   ...ALIAS_RELATIONS.exact.map((relation) => [relation.canonical, ...relation.members]),
   ...VEGETABLE_GROUPS.map((group) => [group.canonical, ...group.aliases]),
-];
+]);
 
-export type NearRelation = {
-  targets: readonly string[];
-  confidence: number;
-  note: string;
-};
 
-export const NEAR_RELATIONS: Readonly<Record<string, NearRelation>> = Object.fromEntries(
-  ALIAS_RELATIONS.near.map((relation) => [
-    relation.from,
-    {
-      targets: relation.targets,
-      confidence: relation.confidence,
-      note: relation.note,
-    },
-  ]),
-);
-
-export const DISH_ALIASES: Readonly<Record<string, readonly string[]>> = {
-  // 目前别名都能用同义词组表达；保留这个入口给以后没法拆词的整菜别名。
-};
 
 /**
  * pinyin-pro 读错/多音字纠正表。
@@ -140,53 +155,4 @@ export const PINYIN_OVERRIDES: readonly PinyinOverride[] = [
     misread: ["hege"],
     misreadInitials: ["hg"],
   },
-];
-
-export const GENERIC_TERMS: readonly string[] = [
-  "饭",
-  "面",
-  "汤",
-  "粉",
-  "粥",
-  "饼",
-  "馍",
-  "饺",
-  "包",
-  "盖浇饭",
-  "盖饭",
-  "盖浇面",
-  "浇头",
-  "套餐",
-  "单人餐",
-  "小吃",
-  "主食",
-  "快餐",
-  "家常菜",
-  "小炒",
-  "炒菜",
-  "汤面",
-  "拌面",
-  "炒面",
-  "炒饭",
-  "泡饭",
-  "汤饭",
-  "砂锅",
-  "煲仔",
-  "干锅",
-  "面食",
-  "米粉",
-  "河粉",
-  "粉丝",
-  "米饭",
-  "白饭",
-  "稀饭",
-  "面条",
-  "挂面",
-  "米线",
-  "粉条",
-  "饺子",
-  "包子",
-  "馒头",
-  "花卷",
-  "烧饼",
 ];
