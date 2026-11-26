@@ -27,8 +27,6 @@ const {
   walkMinutes,
   address,
   hours,
-  phone,
-  wechat,
   far,
   summary,
   cover,
@@ -154,7 +152,6 @@ const structuredData = {
   ...(billsAverage ? { priceRange: `¥${billsAverage}` } : {}),
   hasMenu: `${pageUrl}#menu-title`,
   address: { "@type": "PostalAddress", streetAddress: address, addressCountry: "CN" },
-  ...(phone ? { telephone: phone } : {}),
   ...(hours ? { openingHours: hours } : {}),
   // 有封面才写 image，没拍就先空着
   ...(cover ? { image: new URL(cover.src, siteUrl).href } : {}),
@@ -220,21 +217,7 @@ const structuredData = {
           </div>
           <div>
             <dt class="label-eyebrow">地址</dt>
-            <dd>
-              {address}
-              {phone && (
-                <>
-                  <br />
-                  <a class="shop-contact" href={`tel:${phone.replace(/[^\d+]/g, "")}`}>{phone}</a>
-                </>
-              )}
-              {wechat && (
-                <>
-                  <br />
-                  <span class="shop-contact">微信：{wechat}</span>
-                </>
-              )}
-            </dd>
+            <dd>{address}</dd>
           </div>
         </dl>
 

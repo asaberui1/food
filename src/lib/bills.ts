@@ -18,7 +18,29 @@ const OVERRIDES: Record<string, "pot" | "soup" | "meat" | "veg"> = {
   小炒马桥干: "veg", // 马桥干是豆腐干
 };
 
-const NUMERALS = ["零", "一", "两", "三", "四", "五", "六", "七", "八", "九", "十"];
+const NUMERALS = [
+  "零",
+  "一",
+  "两",
+  "三",
+  "四",
+  "五",
+  "六",
+  "七",
+  "八",
+  "九",
+  "十",
+  "十一",
+  "十二",
+  "十三",
+  "十四",
+  "十五",
+  "十六",
+  "十七",
+  "十八",
+  "十九",
+  "二十",
+];
 
 function numeral(count: number): string {
   return NUMERALS[count] ?? String(count);

@@ -207,7 +207,29 @@ const cards = shops
 
       for (const [sector, items] of groups) {
         const names = items.map(({ pin }) => cards[pin.dataset.mapSlug ?? ""]?.name ?? "这家店");
-        const numerals = ["零", "一", "两", "三", "四", "五", "六", "七", "八", "九", "十"];
+        const numerals = [
+          "零",
+          "一",
+          "两",
+          "三",
+          "四",
+          "五",
+          "六",
+          "七",
+          "八",
+          "九",
+          "十",
+          "十一",
+          "十二",
+          "十三",
+          "十四",
+          "十五",
+          "十六",
+          "十七",
+          "十八",
+          "十九",
+          "二十",
+        ];
         const count = numerals[items.length] ?? String(items.length);
         const label = items.length === 1 ? names[0] : `${count}家餐厅`;
         const arrowAngle = (sector * 45 + 90) % 360;
