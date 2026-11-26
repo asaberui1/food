@@ -937,20 +937,25 @@ const structuredData = {
       const header = document.querySelector<HTMLElement>(".site-header");
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
       const gap = 10;
+      const canPopover = typeof HTMLElement.prototype.showPopover === "function";
 
       // 菜单分组头吸顶时也要让开顶部横幅，不能藏在它下面
-      const syncHeaderHeight = () => {
-        if (!header) return;
-        document.documentElement.style.setProperty(
-          "--site-header-height",
-          `${header.getBoundingClientRect().height}px`,
-        );
+      const syncStickyHeights = () => {
+        const root = document.documentElement;
+        if (header) {
+          root.style.setProperty("--site-header-height", `${header.getBoundingClientRect().height}px`);
+        }
+        const head = document.querySelector<HTMLElement>(".menu-acc__head");
+        if (head) {
+          root.style.setProperty("--menu-acc-head-height", `${head.getBoundingClientRect().height}px`);
+        }
       };
-      syncHeaderHeight();
-      window.addEventListener("resize", syncHeaderHeight);
+      syncStickyHeights();
+      window.addEventListener("resize", syncStickyHeights);
       if (header && "ResizeObserver" in window) {
-        new ResizeObserver(syncHeaderHeight).observe(header);
+        new ResizeObserver(syncStickyHeights).observe(header);
       }
+      document.fonts?.ready.then(syncStickyHeights);
 
       groups.forEach((group) => {
         group.addEventListener("toggle", () => {
@@ -980,38 +985,86 @@ const structuredData = {
         });
       });
 
-      // 从搜索结果进来：展开对应分组，并把目标菜标出来。
-      const targetMatch = /^#menu-(\d+)$/.exec(window.location.hash);
-      if (targetMatch) {
-        const targetGroup = document.getElementById(`menu-${targetMatch[1]}`);
-        const dish = new URLSearchParams(window.location.search).get("dish");
-        if (targetGroup instanceof HTMLDetailsElement) {
-          targetGroup.open = true;
-          if (dish) {
-            const item = [...targetGroup.querySelectorAll<HTMLElement>("[data-menu-dish]")].find(
-              (row) => row.dataset.menuDish === dish,
-            );
-            if (item) {
-              item.classList.add("is-target");
-              requestAnimationFrame(() => {
-                const headerHeight = header?.getBoundingClientRect().height ?? 0;
-                const groupHeadHeight =
-                  targetGroup.querySelector<HTMLElement>("summary")?.getBoundingClientRect().height ?? 0;
-                const top =
-                  item.getBoundingClientRect().top + window.scrollY - headerHeight - groupHeadHeight - 12;
-                window.scrollTo({
-                  top: Math.max(0, top),
-                  behavior: reduced.matches ? "auto" : "smooth",
-                });
-              });
-            }
+      const clearTarget = () => {
+        document.querySelectorAll(".menu-item.is-target").forEach((row) => row.classList.remove("is-target"));
+      };
+
+      const closeMenuNotes = () => {
+        document.querySelectorAll<HTMLElement>(".menu-note").forEach((pop) => {
+          if (canPopover) {
+            if (pop.matches(":popover-open")) pop.hidePopover();
+          } else {
+            pop.hidden = true;
           }
+        });
+        document
+          .querySelectorAll<HTMLButtonElement>(".menu-item__note")
+          .forEach((button) => button.setAttribute("aria-expanded", "false"));
+      };
+
+      // 展开分组并定位到菜。scroll-margin-top 已为顶部导航和吸顶分组头留出高度。
+      const revealDish = ({ smooth = true }: { smooth?: boolean } = {}) => {
+        const targetMatch = /^#menu-(\d+)$/.exec(window.location.hash);
+        if (!targetMatch) {
+          clearTarget();
+          return;
         }
-      }
+
+        const targetGroup = document.getElementById(`menu-${targetMatch[1]}`);
+        if (!(targetGroup instanceof HTMLDetailsElement)) {
+          clearTarget();
+          return;
+        }
+
+        const dish = new URLSearchParams(window.location.search).get("dish");
+        const item = dish
+          ? [...targetGroup.querySelectorAll<HTMLElement>("[data-menu-dish]")].find(
+              (row) => row.dataset.menuDish === dish,
+            )
+          : undefined;
+
+        targetGroup.open = true;
+        clearTarget();
+        if (item) item.classList.add("is-target");
+
+        const behavior = smooth && !reduced.matches ? "smooth" : "auto";
+        const scroll = () => {
+          if (item) {
+            item.scrollIntoView({ block: "start", behavior });
+          } else {
+            targetGroup.scrollIntoView({ block: "start", behavior });
+          }
+        };
+        // 等展开后的布局落定，再按 scroll-margin-top 定位。
+        requestAnimationFrame(() => requestAnimationFrame(scroll));
+      };
+
+      revealDish({ smooth: false });
+      window.addEventListener("load", () => revealDish({ smooth: false }));
+      window.addEventListener("hashchange", () => revealDish());
+      window.addEventListener("popstate", () => revealDish());
+
+      // 同页说明链接改为就地跳转，避免浏览器先跳到分组顶部、把菜压在吸顶表头下面。
+      document.addEventListener("click", (event) => {
+        if (event.defaultPrevented || event.button !== 0) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const link = target.closest<HTMLAnchorElement>(".menu-note a");
+        if (!link) return;
+
+        const url = new URL(link.href, window.location.href);
+        if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return;
+        if (!url.searchParams.get("dish") || !/^#menu-\d+$/.test(url.hash)) return;
+
+        event.preventDefault();
+        closeMenuNotes();
+        window.history.pushState(null, "", `${url.pathname}${url.search}${url.hash}`);
+        revealDish();
+      });
 
       // 菜单里的说明按钮：点击在菜名附近展开自适应宽度的说明。
       const noteButtons = [...document.querySelectorAll<HTMLButtonElement>(".menu-item__note")];
-      const canPopover = typeof HTMLElement.prototype.showPopover === "function";
 
       const placeNote = (button: HTMLButtonElement, pop: HTMLElement): void => {
         const margin = 12;

@@ -1131,6 +1131,14 @@ body:has(.shop-toc) .site-footer{
   border-top: 1px solid var(--border);
 }.menu-acc{
   border-bottom: 1px solid var(--border);
+  /* 原生锚点跳转时，分组标题也要让开顶部导航 */
+  scroll-margin-top: calc(var(--site-header-height, 4.1rem) + 0.75rem);
+}
+.menu-item{
+  /* 跳到某道菜时，同时让开顶部导航和吸顶的分组标题 */
+  scroll-margin-top: calc(
+    var(--site-header-height, 4.1rem) + var(--menu-acc-head-height, 4.35rem) + 0.75rem
+  );
 }.menu-acc__head{
   position: sticky;
   top: var(--site-header-height, 4.1rem);
@@ -3616,7 +3624,12 @@ body:has(.map-dialog[open]) {
   margin-left: -0.5rem;
   padding-left: 0.5rem;
   border-radius: 2px;
-  background: rgb(217 138 52 / 0.14);
+  background: linear-gradient(
+    90deg,
+    rgb(217 138 52 / 0.2) 0%,
+    rgb(217 138 52 / 0.09) 58%,
+    rgb(217 138 52 / 0.01) 100%
+  );
   box-shadow: inset 3px 0 0 var(--ember);
 }
 .menu-item.is-target .menu-item__name:not(.is-photo),
