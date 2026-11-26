@@ -1550,6 +1550,24 @@
       "kind": "exact",
       "confidence": 1,
       "note": "人工确认：耗油、蠔油都是蚝油的异体写法"
+    },
+    {
+      "canonical": "子鸡",
+      "members": [
+        "仔鸡"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：仔鸡就是子鸡，菜单上也写生炒子鸡"
+    },
+    {
+      "canonical": "腰蛤",
+      "members": [
+        "芒果螺"
+      ],
+      "kind": "exact",
+      "confidence": 1,
+      "note": "人工确认：芒果螺是腰蛤的俗称"
     }
   ],
   "near": [
