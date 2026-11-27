@@ -267,6 +267,30 @@ const cards = shops
         });
         edgeLayer.append(button);
       }
+
+      // 窄屏时三个顶部/底部方向标会挤在同一行，改为按方向逐行错开。
+      if (window.matchMedia("(max-width: 640px)").matches) {
+        const order = (values: string[]) => (a: HTMLElement, b: HTMLElement) =>
+          values.indexOf(a.dataset.edge ?? "") - values.indexOf(b.dataset.edge ?? "");
+
+        const topMarkers = [
+          ...edgeLayer.querySelectorAll<HTMLElement>(
+            '[data-edge="top-left"], [data-edge="top"], [data-edge="top-right"]',
+          ),
+        ].sort(order(["top-left", "top", "top-right"]));
+        topMarkers.forEach((marker, index) => {
+          marker.style.top = `${10 + index * 42}px`;
+        });
+
+        const bottomMarkers = [
+          ...edgeLayer.querySelectorAll<HTMLElement>(
+            '[data-edge="bottom-left"], [data-edge="bottom"], [data-edge="bottom-right"]',
+          ),
+        ].sort(order(["bottom-left", "bottom", "bottom-right"]));
+        bottomMarkers.forEach((marker, index) => {
+          marker.style.bottom = `${10 + index * 42}px`;
+        });
+      }
     };
 
     const apply = () => {

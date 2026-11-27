@@ -236,7 +236,10 @@ menu:
       - { name: 爆炒猪耳饭, price: ¥18 }
       - { name: 青椒肚片饭, price: ¥19 }
       - { name: 红烧大肠饭, price: ¥18 }
-      - { name: 爆炒牛肉饭, price: ¥18 }
+      - name: 爆炒牛肉饭
+        price: ¥18
+        image: ./baochao-niurou-fan.webp
+        note: 牛肉份量扎实，微辣。
       - { name: 小炒肉饭, price: ¥18 }
       - { name: 辣酱三丁饭, price: ¥18 }
       - { name: 韭黄炒蛋饭, price: ¥16 }
