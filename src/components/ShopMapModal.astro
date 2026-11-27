@@ -275,15 +275,24 @@ const cards = shops
 
         const layoutRow = (markers: HTMLElement[], edge: "top" | "bottom") => {
           if (markers.length < 2) return;
-          const gap = 6;
           const pad = 10;
-          const available = window.innerWidth - pad * 2 - gap * (markers.length - 1);
-          const width = Math.floor(available / markers.length);
+          // 按最多三个方向标预留宽度，但不把仅有的两个强行拉满。
+          const width = Math.min(
+            160,
+            Math.max(96, Math.floor((window.innerWidth - pad * 2 - 12) / 3)),
+          );
 
-          markers.forEach((marker, index) => {
+          markers.forEach((marker) => {
+            const slot = marker.dataset.edge ?? "";
+            let left = pad;
+            if (slot.endsWith("right")) left = window.innerWidth - pad - width;
+            else if (slot === "top" || slot === "bottom") {
+              left = Math.round((window.innerWidth - width) / 2);
+            }
+
             marker.style.width = `${width}px`;
             marker.style.maxWidth = `${width}px`;
-            marker.style.left = `${pad + index * (width + gap)}px`;
+            marker.style.left = `${left}px`;
             marker.style.right = "auto";
             marker.style.transform = "none";
             if (edge === "top") {
