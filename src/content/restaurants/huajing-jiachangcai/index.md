@@ -233,7 +233,9 @@ menu:
     note: 打包时餐盒 ¥1/只、米饭 ¥2/盒，另算。
     items:
       - { name: 红烧鸡块饭, price: ¥18 }
-      - { name: 爆炒猪耳饭, price: ¥18 }
+      - name: 爆炒猪耳饭
+        price: ¥18
+        note: 猪耳肉软糯、软骨脆，甜辣口很下饭。
       - { name: 青椒肚片饭, price: ¥19 }
       - { name: 红烧大肠饭, price: ¥18 }
       - name: 爆炒牛肉饭
